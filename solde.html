@@ -957,5 +957,75 @@ window.addEventListener("unhandledrejection", (e) => {
   showErrorMessage("Une erreur de traitement s'est produite");
 });
 </script>
+
+  <script>
+  // Gestion des éléments interactifs non liés à Firebase (clics + clavier + loading, etc.)
+  document.addEventListener("DOMContentLoaded", () => {
+    function handleRedirectClick(event) {
+      const el = event.currentTarget;
+      const link = el.getAttribute("data-link");
+      if (!link) return;
+
+      if (
+        el.classList.contains("btn-action") ||
+        el.classList.contains("btn-carousel") ||
+        el.id === "withdrawal-button"
+      ) {
+        if (el.classList.contains("loading")) return;
+        const icon = el.querySelector(".icon");
+        if (icon) icon.style.display = "none";
+        let spinner = el.querySelector(".spinner");
+        if (!spinner) {
+          spinner = document.createElement("span");
+          spinner.className = "spinner";
+          el.insertBefore(spinner, el.firstChild);
+        }
+        spinner.style.display = "inline-block";
+        el.classList.add("loading");
+        el.disabled = true;
+      }
+
+      setTimeout(() => {
+        window.location.href = link;
+      }, 250);
+    }
+
+    // Ajout des événements clic + clavier aux éléments concernés...
+    document.querySelectorAll("nav.bottom-nav .nav-icon").forEach(el => {
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("role", "link");
+      el.addEventListener("click", handleRedirectClick);
+      el.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          el.click();
+        }
+      });
+    });
+    document.querySelectorAll(".quick-action, .btn-action, .btn-carousel").forEach(el => {
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("role", el.classList.contains("btn-action") ? "button" : "link");
+      el.addEventListener("click", handleRedirectClick);
+      el.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          el.click();
+        }
+      });
+    });
+    const withdrawBtn = document.getElementById("withdrawal-button");
+    if (withdrawBtn) {
+      withdrawBtn.setAttribute("tabindex", "0");
+      withdrawBtn.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          withdrawBtn.click();
+        }
+      });
+    }
+    // Autres éléments cliquables similaires...
+  });
+</script>
+
 </body>
 </html>
