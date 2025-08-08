@@ -35,7 +35,7 @@
   }
   label {
     display: block; margin-bottom: 9px;
-    font-weight: 600; font-size: 1.0rem;
+    font-weight: 600; font-size: 1rem;
     color: #4a5568;
   }
   :root {
@@ -61,18 +61,14 @@
     transition: border-image-source 0.35s ease, box-shadow 0.35s ease;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     font-family: inherit;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     cursor: pointer;
   }
-  
   input[type="text"],
   input[type="tel"],
   input[type="password"] {
     cursor: text;
   }
-
   select {
     padding-right: 35px;
     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%234a5568' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
@@ -80,7 +76,6 @@
     background-position: right 12px center;
     background-size: 16px;
   }
-
   input::placeholder {
     color: #7a8499;
     font-weight: 400;
@@ -93,7 +88,6 @@
     outline: none;
     color: #0a8f5d;
   }
-  /* Pour input téléphone, padding standard */
   input[type="tel"] {
     padding-left: 20px;
     cursor: text;
@@ -164,9 +158,11 @@
   }
   .referral-status.valid {
     color: #0a8f5d;
+    display: block;
   }
   .referral-status.invalid {
     color: #d53f3f;
+    display: block;
   }
   .error-message {
     font-size: 0.9rem;
@@ -187,7 +183,7 @@
 <div class="container" role="main" aria-label="Formulaires de connexion et inscription Nescafé">
 
   <!-- Connexion -->
-  <section id="login-section" style="display: block;" aria-labelledby="login-header">
+  <section id="login-section" class="active" aria-labelledby="login-header">
     <div class="header" id="login-header">Nescafé - Connexion</div>
     <form id="loginFormData" aria-describedby="loginDesc" novalidate>
       <div id="loginDesc" class="sr-only">Entrez votre numéro de téléphone et mot de passe pour vous connecter</div>
@@ -221,7 +217,7 @@
   </section>
 
   <!-- Inscription -->
-  <section id="signup-section" style="display: none;" aria-labelledby="signup-header">
+  <section id="signup-section" aria-labelledby="signup-header">
     <div class="header" id="signup-header">Nescafé - Inscription</div>
     <form id="signupFormData" aria-describedby="signupDesc" novalidate>
       <div id="signupDesc" class="sr-only">
@@ -269,11 +265,11 @@
 </div>
 
 <script>
-  // Bascule entre connexion et inscription
+  // Fonction pour basculer entre connexion et inscription
   function toggleForm() {
     const loginSection = document.getElementById('login-section');
     const signupSection = document.getElementById('signup-section');
-    if (loginSection.style.display === 'none') {
+    if (loginSection.style.display === 'none' || loginSection.classList.contains('hidden')) {
       loginSection.style.display = 'block';
       signupSection.style.display = 'none';
     } else {
@@ -282,92 +278,125 @@
     }
   }
 
-  // Formats téléphone par pays
+  // Formats de numéro par pays
   const phoneFormats = {
-    'CI': { code: '+225', format: 'XX XX XX XX XX', example: '01 23 45 67 89', pattern: /^([0-9]{2} ?){5}$/ },
-    'ML': { code: '+223', format: 'XX XX XX XX', example: '76 12 34 56', pattern: /^([0-9]{2} ?){4}$/ },
-    'SN': { code: '+221', format: 'XX XXX XX XX', example: '77 123 45 67', pattern: /^[0-9]{2} ?[0-9]{3} ?[0-9]{2} ?[0-9]{2}$/ },
-    'BF': { code: '+226', format: 'XX XX XX XX', example: '70 12 34 56', pattern: /^([0-9]{2} ?){4}$/ },
-    'NE': { code: '+227', format: 'XX XX XX XX', example: '90 12 34 56', pattern: /^([0-9]{2} ?){4}$/ },
-    'BJ': { code: '+229', format: 'XX XX XX XX', example: '97 12 34 56', pattern: /^([0-9]{2} ?){4}$/ },
-    'TG': { code: '+228', format: 'XX XXX XXX', example: '90 123 456', pattern: /^[0-9]{2} ?[0-9]{3} ?[0-9]{3}$/ }
+    'CI': { code: '+225', format: 'XX XXX XXXX', example: '07 123 4567', pattern: /^[0-9]{2} [0-9]{3} [0-9]{4}$/ },
+    'ML': { code: '+223', format: 'XX XX XX XX', example: '76 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'SN': { code: '+221', format: 'XX XXX XX XX', example: '77 123 45 67', pattern: /^[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$/ },
+    'BF': { code: '+226', format: 'XX XX XX XX', example: '70 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'NE': { code: '+227', format: 'XX XX XX XX', example: '90 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'BJ': { code: '+229', format: 'XX XX XX XX', example: '97 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'TG': { code: '+228', format: 'XX XXX XXX', example: '90 123 456', pattern: /^[0-9]{2} [0-9]{3} [0-9]{3}$/ }
   };
 
-  // Met à jour le placeholder du champ téléphone
+  // Mise à jour du placeholder selon pays sélectionné
   function updatePhoneFormat(formType) {
     const country = document.getElementById(`${formType}Country`).value;
     const phoneFormat = phoneFormats[country];
     if (phoneFormat) {
       document.getElementById(`${formType}Telephone`).placeholder = phoneFormat.example;
-      const err = document.getElementById(`${formType}Error`);
-      if (err) { err.textContent = ''; err.style.display = 'none'; }
     }
   }
 
+  // Écouteurs sur changements pays pour mettre à jour les placeholders de téléphone
   document.getElementById('loginCountry').addEventListener('change', () => updatePhoneFormat('login'));
   document.getElementById('signupCountry').addEventListener('change', () => updatePhoneFormat('signup'));
 
-  // Validation format téléphone
-  function validatePhoneFormat(formType, e) {
+  // Validation format téléphone au submit
+  function validatePhoneFormat(formType, event) {
     const country = document.getElementById(`${formType}Country`).value;
     const phone = document.getElementById(`${formType}Telephone`).value.trim();
     const phoneFormat = phoneFormats[country];
-    const errorEl = document.getElementById(`${formType}Error`);
     if (!phoneFormat.pattern.test(phone)) {
-      e.preventDefault();
-      if (errorEl) {
-        errorEl.textContent = `Format invalide. Utilisez le format: ${phoneFormat.format}`;
-        errorEl.style.display = 'block';
-      }
+      event.preventDefault();
+      document.getElementById(`${formType}Error`).textContent = `Format invalide. Utilisez le format: ${phoneFormat.format}`;
+      document.getElementById(`${formType}Error`).style.display = 'block';
       return false;
     }
-    if (errorEl) {
-      errorEl.textContent = '';
-      errorEl.style.display = 'none';
-    }
+    document.getElementById(`${formType}Error`).style.display = 'none';
     return true;
   }
 
-  // Validation code de parrainage dans inscription
-  function validateReferralCode(e) {
-    const referralCode = document.getElementById('referralCode').value.trim().toUpperCase();
+  // Validation code de parrainage au submit
+  function validateReferralCode(event) {
+    const referralCode = document.getElementById('referralCode').value.trim();
     const referralStatus = document.getElementById('referralStatus');
     if (referralCode.length > 0) {
-      const isValid = /^[A-Z0-9]{6,8}$/.test(referralCode);
+      const isValid = /^[A-Z0-9]{6,8}$/.test(referralCode.toUpperCase());
       if (!isValid) {
-        e.preventDefault();
+        event.preventDefault();
         referralStatus.textContent = 'Code de parrainage invalide';
         referralStatus.className = 'referral-status invalid';
         referralStatus.style.display = 'block';
-        return false;
       } else {
-        referralStatus.textContent = '';
         referralStatus.style.display = 'none';
-        return true;
       }
-    } else {
-      referralStatus.textContent = '';
-      referralStatus.style.display = 'none';
-      return true;
     }
   }
 
-  // Validation temps réel code parrainage
-  function debounce(func, delay) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => func.apply(this, args), delay);
-    };
-  }
+  // Validation des soumis des formulaires
+  document.getElementById('loginFormData').addEventListener('submit', (e) => {
+    validatePhoneFormat('login', e);
+  });
+  document.getElementById('signupFormData').addEventListener('submit', (e) => {
+    if (!validatePhoneFormat('signup', e)) return;
+    validateReferralCode(e);
+  });
 
-  // Fonction pour récupérer un paramètre dans l'URL
-  function getParametreURL(nom) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(nom);
-  }
+  // Basculer entre formulaire connexion et inscription
+  document.getElementById('switch-to-signup').addEventListener('click', toggleForm);
+  document.getElementById('switch-to-login').addEventListener('click', toggleForm);
 
-  // Classes utilitaires et gestion formulaires (Firebase etc)
+  // Vérification en temps réel du code de parrainage
+  document.getElementById('referralCode').addEventListener('input', () => {
+    const referralCodeInput = document.getElementById('referralCode').value.trim().toUpperCase();
+    const referralStatus = document.getElementById('referralStatus');
+    if (referralCodeInput.length > 0) {
+      const isValid = /^[A-Z0-9]{6,8}$/.test(referralCodeInput);
+      if (isValid) {
+        referralStatus.textContent = 'Code valide';
+        referralStatus.className = 'referral-status valid';
+      } else {
+        referralStatus.textContent = 'Code invalide';
+        referralStatus.className = 'referral-status invalid';
+      }
+      referralStatus.style.display = 'block';
+    } else {
+      referralStatus.style.display = 'none';
+    }
+  });
+</script>
+
+
+<!-- Firebase et gestion formulaires -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
   class Utils {
     static generateReferralCode() {
       const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -383,7 +412,10 @@
         const users = snapshot.val();
         for (const userId in users) {
           if ((users[userId].referralCode ?? "").toUpperCase() === code.toUpperCase()) {
-            return { userId, username: users[userId].username ?? "" };
+            return {
+              userId,
+              username: users[userId].username ?? ""
+            };
           }
         }
       }
@@ -435,6 +467,7 @@
       try {
         const username = document.getElementById("signupUsername").value.trim();
         const telephone = document.getElementById("signupTelephone").value.trim();
+        const email = `${telephone}@temp.com`;
         const password = document.getElementById("signupPassword").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
         const referralCode = document.getElementById("referralCode").value.trim().toUpperCase();
@@ -460,7 +493,6 @@
           }
         }
 
-        const email = `${telephone}@temp.com`; // Email temporaire pour Firebase
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         const newReferralCode = Utils.generateReferralCode();
@@ -532,79 +564,47 @@
     }
   }
 
-  // --- Nouvelle partie à ajouter ---
-
-  // Affichage optionnel du code parrainage dans une section visible
-  function afficherCodeParrainage(code) {
-    const codeSection = document.getElementById("section-code-parrainage");
-    if (codeSection) {
-      document.getElementById("code-parrainage").textContent = code;
-      codeSection.style.display = "block";
-    }
+  // Debounce utilitaire
+  function debounce(func, delay) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    };
   }
 
-  // --- Fin nouvelle partie ---
-
-  // Initialisation écouteurs DOM
   document.addEventListener("DOMContentLoaded", () => {
-    // Écouteurs existants
-    document.getElementById('switch-to-signup').addEventListener('click', e => { e.preventDefault(); toggleForm(); });
-    document.getElementById('switch-to-login').addEventListener('click', e => { e.preventDefault(); toggleForm(); });
-    ['switch-to-signup', 'switch-to-login'].forEach(id => {
-      const el = document.getElementById(id);
-      el.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggleForm();
-        }
-      });
-    });
-
-    updatePhoneFormat('login');
-    updatePhoneFormat('signup');
-
-    // Gestion formulaire signup
     const signupForm = document.getElementById("signupFormData");
+    const loginForm = document.getElementById("loginFormData");
+    const referralInput = document.getElementById("referralCode");
+
     if (signupForm) {
       signupForm.addEventListener("submit", (e) => {
-        validatePhoneFormat('signup', e);
-        validateReferralCode(e);
         FormManager.handleSignup(e);
       });
     }
-
-    // Gestion formulaire login
-    const loginForm = document.getElementById("loginFormData");
     if (loginForm) {
       loginForm.addEventListener("submit", (e) => {
-        validatePhoneFormat('login', e);
         FormManager.handleLogin(e);
       });
     }
-
-    // Validation en temps réel code parrainage avec debounce
-    const referralInput = document.getElementById("referralCode");
     if (referralInput) {
       referralInput.addEventListener("input", debounce(FormManager.handleReferralCodeInput, 500));
     }
 
-    // --- Partie ajoutée : récupération code parrainage depuis URL ---
-    const codeParrainageURL = getParametreURL("codeParrain")?.toUpperCase();
-    if (codeParrainageURL && referralInput) {
-      referralInput.value = codeParrainageURL;
-      FormManager.handleReferralCodeInput();
-      afficherCodeParrainage(codeParrainageURL);
-    }
-    // --- Fin ajout ---
-
+    // Initialiser placeholders telephone selon pays par défaut
+    updatePhoneFormat('login');
+    updatePhoneFormat('signup');
   });
 
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Utilisateur connecté:", user.uid);
+    } else {
+      console.log("Aucun utilisateur connecté");
+    }
+  });
 </script>
-
-
-
-
-  
 
 </body>
 </html>
