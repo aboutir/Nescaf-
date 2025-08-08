@@ -176,6 +176,12 @@
     margin-top: 6px;
     display: none;
   }
+  /* Style pour affichage code de parrainage reçu */
+  #referralCodeDisplay {
+    font-weight: 600;
+    color: #0a8f5d;
+    margin-bottom: 12px;
+  }
 </style>
 </head>
 <body>
@@ -219,6 +225,10 @@
   <!-- Inscription -->
   <section id="signup-section" aria-labelledby="signup-header">
     <div class="header" id="signup-header">Nescafé - Inscription</div>
+
+    <!-- Zone pour afficher le code de parrainage reçu via URL -->
+    <div id="referralCodeDisplay" aria-live="polite" aria-atomic="true"></div>
+
     <form id="signupFormData" aria-describedby="signupDesc" novalidate>
       <div id="signupDesc" class="sr-only">
         Formulaire d'inscription avec nom complet, téléphone, mot de passe, confirmation et code de parrainage facultatif
@@ -334,6 +344,28 @@
     }
   }
 
+  // Récupérer paramètre URL 'ref'
+  function getReferralCodeFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || '';
+  }
+
+  // Afficher le code parrainage reçu et préremplir le champ inscription
+  function displayReferralCodeFromURL() {
+    const code = getReferralCodeFromURL();
+    const displayElement = document.getElementById('referralCodeDisplay');
+    if (code && displayElement) {
+      displayElement.textContent = `Code de parrainage reçu : ${code}`;
+
+      // Pré-remplissage du champ et déclenchement validation
+      const referralInput = document.getElementById('referralCode');
+      if (referralInput) {
+        referralInput.value = code;
+        referralInput.dispatchEvent(new Event('input'));
+      }
+    }
+  }
+
   // Validation des soumis des formulaires
   document.getElementById('loginFormData').addEventListener('submit', (e) => {
     validatePhoneFormat('login', e);
@@ -347,7 +379,7 @@
   document.getElementById('switch-to-signup').addEventListener('click', toggleForm);
   document.getElementById('switch-to-login').addEventListener('click', toggleForm);
 
-  // Vérification en temps réel du code de parrainage
+  // Vérification en temps réel du code de parrainage (pour message de validité)
   document.getElementById('referralCode').addEventListener('input', () => {
     const referralCodeInput = document.getElementById('referralCode').value.trim().toUpperCase();
     const referralStatus = document.getElementById('referralStatus');
@@ -365,8 +397,14 @@
       referralStatus.style.display = 'none';
     }
   });
-</script>
 
+  // Initialisations au chargement
+  document.addEventListener('DOMContentLoaded', () => {
+    updatePhoneFormat('login');
+    updatePhoneFormat('signup');
+    displayReferralCodeFromURL();
+  });
+</script>
 
 <!-- Firebase et gestion formulaires -->
 <script type="module">
@@ -384,6 +422,7 @@
     set
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
+  // Configuration Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
     authDomain: "nescafe-cba7a.firebaseapp.com",
@@ -591,10 +630,6 @@
     if (referralInput) {
       referralInput.addEventListener("input", debounce(FormManager.handleReferralCodeInput, 500));
     }
-
-    // Initialiser placeholders telephone selon pays par défaut
-    updatePhoneFormat('login');
-    updatePhoneFormat('signup');
   });
 
   onAuthStateChanged(auth, (user) => {
