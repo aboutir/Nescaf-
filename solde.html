@@ -531,19 +531,20 @@
 </nav>
 
 <script type="module">
-  // === Import Firebase ===
+  // === Importation des modules Firebase ===
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
   import {
     getDatabase,
     ref,
     get,
-    update,
-    push,
     set,
+    update,
     onValue,
     query,
     orderByChild,
@@ -551,7 +552,7 @@
     runTransaction
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  // === Configuration et initialization Firebase ===
+  // === Configuration Firebase ===
   const firebaseConfig = {
     apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
     authDomain: "nescafe-cba7a.firebaseapp.com",
@@ -561,25 +562,24 @@
     messagingSenderId: "91209018725",
     appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
   };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const database = getDatabase(app);
 
-  // === Variables d'état ===
-  let currentUser = null;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
-  // === Fonctions utilitaires ===
+let currentUser = null;
 
-  function formatCurrency(amount) {
-    return `FCFA ${Number(amount).toLocaleString("fr-FR", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    })}`;
-  }
+// Formatage monétaire personnalisée
+function formatCurrency(amount) {
+  return `FCFA ${Number(amount).toLocaleString("fr-FR", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
+}
 
-  function showMessage(id, message) {
-    const el = document.getElementById(id);
-    if (!el) return;
+function showErrorMessage(message) {
+  const el = document.getElementById("error-message");
+  if (el) {
     el.textContent = message;
     el.style.display = "block";
     setTimeout(() => {
@@ -587,387 +587,375 @@
       el.textContent = "";
     }, 3000);
   }
+}
 
-  // Fonctions showErrorMessage et showSuccessMessage spécifiquement
-  function showErrorMessage(message) {
-    showMessage("error-message", message);
-  }
-  function showSuccessMessage(message) {
-    const el = document.getElementById("success-message");
-    if (el) {
-      showMessage("success-message", message);
-    } else {
-      alert(message);
-    }
-  }
-
-  function showLoading(button) {
-    if (button.classList.contains("loading")) return false;
-    const icon = button.querySelector(".icon");
-    if (icon) icon.style.display = "none";
-    let spinner = button.querySelector(".spinner");
-    if (!spinner) {
-      spinner = document.createElement("span");
-      spinner.className = "spinner";
-      button.insertBefore(spinner, button.firstChild);
-    }
-    spinner.style.display = "inline-block";
-    button.classList.add("loading");
-    button.disabled = true;
-    return true;
-  }
-  function hideLoading(button) {
-    const icon = button.querySelector(".icon");
-    if (icon) icon.style.display = "inline-block";
-    const spinner = button.querySelector(".spinner");
-    if (spinner) spinner.style.display = "none";
-    button.classList.remove("loading");
-    button.disabled = false;
-  }
-
-  function handleRedirectClick(event) {
-    const el = event.currentTarget;
-    const link = el.getAttribute("data-link");
-    if (!link) return;
-
-    // Appliquer loading only si bouton action
-    if (
-      el.classList.contains("btn-action") ||
-      el.classList.contains("btn-carousel") ||
-      el.id === "withdrawal-button"
-    ) {
-      if (!showLoading(el)) return;
-    }
-
+function showSuccessMessage(message) {
+  const el = document.getElementById("success-message");
+  if (el) {
+    el.textContent = message;
+    el.style.display = "block";
     setTimeout(() => {
-      window.location.href = link;
-    }, 250);
+      el.style.display = "none";
+      el.textContent = "";
+    }, 3000);
+  } else {
+    alert(message);
   }
+}
 
-  // Fonctions pour mise à jour UI utilisateurs
-
-  function updateUserIdentifier(phoneNumber) {
-    const idEl = document.getElementById("user-id");
-    const addId = document.getElementById("user-additional-id");
-    if (idEl && phoneNumber) {
-      const formatted = phoneNumber.replace(
-        /(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
-        "$1 $2 $3 $4 $5"
-      );
-      idEl.textContent = formatted;
-      if (addId) addId.textContent = `05*******${phoneNumber.slice(-2)}`;
-    } else if (idEl) {
-      idEl.textContent = "Non connecté";
-      if (addId) addId.textContent = "";
-    }
+function showLoading(button) {
+  const icon = button.querySelector(".icon");
+  if (icon) icon.style.display = "none";
+  let spinner = button.querySelector(".spinner");
+  if (!spinner) {
+    spinner = document.createElement("span");
+    spinner.className = "spinner";
+    button.insertBefore(spinner, button.firstChild);
   }
+  spinner.style.display = "inline-block";
+  button.classList.add("loading");
+  button.disabled = true;
+}
 
-  function updateUserBalance(balance) {
-    [
-      "main-balance",
-      "balance-1",
-      "balance-2",
-      "balance-3",
-      "user-balance",
-    ].forEach((id) => {
+function hideLoading(button) {
+  const icon = button.querySelector(".icon");
+  if (icon) icon.style.display = "inline-block";
+  const spinner = button.querySelector(".spinner");
+  if (spinner) spinner.style.display = "none";
+  button.classList.remove("loading");
+  button.disabled = false;
+}
+
+function updateUserIdentifier(phoneNumber) {
+  const idEl = document.getElementById("user-id");
+  const addId = document.getElementById("user-additional-id");
+  if (idEl && phoneNumber) {
+    const formatted = phoneNumber.replace(
+      /(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
+      "$1 $2 $3 $4 $5"
+    );
+    idEl.textContent = formatted;
+    if (addId) addId.textContent = `05*******${phoneNumber.slice(-2)}`;
+  } else if (idEl) {
+    idEl.textContent = "Non connecté";
+    if (addId) addId.textContent = "";
+  }
+}
+
+function updateUserBalance(balance) {
+  ["main-balance", "balance-1", "balance-2", "balance-3", "user-balance"].forEach(
+    (id) => {
       const el = document.getElementById(id);
       if (el) el.textContent = balance != null ? formatCurrency(balance) : formatCurrency(0);
-    });
+    }
+  );
+  // Met à jour aussi le solde cadeau s’il est affiché
+  const giftBalanceEl = document.getElementById("giftBalanceValue");
+  if (giftBalanceEl) {
+    giftBalanceEl.textContent = balance != null ? formatCurrency(balance) : formatCurrency(0);
   }
+}
 
-  function updateTotalWithdrawals(amount) {
-    const el = document.getElementById("total-withdrawals");
-    if (el) el.textContent = amount != null ? formatCurrency(amount) : formatCurrency(0);
-  }
+function updateTotalWithdrawals(amount) {
+  const el = document.getElementById("total-withdrawals");
+  if (el) el.textContent = amount != null ? formatCurrency(amount) : formatCurrency(0);
+}
 
-  // Exemple calcul total recharges
-  function calculateTotalRecharges(userId) {
-    return new Promise((resolve, reject) => {
-      const refTx = ref(database, "transactions");
-      const q = query(refTx, orderByChild("userId"), equalTo(userId));
-      onValue(
-        q,
-        (snapshot) => {
-          try {
-            const data = snapshot.val();
-            let total = 0;
-            let count = 0;
-            if (data) {
-              const successTx = Object.values(data).filter(
-                (t) => t.status === "success"
-              );
-              total = successTx.reduce(
-                (a, b) => a + parseFloat(b.amount || 0),
-                0
-              );
-              count = successTx.length;
-            }
-            const elTotal = document.getElementById("total-recharge");
-            if (elTotal) elTotal.textContent = formatCurrency(total);
-            const elCount = document.getElementById("recharge-count");
-            if (elCount) elCount.textContent = count.toString();
-            resolve({ totalRecharges: total, rechargeCount: count });
-          } catch (e) {
-            reject(e);
+function calculateTotalRecharges(userId) {
+  return new Promise((resolve, reject) => {
+    const refTx = ref(database, "transactions");
+    const q = query(refTx, orderByChild("userId"), equalTo(userId));
+    onValue(
+      q,
+      (snapshot) => {
+        try {
+          const data = snapshot.val();
+          let total = 0;
+          let count = 0;
+          if (data) {
+            const successTx = Object.values(data).filter(
+              (t) => t.status === "success"
+            );
+            total = successTx.reduce(
+              (a, b) => a + parseFloat(b.amount || 0),
+              0
+            );
+            count = successTx.length;
           }
-        },
-        reject
-      );
-    });
-  }
-
-  // Exemple calcul total retraits
-  function calculateAndDisplayTotalWithdrawals(userId) {
-    const refHist = ref(database, `users/${userId}/withdrawalHistory`);
-    onValue(refHist, (snapshot) => {
-      const data = snapshot.val();
-      let total = 0,
-        count = 0;
-      if (data) {
-        total = Object.values(data).reduce(
-          (a, b) => a + (b.amount || 0),
-          0
-        );
-        count = Object.keys(data).length;
-      }
-      updateTotalWithdrawals(total);
-      const elCount = document.getElementById("withdrawal-count");
-      if (elCount) elCount.textContent = count.toString();
-    });
-  }
-
-  // Calcul et affichage des revenus (exemple)
-  function calculateTotalRevenues(userId) {
-    return new Promise((resolve, reject) => {
-      const investRef = ref(database, `investments/${userId}`);
-      onValue(
-        investRef,
-        (snapshot) => {
-          try {
-            const data = snapshot.val();
-            let total = 0;
-            if (data) {
-              total = Object.values(data)
-                .filter((i) => i.status === "active")
-                .reduce((a, b) => a + (b.totalCollected || 0), 0);
-            }
-            const el = document.getElementById("total-revenue");
-            if (el) el.textContent = formatCurrency(total);
-            resolve(total);
-          } catch (e) {
-            reject(e);
-          }
-        },
-        (err) => {
-          const el = document.getElementById("total-revenue");
-          if (el) el.textContent = formatCurrency(0);
-          reject(err);
+          const elTotal = document.getElementById("total-recharge");
+          if (elTotal) elTotal.textContent = formatCurrency(total);
+          const elCount = document.getElementById("recharge-count");
+          if (elCount) elCount.textContent = count.toString();
+          resolve({ totalRecharges: total, rechargeCount: count });
+        } catch (e) {
+          reject(e);
         }
-      );
-    });
-  }
+      },
+      reject
+    );
+  });
+}
 
-  // Enregistrement du retrait
-  async function recordWithdrawal(userId, amount) {
-    try {
-      const userRef = ref(database, `users/${userId}`);
-      const userSnap = await get(userRef);
-      const userData = userSnap.val();
-      if (!userData) {
-        showErrorMessage("Utilisateur non trouvé");
-        return false;
+function calculateAndDisplayTotalWithdrawals(userId) {
+  const refHist = ref(database, `users/${userId}/withdrawalHistory`);
+  onValue(refHist, (snapshot) => {
+    const data = snapshot.val();
+    let total = 0,
+      count = 0;
+    if (data) {
+      total = Object.values(data).reduce(
+        (a, b) => a + (b.amount || 0),
+        0
+      );
+      count = Object.keys(data).length;
+    }
+    updateTotalWithdrawals(total);
+    const elCount = document.getElementById("withdrawal-count");
+    if (elCount) elCount.textContent = count.toString();
+  });
+}
+
+function calculateTotalRevenues(userId) {
+  return new Promise((resolve, reject) => {
+    const investRef = ref(database, `investments/${userId}`);
+    onValue(
+      investRef,
+      (snapshot) => {
+        try {
+          const data = snapshot.val();
+          let total = 0;
+          if (data) {
+            total = Object.values(data)
+              .filter((i) => i.status === "active")
+              .reduce((a, b) => a + (b.totalCollected || 0), 0);
+          }
+          const el = document.getElementById("total-revenue");
+          if (el) el.textContent = formatCurrency(total);
+          resolve(total);
+        } catch (e) {
+          reject(e);
+        }
+      },
+      (err) => {
+        const el = document.getElementById("total-revenue");
+        if (el) el.textContent = formatCurrency(0);
+        reject(err);
       }
-      if (userData.balance < amount) {
-        showErrorMessage("Solde insuffisant pour effectuer le retrait");
-        return false;
-      }
-      const newBalance = userData.balance - amount;
-      const newWithdrawRef = push(ref(database, `users/${userId}/withdrawalHistory`));
-      const withdrawalData = {
-        amount,
-        timestamp: Date.now(),
-        status: "success",
-        date: new Date().toISOString(),
-      };
-      await Promise.all([update(userRef, { balance: newBalance }), set(newWithdrawRef, withdrawalData)]);
-      updateUserBalance(newBalance);
-      calculateAndDisplayTotalWithdrawals(userId);
-      return true;
-    } catch (e) {
-      console.error(e);
-      showErrorMessage("Une erreur est survenue lors du retrait");
+    );
+  });
+}
+
+async function recordWithdrawal(userId, amount) {
+  try {
+    const userRef = ref(database, `users/${userId}`);
+    const userSnap = await get(userRef);
+    const userData = userSnap.val();
+    if (!userData) {
+      showErrorMessage("Utilisateur non trouvé");
       return false;
     }
-  }
-
-  // Setup événements (exemple)
-  function setupEventListeners(userId) {
-    const withdrawBtn = document.getElementById("withdrawal-button");
-    if (withdrawBtn) {
-      withdrawBtn.replaceWith(withdrawBtn.cloneNode(true));
-      const newBtn = document.getElementById("withdrawal-button");
-      newBtn.addEventListener("click", async () => {
-        const inputAmount = document.getElementById("withdrawal-amount");
-        if (!inputAmount) {
-          showErrorMessage("Champ de montant non trouvé");
-          return;
-        }
-        const amount = parseFloat(inputAmount.value);
-        if (Number.isNaN(amount) || amount <= 0) {
-          showErrorMessage("Veuillez entrer un montant valide");
-          return;
-        }
-        newBtn.disabled = true;
-        newBtn.textContent = "Traitement...";
-        try {
-          const success = await recordWithdrawal(userId, amount);
-          if (success) {
-            inputAmount.value = "";
-            showSuccessMessage(`Retrait de ${formatCurrency(amount)} effectué avec succès`);
-          }
-        } finally {
-          newBtn.disabled = false;
-          newBtn.textContent = "Retirer";
-        }
-      });
+    if (userData.balance < amount) {
+      showErrorMessage("Solde insuffisant pour effectuer le retrait");
+      return false;
     }
-
-    // Autres setups selon besoin...
+    const newBalance = userData.balance - amount;
+    const newWithdrawRef = push(ref(database, `users/${userId}/withdrawalHistory`));
+    const withdrawalData = {
+      amount,
+      timestamp: Date.now(),
+      status: "success",
+      date: new Date().toISOString(),
+    };
+    await Promise.all([update(userRef, { balance: newBalance }), set(newWithdrawRef, withdrawalData)]);
+    updateUserBalance(newBalance);
+    calculateAndDisplayTotalWithdrawals(userId);
+    return true;
+  } catch (e) {
+    console.error(e);
+    showErrorMessage("Une erreur est survenue lors du retrait");
+    return false;
   }
+}
 
-  // Reset interface utilisateur si déconnexion
-  function resetUserInterface() {
-    updateUserIdentifier(null);
-    updateUserBalance(0);
-    updateTotalWithdrawals(0);
-    [
-      { id: "withdrawal-count", value: "0" },
-      { id: "total-recharge", value: formatCurrency(0) },
-      { id: "recharge-count", value: "0" },
-      { id: "total-revenue", value: formatCurrency(0) },
-    ].forEach(({ id, value }) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = value;
+function setupEventListeners(userId) {
+  const withdrawBtn = document.getElementById("withdrawal-button");
+  if (withdrawBtn) {
+    withdrawBtn.replaceWith(withdrawBtn.cloneNode(true));
+    const newBtn = document.getElementById("withdrawal-button");
+    newBtn.addEventListener("click", async () => {
+      const inputAmount = document.getElementById("withdrawal-amount");
+      if (!inputAmount) {
+        showErrorMessage("Champ de montant non trouvé");
+        return;
+      }
+      const amount = parseFloat(inputAmount.value);
+      if (Number.isNaN(amount) || amount <= 0) {
+        showErrorMessage("Veuillez entrer un montant valide");
+        return;
+      }
+      newBtn.disabled = true;
+      newBtn.textContent = "Traitement...";
+      try {
+        const success = await recordWithdrawal(userId, amount);
+        if (success) {
+          inputAmount.value = "";
+          showSuccessMessage(`Retrait de ${formatCurrency(amount)} effectué avec succès`);
+        }
+      } finally {
+        newBtn.disabled = false;
+        newBtn.textContent = "Retirer";
+      }
     });
   }
 
-  // Auth state change + chargement données
-  onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    if (user) {
-      try {
-        const userRef = ref(database, `users/${user.uid}`);
-        const userSnap = await get(userRef);
-        const userData = userSnap.val();
+  // Formulaire code cadeau
+  const cadeauForm = document.querySelector(".cadeau-form");
+  if (cadeauForm) {
+    cadeauForm.addEventListener("submit", handleCadeauSubmit);
+  }
+}
 
-        if (userData) {
-          if (userData.phoneNumber) updateUserIdentifier(userData.phoneNumber);
-          if (userData.balance !== undefined) updateUserBalance(userData.balance);
+async function handleCadeauSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const input = form.querySelector(".cadeau-input");
+  const button = form.querySelector(".cadeau-btn");
+  const code = input.value.trim().toUpperCase();
 
-          await Promise.all([
-            calculateAndDisplayTotalWithdrawals(user.uid),
-            calculateTotalRecharges(user.uid).catch(() => {}),
-            calculateTotalRevenues(user.uid).catch(() => {}),
-          ]);
+  if (code.length === 0) {
+    alert("Veuillez saisir un code cadeau valide.");
+    return;
+  }
+  if (button.classList.contains("loading")) return;
 
-          setupEventListeners(user.uid);
-        } else {
-          resetUserInterface();
-        }
-      } catch (e) {
-        console.error("Erreur récupération données utilisateur:", e);
-        showErrorMessage("Erreur lors du chargement des données utilisateur");
+  showLoading(button);
+  const giftLoading = document.getElementById("giftLoading");
+  const giftResult = document.getElementById("giftResult");
+  giftResult.style.display = "none";
+  giftLoading.style.display = "block";
+
+  try {
+    const codeRef = ref(database, `giftCodes/${code}`);
+    const snapshot = await get(codeRef);
+
+    if (!snapshot.exists()) {
+      showResult("Code cadeau invalide ou expiré.", "error");
+      return;
+    }
+
+    const giftData = snapshot.val();
+
+    if (giftData.used) {
+      showResult("Ce code cadeau a déjà été utilisé.", "error");
+      return;
+    }
+
+    if (!currentUser) {
+      showResult("Veuillez vous connecter pour utiliser un code cadeau.", "error");
+      return;
+    }
+
+    const userRef = ref(database, `users/${currentUser.uid}`);
+    const userSnapshot = await get(userRef);
+
+    if (!userSnapshot.exists()) {
+      showResult("Utilisateur non trouvé.", "error");
+      return;
+    }
+
+    const userData = userSnapshot.val();
+    const newBalance = (userData.balance || 0) + (giftData.amount || 0);
+
+    await Promise.all([
+      update(userRef, { balance: newBalance }),
+      update(codeRef, {
+        used: true,
+        usedBy: currentUser.uid,
+        usedAt: new Date().toISOString(),
+      }),
+    ]);
+
+    updateUserBalance(newBalance);
+    showResult(`Code cadeau accepté ! +${giftData.amount} FCFA ajoutés.`, "success");
+    input.value = "";
+  } catch (error) {
+    console.error("Erreur utilisation code cadeau:", error);
+    showResult("Une erreur est survenue, veuillez réessayer.", "error");
+  } finally {
+    giftLoading.style.display = "none";
+    hideLoading(button);
+  }
+}
+
+function showResult(message, type) {
+  const giftResult = document.getElementById("giftResult");
+  if (giftResult) {
+    giftResult.innerHTML = message;
+    giftResult.className = type === "success" ? "gift-success" : "gift-error";
+    giftResult.style.display = "block";
+    setTimeout(() => {
+      giftResult.style.display = "none";
+    }, 5000);
+  }
+}
+
+function resetUserInterface() {
+  updateUserIdentifier("Non connecté");
+  updateUserBalance(0);
+  updateTotalWithdrawals(0);
+  [
+    { id: "withdrawal-count", value: "0" },
+    { id: "total-recharge", value: formatCurrency(0) },
+    { id: "recharge-count", value: "0" },
+    { id: "total-revenue", value: formatCurrency(0) },
+  ].forEach(({ id, value }) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  });
+}
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  if (user) {
+    try {
+      const userRef = ref(database, `users/${user.uid}`);
+      const userSnap = await get(userRef);
+      const userData = userSnap.val();
+
+      if (userData) {
+        if (userData.phoneNumber) updateUserIdentifier(userData.phoneNumber);
+        if (userData.balance !== undefined) updateUserBalance(userData.balance);
+
+        await Promise.all([
+          calculateAndDisplayTotalWithdrawals(user.uid),
+          calculateTotalRecharges(user.uid).catch(() => {}),
+          calculateTotalRevenues(user.uid).catch(() => {}),
+        ]);
+
+        setupEventListeners(user.uid);
+      } else {
         resetUserInterface();
       }
-    } else {
+    } catch (e) {
+      console.error("Erreur récupération données utilisateur:", e);
+      showErrorMessage("Erreur lors du chargement des données utilisateur");
       resetUserInterface();
     }
-  });
+  } else {
+    resetUserInterface();
+  }
+});
 
-  // Gestion globale erreurs JS/promesses
-  window.addEventListener("error", (e) => {
-    console.error("Erreur JavaScript:", e.error);
-    showErrorMessage("Une erreur inattendue s'est produite");
-  });
+// Gestion globale des erreurs JS et promesses rejetées
+window.addEventListener("error", (e) => {
+  console.error("Erreur JavaScript:", e.error);
+  showErrorMessage("Une erreur inattendue s'est produite");
+});
 
-  window.addEventListener("unhandledrejection", (e) => {
-    console.error("Promise rejetée:", e.reason);
-    showErrorMessage("Une erreur de traitement s'est produite");
-  });
-
-  // Ajoutez ici d'autres fonctions spécifiques Firebase selon besoin
-  // Exemple : gestion code cadeau, suivi parrainage, etc.
-
+window.addEventListener("unhandledrejection", (e) => {
+  console.error("Promise rejetée:", e.reason);
+  showErrorMessage("Une erreur de traitement s'est produite");
+});
 </script>
-
-<script>
-  // Gestion des éléments interactifs non liés à Firebase (clics + clavier + loading, etc.)
-  document.addEventListener("DOMContentLoaded", () => {
-    function handleRedirectClick(event) {
-      const el = event.currentTarget;
-      const link = el.getAttribute("data-link");
-      if (!link) return;
-
-      if (
-        el.classList.contains("btn-action") ||
-        el.classList.contains("btn-carousel") ||
-        el.id === "withdrawal-button"
-      ) {
-        if (el.classList.contains("loading")) return;
-        const icon = el.querySelector(".icon");
-        if (icon) icon.style.display = "none";
-        let spinner = el.querySelector(".spinner");
-        if (!spinner) {
-          spinner = document.createElement("span");
-          spinner.className = "spinner";
-          el.insertBefore(spinner, el.firstChild);
-        }
-        spinner.style.display = "inline-block";
-        el.classList.add("loading");
-        el.disabled = true;
-      }
-
-      setTimeout(() => {
-        window.location.href = link;
-      }, 250);
-    }
-
-    // Ajout des événements clic + clavier aux éléments concernés...
-    document.querySelectorAll("nav.bottom-nav .nav-icon").forEach(el => {
-      el.setAttribute("tabindex", "0");
-      el.setAttribute("role", "link");
-      el.addEventListener("click", handleRedirectClick);
-      el.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          el.click();
-        }
-      });
-    });
-    document.querySelectorAll(".quick-action, .btn-action, .btn-carousel").forEach(el => {
-      el.setAttribute("tabindex", "0");
-      el.setAttribute("role", el.classList.contains("btn-action") ? "button" : "link");
-      el.addEventListener("click", handleRedirectClick);
-      el.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          el.click();
-        }
-      });
-    });
-    const withdrawBtn = document.getElementById("withdrawal-button");
-    if (withdrawBtn) {
-      withdrawBtn.setAttribute("tabindex", "0");
-      withdrawBtn.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          withdrawBtn.click();
-        }
-      });
-    }
-    // Autres éléments cliquables similaires...
-  });
-</script>
-
 </body>
 </html>
