@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Retrait d'argent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e9f1f7;
+      color: #2c3e50;
+      font-size: 1.15rem;
+      margin: 0;
+      padding: 20px 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 440px;
+      width: 100%;
+      background: transparent;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+    form#withdrawalForm {
+      background: transparent;
+      padding: 25px 25px 10px 25px; /* padding bottom réduit car instructions en bas */
+      border-radius: 16px;
+      box-sizing: border-box;
+      width: 100%;
+      user-select: none;
+    }
+    h2 {
+      font-weight: 800;
+      color: #003366;
+      font-size: 2.1rem;
+      margin-bottom: 35px;
+      text-align: center;
+      letter-spacing: 0.04em;
+      user-select: text;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      color: #003366;
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+      user-select: none;
+    }
+    /* Solde actuel */
+    #current-balance {
+      font-weight: 700;
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      color: #00529b;
+      text-align: center;
+      user-select: text;
+    }
+    /* Inputs */
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 2px solid #9bb9e8;
+      font-size: 1.15rem;
+      background: #f3f7fc;
+      color: #00264d;
+      outline: none;
+      margin-bottom: 4px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+      user-select: text;
+    }
+    input[type="number"]:focus, input[type="text"]:focus {
+      border-color: #00529b;
+      background-color: #dde8ff;
+    }
+    /* Bouton */
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 16px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #003366, #00529b);
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 46, 102, 0.6);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    button:hover:not(:disabled) {
+      background: linear-gradient(135deg, #001f4d, #003366);
+      box-shadow: 0 8px 16px rgba(0, 29, 69, 0.8);
+    }
+    button:disabled {
+      background: #9bb9e8;
+      cursor: not-allowed;
+      box-shadow: none;
+      color: #58709e;
+    }
+    button:active:not(:disabled) {
+      background: #001638;
+      box-shadow: none;
+    }
+    /* Message d’erreur/succès */
+    #message > div {
+      margin-top: 12px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: center;
+      user-select: none;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #842029;
+      border: 1.5px solid #f5c2c7;
+    }
+    .success {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      border: 1.5px solid #badbcc;
+    }
+
+    /* Résumé retrait dynamique - placé en haut */
+    #withdrawal-summary {
+      background: #dde8ff;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 20px; /* espace vers form inputs */
+      color: #003366;
+      font-weight: 700;
+      user-select: text;
+    }
+    #withdrawal-summary span {
+      display: block;
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+    #withdrawal-summary span strong {
+      color: #00529b;
+    }
+    #withdrawal-summary.visible {
+      display: block;
+    }
+    /* Cache par défaut */
+    #withdrawal-summary:not(.visible) {
+      display: none;
+    }
+
+    /* Info retrait textuelle */
+    #withdrawal-info {
+      margin-top: 40px;
+      padding-left: 15px;
+      padding-right: 15px;
+      color: #222222;
+      font-weight: 600;
+      font-size: 0.94rem;
+      line-height: 1.5;
+      user-select: text;
+      /* Suppression du fond blanc et ombre */
+      background: transparent;
+      box-shadow: none;
+    }
+    #withdrawal-info h3 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-weight: 700;
+      color: #001f4d;
+      font-size: 1.2rem;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+    #withdrawal-info ol {
+      padding-left: 20px;
+      margin: 0;
+    }
+    #withdrawal-info ol li {
+      margin-bottom: 10px;
+    }
+    /* Loading overlay */
+    .loading {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1100;
+      user-select: none;
+      user-drag: none;
+    }
+    .loading.active {
+      display: flex;
+    }
+    .loading .spinner {
+      border: 6px solid #eee;
+      border-top: 6px solid #00529b;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0);}
+      100% { transform: rotate(360deg);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Formulaire de retrait">
+    <h2>Retrait d'argent</h2>
+    <div id="current-balance" aria-live="polite">Chargement du solde...</div>
+
+    <!-- Résumé calcul des frais en haut -->
+    <div id="withdrawal-summary" aria-live="polite" role="region" aria-label="Résumé du retrait">
+      <span>Montant demandé : <strong id="requested-amount">0 FCFA</strong></span>
+      <span>Frais (17%) : <strong id="fees-amount">0 FCFA</strong></span>
+      <span>Montant crédité : <strong id="total-amount">0 FCFA</strong></span>
+    </div>
+
+    <form id="withdrawalForm" novalidate>
+      <label for="amount">Montant à retirer (FCFA)</label>
+      <input type="number" id="amount" name="amount" min="900" placeholder="Entrez un montant (min 900)" autocomplete="off" required aria-required="true" />
+
+      <label for="withdrawalCode">Code de retrait</label>
+      <input type="text" id="withdrawalCode" name="withdrawalCode" placeholder="Entrez votre code de retrait" autocomplete="off" required aria-required="true" />
+
+      <div id="message" role="alert" aria-live="assertive"></div>
+
+      <button type="button" id="withdrawal-button" disabled>Effectuer le retrait</button>
+    </form>
+
+    <!-- Instructions info retrait en bas -->
+    <section id="withdrawal-info" aria-label="Informations sur le retrait">
+      <h3>Informations importantes sur le retrait</h3>
+      <ol>
+        <li>Le montant minimum de retrait est de <strong>900 FCFA</strong>.</li>
+        <li>Il n'y a pas de limite de temps pour les retraits ; vous pouvez retirer à tout moment.</li>
+        <li>Les retraits sont limités à un par utilisateur et par jour.</li>
+        <li><strong>17 %</strong> des frais de retrait seront utilisés pour financer le fonctionnement de la plateforme.</li>
+        <li>Les retraits seront crédités sur votre compte dans les <strong>30 minutes</strong>, ou dans les <strong>24 heures</strong> dans des circonstances exceptionnelles.</li>
+        <li>Veuillez saisir soigneusement vos informations de compte de retrait, toute erreur entraînera l'échec du retrait.</li>
+        <li>Pour protéger les intérêts de la plateforme et de ses membres, vous devez être membre LV pour effectuer un retrait.</li>
+      </ol>
+    </section>
+  </div>
+
+  <div class="loading" aria-hidden="true"><div class="spinner" aria-label="Chargement en cours"></div></div>
+
+<script type="module">
+  // === Import Firebase ===
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    update,
+    push,
+    set,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    const MIN_WITHDRAWAL = 900;
+    const FEE_RATE = 0.17;
+    const MAX_WITHDRAWAL = 50000;
+
+    let currentBalance = 0;
+    let currentUser = null;
+    let userWithdrawalConfig = null;
+
+    function formatAmount(amount) {
+      return amount.toLocaleString('fr-FR') + ' FCFA';
+    }
+
+    function showMessage(msg, isError = true) {
+      const el = document.getElementById('message');
+      el.innerHTML = `<div class="${isError ? 'error' : 'success'}">${msg}</div>`;
+    }
+
+    function isValidWithdrawalTime() {
+      return true; // Retraits possibles à tout moment comme demandé
+    }
+
+    async function loadUserData(uid) {
+      try {
+        const userRef = ref(database, `users/${uid}`);
+        const snapshot = await get(userRef);
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          currentBalance = userData.balance || 0;
+          userWithdrawalConfig = userData.withdrawalConfig || null;
+          document.getElementById("current-balance").textContent = formatAmount(currentBalance);
+        } else {
+          document.getElementById("current-balance").textContent = "Utilisateur inconnu";
+        }
+      } catch (error) {
+        console.error("Erreur chargement données:", error);
+        showMessage("Erreur chargement données");
+      }
+    }
+
+    function validateWithdrawalCode(inputCode) {
+      return userWithdrawalConfig && userWithdrawalConfig.code === inputCode;
+    }
+
+    function updateWithdrawalSummary() {
+      const amountInput = document.getElementById("amount");
+      const codeInput = document.getElementById("withdrawalCode");
+      const summary = document.getElementById("withdrawal-summary");
+      const button = document.getElementById("withdrawal-button");
+      const amount = parseFloat(amountInput.value) || 0;
+      const withdrawalCode = codeInput.value.trim();
+
+      const validTime = isValidWithdrawalTime();
+      const validAmount = amount >= MIN_WITHDRAWAL && amount <= MAX_WITHDRAWAL;
+      const sufficientBalance = amount <= currentBalance;
+      const hasCode = withdrawalCode.length > 0;
+
+      button.disabled = !(validTime && validAmount && sufficientBalance && hasCode);
+
+      if (!validTime) {
+        showMessage("Les retraits sont autorisés à tout moment", false);
+      } else if (!validAmount) {
+        showMessage(`Le montant doit être compris entre ${MIN_WITHDRAWAL} et ${MAX_WITHDRAWAL} FCFA`);
+      } else if (!sufficientBalance) {
+        showMessage("Solde insuffisant");
+      } else if (!hasCode) {
+        showMessage("Veuillez saisir votre code de retrait");
+      } else {
+        showMessage("", false);
+      }
+
+      if (amount > 0) {
+        const fees = Math.round(amount * FEE_RATE);
+        const total = amount - fees;
+
+        document.getElementById("requested-amount").textContent = formatAmount(amount);
+        document.getElementById("fees-amount").textContent = formatAmount(fees);
+        document.getElementById("total-amount").textContent = formatAmount(total);
+
+        summary.classList.add("visible");
+      } else {
+        summary.classList.remove("visible");
+      }
+    }
+
+    async function processWithdrawal() {
+      if (!currentUser) {
+        showMessage("Veuillez vous connecter");
+        return;
+      }
+
+      if (!isValidWithdrawalTime()) {
+        showMessage("Les retraits sont autorisés à tout moment");
+        return;
+      }
+
+      const amount = parseFloat(document.getElementById("amount").value);
+      const withdrawalCode = document.getElementById("withdrawalCode").value.trim();
+
+      if (!validateWithdrawalCode(withdrawalCode)) {
+        showMessage("Code de retrait incorrect");
+        return;
+      }
+
+      if (isNaN(amount) || amount < MIN_WITHDRAWAL || amount > MAX_WITHDRAWAL) {
+        showMessage("Montant invalide");
+        return;
+      }
+
+      if (amount > currentBalance) {
+        showMessage("Solde insuffisant");
+        return;
+      }
+
+      const fees = Math.round(amount * FEE_RATE);
+      const totalAmount = amount - fees;
+      const newBalance = currentBalance - amount;
+
+      try {
+        const updates = {};
+        updates[`users/${currentUser.uid}/balance`] = newBalance;
+
+        const historyRef = ref(database, `users/${currentUser.uid}/withdrawalHistory`);
+        const newKey = push(historyRef).key;
+
+        updates[`users/${currentUser.uid}/withdrawalHistory/${newKey}`] = {
+          amount,
+          fees,
+          totalAmount,
+          timestamp: serverTimestamp(),
+          status: "Traitement Bancaire"
+        };
+
+        await update(ref(database), updates);
+
+        // Redirection après succès
+        window.location.href = "historique retrait.html";
+      } catch (error) {
+        console.error("Erreur retrait:", error);
+        showMessage("Erreur lors du retrait. Réessayez.");
+      }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      if (user) {
+        loadUserData(user.uid);
+      } else {
+        document.getElementById("current-balance").textContent = "Non connecté";
+        showMessage("Connectez-vous pour effectuer un retrait");
+        document.getElementById("withdrawal-button").disabled = true;
+      }
+    });
+
+    document.getElementById("amount").addEventListener("input", updateWithdrawalSummary);
+    document.getElementById("withdrawalCode").addEventListener("input", updateWithdrawalSummary);
+    document.getElementById("withdrawal-button").addEventListener("click", processWithdrawal);
+
+    // Clear messages initially
+    showMessage("", false);
+  </script>
+</body>
+</html>

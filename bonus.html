@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin - Générateur codes cadeau</title>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f3f6;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #50e3c2;
+  }
+  form {
+    background: #fff;
+    padding: 20px 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(80, 227, 194, 0.3);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    border: 2px solid #cbd7e0;
+    border-radius: 14px;
+    font-size: 1em;
+    box-sizing: border-box;
+  }
+  button {
+    background: #50e3c2;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 18px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.1em;
+    box-shadow: 0 4px 10px rgba(80, 227, 194, 0.65);
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #3ac9b9;
+  }
+  .message {
+    max-width: 400px;
+    margin: 15px auto;
+    text-align: center;
+    font-weight: 600;
+  }
+  .msg-success {
+    color: #50e3c2;
+  }
+  .msg-error {
+    color: #d64545;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin - Générateur de codes cadeau</h1>
+  <p>Crée des codes à partager avec les utilisateurs</p>
+</header>
+
+<form id="codeForm" aria-label="Formulaire création code cadeau">
+  <label for="codeInput">Code cadeau (alphanumérique, ex: CADEAU123)</label>
+  <input type="text" id="codeInput" maxlength="20" required pattern="[A-Z0-9]{4,20}" title="4 à 20 caractères, majuscules et chiffres seulement" placeholder="Ex: CADEAU123" autocomplete="off" />
+
+  <label for="amountInput">Montant en FCFA</label>
+  <input type="number" id="amountInput" min="1" step="1" required placeholder="Ex: 5000" />
+
+  <button type="submit" aria-label="Bouton créer code cadeau">Créer le code cadeau</button>
+</form>
+
+<div id="message" class="message" role="alert" aria-live="polite"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    update,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  const form = document.getElementById("codeForm");
+  const codeInput = document.getElementById("codeInput");
+  const amountInput = document.getElementById("amountInput");
+  const messageEl = document.getElementById("message");
+
+  function showMessage(text, type = "success") {
+    messageEl.textContent = text;
+    messageEl.className = type === "success" ? "message msg-success" : "message msg-error";
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const code = codeInput.value.trim().toUpperCase();
+    const amount = parseInt(amountInput.value, 10);
+
+    if (!code.match(/^[A-Z0-9]{4,20}$/)) {
+      showMessage("Le code doit être de 4 à 20 caractères, uniquement lettres majuscules et chiffres.", "error");
+      return;
+    }
+    if (isNaN(amount) || amount < 1) {
+      showMessage("Veuillez entrer un montant valide supérieur à 0.", "error");
+      return;
+    }
+
+    showMessage("Création du code cadeau en cours...");
+
+    try {
+      const codeRef = ref(database, `giftCodes/${code}`);
+      const snapshot = await get(codeRef);
+
+      if (snapshot.exists()) {
+        showMessage("Ce code existe déjà, veuillez en choisir un autre.", "error");
+        return;
+      }
+
+      await set(codeRef, {
+        amount,
+        used: false,
+        createdAt: new Date().toISOString()
+      });
+
+      showMessage(`Code cadeau "${code}" créé avec succès pour ${amount} FCFA !`);
+      form.reset();
+    } catch (error) {
+      console.error("Erreur création code cadeau :", error);
+      showMessage("Erreur lors de la création du code, réessayez.", "error");
+    }
+  });
+</script>
+
+</body>
+</html>
+<!--  -->

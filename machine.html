@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mes Gains</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- Font Inter & Material Icons & FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  
+  <style>
+    /* === Styles Globaux et Conteneur === */
+    body {
+      background: #f3f6fa;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      max-width: 390px;
+      margin: 30px auto 110px auto;
+      padding: 18px;
+      background: #fff;
+      border-radius: 22px;
+      border: 2px solid #e5e8ee;
+      box-shadow: 0 3px 16px rgba(90,120,150,0.12);
+      flex-grow: 1;
+      box-sizing: border-box;
+    }
+    .header-title {
+      font-size: 1.5em;
+      font-weight: 700;
+      margin-bottom: 3px;
+      color: #232859;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+    .desc {
+      color: #6b7a8f;
+      margin-bottom: 20px;
+      font-size: 0.98em;
+    }
+
+    /* === Statistiques === */
+    .stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-box {
+      background: linear-gradient(135deg,#fdf7fa 60%,#eff4fd 100%);
+      border: 1.5px solid #eaebf0;
+      border-radius: 14px;
+      flex: 1;
+      text-align: center;
+      box-shadow: 0 2px 7px rgba(225,225,234,0.25);
+      padding: 20px 0 14px 0;
+    }
+    .stat-label {
+      color: #8391aa;
+      font-size: 0.96em;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+    .stat-value {
+      font-size: 1.7em;
+      font-weight: 700;
+      margin-bottom: 2px;
+      color: #3763eb;
+      letter-spacing: 0.2px;
+    }
+    .stat-value.red {
+      color: #ee3838;
+    }
+
+    /* === Section titre === */
+    .section-title {
+      font-size: 1.11em;
+      font-weight: 700;
+      color: #2e334b;
+      margin-bottom: 15px;
+      margin-top: 10px;
+      border-left: 3.5px solid #24d9be;
+      padding-left: 10px;
+    }
+
+    /* === Carte forfait (ancien contenu supprimé, remplacé par cartes dynamiques) === */
+
+    /* === Conteneur VIP dynamique === */
+    #vips-container {
+      margin-top: 12px;
+    }
+
+    /* Carte VIP */
+    .vip-card {
+      background: #fff;
+      border: 1.5px solid #24d9be;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 4px 10px rgba(36, 217, 190, 0.1);
+      color: #1a4368;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .vip-header {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .vip-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      color: #fff;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9em;
+      background-color: #24d9be;
+    }
+
+    .vip-title {
+      font-weight: 700;
+      font-size: 1.1em;
+      margin-bottom: 4px;
+    }
+
+    .vip-subtitle {
+      color: #24d9be;
+      font-weight: 600;
+      font-size: 0.9em;
+    }
+
+    .vip-details {
+      font-size: 0.9em;
+      margin-bottom: 12px;
+      color: #4a5768;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .detail-row i {
+      color: #24d9be;
+      margin-right: 6px;
+    }
+
+    .progress-container {
+      margin-bottom: 12px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #2e334b;
+      margin-bottom: 6px;
+    }
+
+    .progress-header i {
+      margin-right: 6px;
+      color: #24d9be;
+    }
+
+    .progress-bar {
+      background: #d7f1ec;
+      border-radius: 12px;
+      height: 14px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #24d9be, #1fa482);
+      height: 100%;
+      width: 0;
+      transition: width 0.5s ease;
+      border-radius: 12px 0 0 12px;
+    }
+
+    .collect-btn {
+      outline: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 16px;
+      border: none;
+      font-weight: 700;
+      font-size: 1em;
+      background: #24d9be;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .collect-btn i {
+      font-size: 1.3em;
+    }
+
+    .collect-btn:disabled {
+      background: #a4d7cf;
+      cursor: default;
+    }
+
+    /* === Bouton principal d'investissement === */
+    .btn-red {
+      outline: none;
+      background: linear-gradient(90deg,#ff6a58 0%,#f62c38 70%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 12px 21px;
+      font-weight: 700;
+      font-size: 1em;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(255,106,88,0.08);
+      transition: background 0.2s;
+      margin-top: 10px;
+    }
+    .btn-red:hover {
+      background: linear-gradient(90deg,#e12d19 0%,#c51f1c 100%);
+    }
+    .btn-red i {
+      color: #ffe92b;
+      margin-right: 7px;
+    }
+
+    /* === Navigation principale fixée en bas === */
+    nav.bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 390px;
+      margin: 0 auto;
+      background: #fff;
+      border-top: 2.5px solid #50e3c2;
+      box-shadow:
+        0 -3px 8px rgba(80, 227, 194, 0.37),
+        inset 0 0 8px rgba(80, 227, 194, 0.24);
+      display: flex;
+      justify-content: space-around;
+      padding: 9px 0 8px 0;
+      user-select: none;
+      z-index: 1000;
+    }
+    .nav-icon {
+      flex: 1;
+      color: #86929e;
+      text-align: center;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s ease, transform 0.25s ease;
+      padding: 2px 0;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .nav-icon:hover:not(.active) {
+      color: #4a90e2;
+      transform: scale(1.1);
+    }
+    .nav-icon.active {
+      color: #50e3c2;
+      font-weight: 700;
+      transform: scale(1.15);
+    }
+    .nav-icon .material-icons.icon {
+      font-size: 1.6em;
+      margin-bottom: 4px;
+      user-select: none;
+    }
+
+    /* Spinner loading */
+    .spinner {
+      border: 2.5px solid rgba(80, 227, 194, 0.3);
+      border-top: 2.5px solid #50e3c2;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-bottom: 5px;
+      box-sizing: border-box;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" role="main">
+
+    <div class="header-title">Mes Gains</div>
+    <div class="desc">
+      Suivez vos revenus et performances d'investissement en temps réel avec vos forfaits LV actifs.
+    </div>
+
+    <div class="stats" role="region" aria-label="Statistiques clés">
+      <div class="stat-box">
+        <div class="stat-value" id="total-vips">0</div>
+        <div class="stat-label">Forfaits Actifs</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value red" id="total-revenue">0.00XOF</div>
+        <div class="stat-label">Revenus/Jour</div>
+      </div>
+    </div>
+
+    <div class="section-title">Mes Forfaits LV Actifs</div>
+
+    <div id="vips-container">
+      <!-- Contenu dynamique VIP via JS -->
+      <div style="text-align: center; padding: 20px; background: rgba(30,41,59,0.08); border-radius: 16px; color: #2e334b;">
+        Commencez votre investissement en choisissant un LV  !
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation principale fixée en bas -->
+  <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+    <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
+      <span class="material-icons icon" aria-hidden="true">home</span>
+      Accueil
+    </div>
+    <div class="nav-icon" data-link="appareils.html" tabindex="0" role="link" aria-label="Appareils">
+      <span class="material-icons icon" aria-hidden="true">smartphone</span>
+      Nescafé
+    </div>
+    <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="Mes Nescafé">
+      <span class="material-icons icon" aria-hidden="true">list_alt</span>
+      Mes Nescafé
+    </div>
+    <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
+      <span class="material-icons icon" aria-hidden="true">person</span>
+      Profil
+    </div>
+  </nav>
+
+  <!-- Script gestion clics sur navigation -->
+  <script>
+    function showLoading(button) {
+      if (button.classList.contains('loading')) return false;
+      const icon = button.querySelector('.icon');
+      if (icon) icon.style.display = 'none';
+      let spinner = button.querySelector('.spinner');
+      if (!spinner) {
+        spinner = document.createElement('span');
+        spinner.className = 'spinner';
+        button.insertBefore(spinner, button.firstChild);
+      }
+      spinner.style.display = 'inline-block';
+      button.classList.add('loading');
+      button.disabled = true;
+      return true;
+    }
+    function hideLoading(button) {
+      const icon = button.querySelector('.icon');
+      if (icon) icon.style.display = 'inline-block';
+      const spinner = button.querySelector('.spinner');
+      if (spinner) spinner.style.display = 'none';
+      button.classList.remove('loading');
+      button.disabled = false;
+    }
+    function handleButtonClick(event) {
+      event.preventDefault();
+      const btn = event.currentTarget;
+      if (!showLoading(btn)) return;
+      const url = btn.getAttribute('data-link');
+      if (!url) {
+        hideLoading(btn);
+        return;
+      }
+      setTimeout(() => {
+        window.location.href = url;
+      }, 300);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('nav.bottom-nav .nav-icon').forEach(btn => {
+        btn.addEventListener('click', handleButtonClick);
+        btn.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- Script Firebase et logique dynamique VIP -->
+ <script type="module">
+  // === Import Firebase ===
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    update,
+    push,
+    set,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+  // Configuration des VIPs
+  const VIP_CONFIG = {
+   1: {
+            nom: "LV1",
+            dailyRevenue: 300,
+            cycleDuration: 169,
+            totalRevenue: 50700,
+            price: 1500,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        2: {
+            nom: "LV2",
+            dailyRevenue: 600,
+            cycleDuration: 169,
+            totalRevenue: 101400,
+            price: 3500,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        3: {
+            nom: "LV3",
+            dailyRevenue: 1300,
+            cycleDuration: 169,
+            totalRevenue: 7500,
+            price: 13000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        4: {
+            nom: "LV4",
+            dailyRevenue: 4000,
+            cycleDuration: 169,
+            totalRevenue: 676000,
+            price: 19500,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        5: {
+            nom: "LV5",
+            dailyRevenue: 8000,
+            cycleDuration: 169,
+            totalRevenue: 1352000,
+            price: 40000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        6: {
+            nom: "LV7",
+            dailyRevenue: 22000,
+            cycleDuration: 169,
+            totalRevenue: 3718000,
+            price: 70000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        7: {
+            nom: "LV7",
+            dailyRevenue: 50000,
+            cycleDuration: 169,
+            totalRevenue: 8450000,
+            price: 130000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        }
+    };    
+ 
+  // Initialisation Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+  let currentUser = null;
+
+  // Affiche une notification utilisateur (si un élément notification existe)
+  function showNotification(message, type) {
+    const notification = document.querySelector('.notification');
+    if (notification) {
+      notification.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.style.display = 'block';
+      setTimeout(() => notification.style.display = 'none', 3000);
+    } else {
+      console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+  }
+
+  // Calculer progression cycle d'investissement
+  function calculateCycleProgress(investment) {
+    const config = VIP_CONFIG[investment.productId];
+    if (!config) return { isComplete: true, progress: 100, remainingDays: 0 };
+    
+    const totalCollected = investment.totalCollected || 0;
+    const progress = Math.round((totalCollected / config.totalRevenue) * 100);
+    const daysInCycle = Math.floor((Date.now() - investment.timestamp) / (1000 * 60 * 60 * 24));
+    const remainingDays = Math.max(0, config.cycleDuration - daysInCycle);
+    
+    return {
+      isComplete: totalCollected >= config.totalRevenue,
+      progress: Math.min(progress, 100),
+      remainingDays
+    };
+  }
+
+  // Vérifie si l'utilisateur peut collecter aujourd'hui
+  function isReadyToCollect(investment) {
+    const lastCollection = investment.lastCollection || 0;
+    const now = new Date();
+    const lastCollectionDate = new Date(lastCollection);
+    // Compare date du jour
+    return lastCollectionDate.getDate() !== now.getDate() ||
+      lastCollectionDate.getMonth() !== now.getMonth() ||
+      lastCollectionDate.getFullYear() !== now.getFullYear();
+  }
+
+  // Met à jour les statistiques affichées
+  function updateStats(investments) {
+    const totalVips = investments.filter(inv => inv.status === 'active').length;
+    const totalRevenueNum = investments.reduce((sum, inv) =>
+      sum + (inv.status === 'active' ? (inv.totalCollected || 0) : 0), 0);
+    
+    const totalVipsElement = document.getElementById('total-vips');
+    const totalRevenueElement = document.getElementById('total-revenue');
+    
+    if (totalVipsElement) {
+      totalVipsElement.textContent = totalVips;
+    }
+    if (totalRevenueElement) {
+      totalRevenueElement.textContent = totalRevenueNum.toLocaleString('fr-FR') + ' FCFA';
+    }
+  }
+
+  // Charge et affiche les VIPs utilisateur
+  async function loadVIPs() {
+    if (!currentUser) return;
+    
+    try {
+      const snapshot = await get(ref(db, `investments/${currentUser.uid}`));
+      const container = document.getElementById('vips-container');
+      
+      if (!container) {
+        console.error("Élément 'vips-container' non trouvé");
+        return;
+      }
+      
+      if (!snapshot.exists()) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 20px; background: rgba(30,41,59,0.08); border-radius: 16px; color: #2e334b;">
+            Aucun LV actif. Investissez dans un LV pour commencer à gagner des revenus.
+          </div>
+        `;
+        updateStats([]);
+        return;
+      }
+
+      const investments = [];
+      snapshot.forEach(child => {
+        const investment = { id: child.key, ...child.val() };
+        if (investment.status === 'active') {
+          investments.push(investment);
+        }
+      });
+
+      updateStats(investments);
+      renderVIPs(investments);
+    } catch (error) {
+      console.error("Erreur lors du chargement des LV:", error);
+      showNotification("Erreur lors du chargement des LV", "error");
+    }
+  }
+
+  // Rend cartes VIP dans DOM
+  function renderVIPs(investments) {
+    const container = document.getElementById('vips-container');
+    if (!container) return;
+    
+    if (investments.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 20px; background: rgba(30,41,59,0.08); border-radius: 16px; color: #2e334b;">
+          Aucun LV actif. Investissez dans un LV pour commencer à gagner des revenus.
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = investments.map(investment => {
+      const config = VIP_CONFIG[investment.productId];
+      if (!config) return '';
+      
+      const { isComplete, progress, remainingDays } = calculateCycleProgress(investment);
+      const canCollect = !isComplete && isReadyToCollect(investment);
+      const formattedDate = new Date(investment.timestamp).toLocaleDateString('fr-FR');
+      
+      return `
+        <div class="vip-card">
+          <div class="vip-header">
+            <div class="vip-logo" style="background-image: url('${config.image}');">LV</div>
+            <div>
+              <div class="vip-title">${config.nom}</div>
+              <div class="vip-subtitle">${config.dailyRevenue.toLocaleString('fr-FR')} FCFA / jour</div>
+            </div>
+          </div>
+          <div class="vip-details">
+            <div class="detail-row">
+              <span><i class="fas fa-calendar"></i> Date d'investissement</span>
+              <span>${formattedDate}</span>
+            </div>
+            <div class="detail-row">
+              <span><i class="fas fa-clock"></i> Cycle restant</span>
+              <span>${remainingDays} jours</span>
+            </div>
+            <div class="detail-row">
+              <span><i class="fas fa-wallet"></i> Revenu quotidien</span>
+              <span>${config.dailyRevenue.toLocaleString('fr-FR')} FCFA</span>
+            </div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-header">
+              <span><i class="fas fa-chart-line"></i> Progression</span>
+              <span>${progress}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progress}%"></div>
+            </div>
+          </div>
+          <button class="collect-btn" 
+                  onclick="window.collectRevenue('${investment.id}')" 
+                  ${(!canCollect || isComplete) ? 'disabled' : ''} 
+                  aria-label="Collecter les revenus VIP ${config.nom}">
+            <i class="fas fa-wallet"></i> 
+            ${isComplete ? 'Cycle terminé' : (canCollect ? 'Collecter les revenus' : 'Déjà collecté')}
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // Collecter les revenus
+  window.collectRevenue = async function(investmentId) {
+    if (!currentUser) {
+      showNotification("Veuillez vous connecter", "error");
+      return;
+    }
+
+    try {
+      const investmentRef = ref(db, `investments/${currentUser.uid}/${investmentId}`);
+      const userRef = ref(db, `users/${currentUser.uid}`);
+      
+      const [investmentSnapshot, userSnapshot] = await Promise.all([
+        get(investmentRef),
+        get(userRef)
+      ]);
+
+      if (!investmentSnapshot.exists() || !userSnapshot.exists()) {
+        throw new Error("Données non trouvées");
+      }
+
+      const investment = investmentSnapshot.val();
+      const user = userSnapshot.val();
+      const config = VIP_CONFIG[investment.productId];
+
+      if (!config) {
+        throw new Error("Configuration du VIP non trouvée");
+      }
+
+      const { isComplete } = calculateCycleProgress(investment);
+      if (isComplete) {
+        throw new Error("Ce VIP a terminé son cycle");
+      }
+      
+      if (!isReadyToCollect(investment)) {
+        throw new Error("Vous avez déjà réclamé aujourd'hui");
+      }
+
+      const newTotal = (investment.totalCollected || 0) + config.dailyRevenue;
+      if (newTotal > config.totalRevenue) {
+        throw new Error("Le cycle de ce VIP est terminé");
+      }
+
+      const updates = {
+        [`users/${currentUser.uid}/balance`]: (user.balance || 0) + config.dailyRevenue,
+        [`investments/${currentUser.uid}/${investmentId}/lastCollection`]: Date.now(),
+        [`investments/${currentUser.uid}/${investmentId}/totalCollected`]: newTotal
+      };
+
+      await update(ref(db), updates);
+      showNotification(`Vous avez collecté ${config.dailyRevenue.toLocaleString('fr-FR')} FCFA !`, "success");
+      loadVIPs();
+    } catch (error) {
+      console.error("Erreur lors de la collecte:", error);
+      showNotification(error.message || "Erreur lors de la collecte des revenus", "error");
+    }
+  };
+
+  // Gestion de l'authentification et chargement VIP
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUser = user;
+      loadVIPs();
+      
+      // Écoute en temps réel changements des investissements
+      const investmentsRef = ref(db, `investments/${user.uid}`);
+      onValue(investmentsRef, () => {
+        loadVIPs();
+      });
+    } else {
+      window.location.href = 'login.html'; // Redirection si pas connecté
+    }
+  });
+
+  // Gestion erreurs globales
+  window.addEventListener('error', (error) => {
+    console.error('Une erreur est survenue:', error);
+    showNotification('Une erreur inattendue est survenue', "error");
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    console.error('Promesse rejetée:', event.reason);
+    showNotification('Une erreur inattendue est survenue', "error");
+    event.preventDefault();
+  });
+  </script>
+</body>
+</html>

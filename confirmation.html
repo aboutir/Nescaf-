@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confirmation de Paiement</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e9f1f7; /* fond clair uniforme */
+      color: #2c3e50;
+      font-size: 1.15rem;
+      margin: 0;
+      padding: 20px 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 420px;
+      width: 100%;
+      background: transparent;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+
+    form#confirmationForm {
+      background: transparent;  /* transparent pour rester cohérent */
+      padding: 25px 25px;
+      border-radius: 16px;
+      box-sizing: border-box;
+      width: 100%;
+      user-select: none;
+    }
+
+    h2 {
+      font-weight: 800;
+      color: #003366;
+      font-size: 2.2rem;
+      margin-bottom: 35px;
+      text-align: center;
+      letter-spacing: 0.04em;
+      user-select: text;
+    }
+
+    .info-section {
+      background: #e7f0ff;
+      border-radius: 16px;
+      padding: 20px 25px;
+      margin-bottom: 30px;
+      user-select: text;
+      box-shadow: 0 3px 12px rgba(0,46,102,0.15);
+    }
+    .info-section h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #003366;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+    .info-item {
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: #004080;
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+    }
+    #paymentNumber {
+      font-weight: 800;
+      color: #00529b;
+      cursor: pointer;
+      user-select: all;
+      transition: color 0.3s ease;
+    }
+    #paymentNumber:hover {
+      color: #0073e6;
+    }
+
+    /* Bouton copier */
+    .copy-btn {
+      display: inline-block;
+      margin-left: 10px;
+      background: #0073e6;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+      vertical-align: middle;
+    }
+    .copy-btn:hover {
+      background: #00529b;
+    }
+    .copy-btn:active {
+      background: #003366;
+    }
+
+    /* Form inputs */
+    label {
+      display: block;
+      font-weight: 700;
+      color: #003366;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      user-select: none;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 2px solid #9bb9e8;
+      font-size: 1.15rem;
+      background: #f3f7fc;
+      color: #00264d;
+      outline: none;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+      user-select: text;
+    }
+    input[type="text"]:focus, input[type="number"]:focus {
+      border-color: #00529b;
+      background-color: #dde8ff;
+    }
+
+    /* Message d'erreur */
+    .error-message {
+      color: #b00020;
+      font-size: 0.95rem;
+      margin-top: 0px;
+      height: 18px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      user-select: none;
+    }
+    .error-message.show {
+      opacity: 1;
+    }
+
+    /* Bouton submit */
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 16px 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #003366, #00529b);
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 46, 102, 0.6);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #001f4d, #003366);
+      box-shadow: 0 8px 16px rgba(0, 29, 69, 0.8);
+    }
+    button:active {
+      background: #001638;
+      box-shadow: none;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 20px;
+      border-radius: 12px;
+      background-color: #43a047; /* succès par défaut */
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+      max-width: 90vw;
+      text-align: center;
+      user-select: none;
+    }
+    .notification.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .notification.error {
+      background-color: #d32f2f;
+    }
+    
+    /* Loading overlay */
+    .loading {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1100;
+      user-select: none;
+      user-drag: none;
+    }
+    .loading.active {
+      display: flex;
+    }
+    .loading .spinner {
+      border: 6px solid #eee;
+      border-top: 6px solid #00529b;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0);}
+      100% { transform: rotate(360deg);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Page de confirmation de paiement">
+    <h2>Confirmation de votre paiement</h2>
+
+    <section class="info-section" aria-labelledby="infoTitle">
+      <h3 id="infoTitle">Détails de la recharge</h3>
+      <div class="info-item">
+        <span>Opérateur :</span><span id="operator">-</span>
+      </div>
+      <div class="info-item">
+        <span>Numéro de téléphone :</span><span id="phone">-</span>
+      </div>
+      <div class="info-item">
+        <span>Montant :</span><span id="amount">-</span>
+      </div>
+      <div class="info-item" style="align-items: center;">
+        <span>Numéro de paiement :</span>
+        <span style="display:flex; align-items:center;">
+          <span id="paymentNumber" title="Cliquez pour copier le numéro">-</span>
+          <button type="button" class="copy-btn" aria-label="Copier le numéro de paiement" onclick="copyToClipboard()">Copier</button>
+        </span>
+      </div>
+    </section>
+
+    <form id="confirmationForm" novalidate aria-label="Formulaire de confirmation">
+      <label for="userPaymentNumber">Votre numéro de paiement</label>
+      <input type="text" id="userPaymentNumber" name="userPaymentNumber" placeholder="Ex: 123456789" autocomplete="off" required aria-required="true" />
+      <div id="userPaymentNumberError" class="error-message"></div>
+
+      <label for="transactionId">Id de  transaction</label>
+      <input type="text" id="transactionId" name="transactionId" placeholder="Ex: TXN123456" autocomplete="off" required aria-required="true" />
+      <div id="transactionIdError" class="error-message"></div>
+
+      <button type="submit">Confirmer le paiement</button>
+    </form>
+  </div>
+  
+  <div id="notification" class="notification" role="alert" aria-live="assertive"></div>
+  <div class="loading" aria-hidden="true"><div class="spinner" aria-label="Chargement"></div></div>
+
+  <script>
+    function copyToClipboard() {
+      const numberElement = document.getElementById('paymentNumber');
+      navigator.clipboard.writeText(numberElement.textContent)
+        .then(() => {
+          const notification = document.getElementById('notification');
+          notification.textContent = 'Numéro copié avec succès !';
+          notification.className = 'notification show';
+          setTimeout(() => {
+            notification.className = 'notification';
+          }, 2000);
+        })
+        .catch(() => {
+          const notification = document.getElementById('notification');
+          notification.textContent = 'Erreur lors de la copie';
+          notification.className = 'notification show error';
+          setTimeout(() => {
+            notification.className = 'notification';
+          }, 2000);
+        });
+    }
+  </script>
+
+ <script type="module">
+  import { 
+    initializeApp 
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    push
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialisation Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  const notification = document.getElementById('notification');
+  const loadingOverlay = document.getElementById('loadingOverlay'); // changez selon votre html !
+  const form = document.getElementById('confirmationForm');
+
+  function showLoading() {
+    if (loadingOverlay) loadingOverlay.style.display = 'flex';
+  }
+
+  function hideLoading() {
+    if (loadingOverlay) loadingOverlay.style.display = 'none';
+  }
+
+  function showNotification(message, type = 'success') {
+    if (!notification) return;
+    notification.textContent = message;
+    notification.className = 'notification show' + (type === 'error' ? ' error' : '');
+    notification.style.background = type === 'success' ? '#43a047' : '#d32f2f';
+    setTimeout(() => {
+      notification.className = 'notification';
+      notification.textContent = '';
+    }, 3000);
+  }
+
+  // Chargement des données depuis sessionStorage sur chargement de la fenêtre
+  window.addEventListener('load', () => {
+    const rechargeData = JSON.parse(sessionStorage.getItem('rechargeData'));
+    if (rechargeData) {
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value ?? '-';
+      };
+      setText('paymentNumber', rechargeData.operatorNumber || 'N/A');
+      setText('amount', rechargeData.amount ? `${rechargeData.amount} FCFA` : '-');
+      setText('phone', rechargeData.phone || '-');
+      setText('operator', rechargeData.operator ? rechargeData.operator.toUpperCase() : '-');
+    } else {
+      showNotification('Erreur de chargement des données', 'error');
+      setTimeout(() => {
+        window.location.href = 'recharge.html';
+      }, 2000);
+    }
+  });
+
+  // Vérification de connexion utilisateur
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      showNotification('Veuillez vous connecter pour continuer', 'error');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 2000);
+    }
+  });
+
+  // Gestion soumission du formulaire confirmation paiement
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const user = auth.currentUser;
+      if (!user) {
+        showNotification('Veuillez vous connecter pour continuer', 'error');
+        return;
+      }
+
+      const userPaymentNumberInput = document.getElementById('userPaymentNumber');
+      const transactionIdInput = document.getElementById('transactionId');
+
+      // Clear previous errors
+      document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+      let valid = true;
+      if (!userPaymentNumberInput || !userPaymentNumberInput.value.trim()) {
+        const errEl = document.getElementById('userPaymentNumberError');
+        if (errEl) errEl.textContent = 'Ce champ est obligatoire';
+        valid = false;
+      }
+      if (!transactionIdInput || !transactionIdInput.value.trim()) {
+        const errEl = document.getElementById('transactionIdError');
+        if (errEl) errEl.textContent = 'Ce champ est obligatoire';
+        valid = false;
+      }
+      if (!valid) return;
+
+      showLoading();
+
+      try {
+        const rechargeData = JSON.parse(sessionStorage.getItem('rechargeData'));
+        if (!rechargeData) throw new Error('Données de recharge invalides');
+
+        const transactionData = {
+          ...rechargeData,
+          userPaymentNumber: userPaymentNumberInput.value.trim(),
+          transactionId: transactionIdInput.value.trim(),
+          status: 'pending',
+          date: new Date().toISOString(),
+          userId: user.uid,
+          userEmail: user.email || null,
+          credited: false
+        };
+
+        const transactionsRef = ref(db, 'transactions');
+        const newTransactionRef = push(transactionsRef);
+        await set(newTransactionRef, transactionData);
+
+        showNotification('Paiement confirmé ! Redirection...', 'success');
+
+        sessionStorage.removeItem('rechargeData');
+
+        setTimeout(() => {
+          window.location.href = 'historique.html';
+        }, 2000);
+      } catch (error) {
+        console.error('Erreur:', error);
+        showNotification('Erreur lors de la confirmation: ' + (error.message || error), 'error');
+      } finally {
+        hideLoading();
+      }
+    });
+  } else {
+    console.warn('Formulaire confirmation non trouvé dans le DOM');
+  }
+</script>
+
+</body>
+</html>

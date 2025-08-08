@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Informations du compte lié</title>
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" 
+    rel="stylesheet" 
+  />
+  <style>
+    /* Reset & global */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0; 
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #e9f1f7;
+      color: #2c3e50;
+      font-size: 1.15rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 20px;
+    }
+    .container {
+      max-width: 440px;
+      width: 100%;
+      background: transparent;
+      padding: 0 15px;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    h1 {
+      font-weight: 800;
+      font-size: 2.1rem;
+      color: #003366;
+      margin-bottom: 35px;
+      text-align: center;
+      user-select: text;
+      letter-spacing: 0.04em;
+    }
+
+    /* Info card */
+    .info-card {
+      background: #ffffffcc;
+      border-radius: 16px;
+      padding: 25px 30px;
+      box-shadow: 0 6px 16px rgba(0, 82, 155, 0.12);
+      user-select: text;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .info-label {
+      font-weight: 700;
+      color: #004080;
+      user-select: none;
+    }
+    .info-value {
+      font-weight: 700;
+      color: #00264d;
+      max-width: 65%;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    /* Special display */
+    #operatorDisplay {
+      font-size: 1.3rem;
+      color: #00529b;
+      font-weight: 800;
+      text-align:center;
+      margin-bottom: 25px;
+      user-select: text;
+    }
+
+    /* Button */
+    #backButton {
+      display: block;
+      margin: 30px auto 0 auto;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #00529b, #0073e6);
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 115, 230, 0.5);
+      user-select: none;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    #backButton:hover {
+      background: linear-gradient(135deg, #003366, #00529b);
+      box-shadow: 0 8px 16px rgba(0, 82, 155, 0.7);
+    }
+    #backButton:active {
+      background: #00264d;
+      box-shadow: none;
+    }
+
+    /* Message notification */
+    #message {
+      display: none;
+      align-items: center;
+      background: #d32f2f;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 10px 16px;
+      margin-bottom: 15px;
+      gap: 10px;
+      user-select: none;
+    }
+    #message.message-success {
+      background: #43a047;
+    }
+    #message i {
+      font-size: 1.2rem;
+    }
+
+    /* Loading placeholders */
+    .loading {
+      min-height: 20px;
+      background: linear-gradient(90deg, #e3eaf9 25%, #f3f7fc 37%, #e3eaf9 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 0;
+      }
+      100% {
+        background-position: -100% 0;
+      }
+    }
+  </style>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+  />
+</head>
+<body>
+  <main class="container" role="main" aria-label="Informations du compte lié">
+    <h1>Compte lié</h1>
+
+    <div id="message" role="alert" aria-live="assertive"></div>
+
+    <div id="operatorDisplay" class="loading" aria-label="Chargement de l'opérateur..."></div>
+
+    <section class="info-card" aria-label="Détails du compte lié">
+      <div class="info-row">
+        <div class="info-label">Opérateur :</div>
+        <div id="operatorInfo" class="info-value loading" aria-label="Opérateur non chargé"></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Numéro de retrait :</div>
+        <div id="phoneInfo" class="info-value loading" aria-label="Numéro de téléphone non chargé"></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Nom du propriétaire :</div>
+        <div id="ownerInfo" class="info-value loading" aria-label="Nom du propriétaire non chargé"></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Date de liaison :</div>
+        <div id="linkDate" class="info-value loading" aria-label="Date de liaison non chargée"></div>
+      </div>
+    </section>
+
+    <button id="backButton" type="button" aria-label="Retour en arrière">Retour</button>
+  </main>
+
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    update,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    const formatPhoneNumber = phone => {
+      if (!phone) return "";
+      return phone.replace(/(\d{2})(?=\d)/g, "$1 ");
+    };
+
+    const formatDate = timestamp => {
+      if (!timestamp) return "";
+      const date = new Date(timestamp);
+      return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    };
+
+    const showMessage = (text, type) => {
+      const messageDiv = document.getElementById('message');
+      messageDiv.className = `message message-${type}`;
+      messageDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${text}`;
+      messageDiv.style.display = 'flex';
+      setTimeout(() => {
+        messageDiv.style.display = 'none';
+      }, 5000);
+    };
+
+    const displayAccountInfo = async (user) => {
+      try {
+        const snapshot = await get(ref(db, `users/${user.uid}/withdrawalConfig`));
+        const data = snapshot.val();
+
+        if (data) {
+          // Remove loading class + styles from all info elements
+          ['operatorDisplay', 'operatorInfo', 'phoneInfo', 'ownerInfo', 'linkDate'].forEach(id => {
+            const el = document.getElementById(id);
+            el.classList.remove('loading');
+            el.style.height = 'auto';
+            el.style.width = 'auto';
+          });
+
+          document.getElementById('operatorDisplay').textContent = data.operator || '-';
+          document.getElementById('operatorInfo').textContent = data.operator || '-';
+          document.getElementById('phoneInfo').textContent = formatPhoneNumber(data.phone) || '-';
+          document.getElementById('ownerInfo').textContent = data.ownerName || "Non spécifié";
+          document.getElementById('linkDate').textContent = formatDate(data.configuredAt) || '-';
+        } else {
+          showMessage('Aucun compte lié trouvé', 'error');
+        }
+      } catch (error) {
+        showMessage(`Erreur de chargement: ${error.message}`, 'error');
+        console.error('Erreur lors du chargement des données:', error);
+      }
+    };
+
+    document.getElementById('backButton').addEventListener('click', () => {
+      window.history.back();
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        displayAccountInfo(user);
+      } else {
+        showMessage('Redirection vers la page de connexion...', 'error');
+        setTimeout(() => {
+          window.location.href = 'retrait.html';
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>

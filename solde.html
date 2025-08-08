@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solde - Canon Profil</title>
+
+<!-- Material Icons CDN -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<style>
+  /* Styles généraux (inchangés) */
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f3f6;
+    color: #3b3b3b;
+  }
+  header {
+    width: 100vw;
+    height: 80px;
+    background: url('https://image.noelshack.com/fichiers/2025/32/3/1754495452-fabrica-de-toluca-la-mas-grande-del-mundo.jpg') center center no-repeat;
+    background-size: cover;
+    user-select: none;
+    box-shadow: 0 3px 10px rgba(224, 25, 34, 0.7);
+  }
+  .container {
+    max-width: 390px;
+    margin: 24px auto 110px;
+    padding: 0 18px;
+  }
+  /* Profil */
+  .profile-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow:
+      0 3px 6px rgba(0,0,0,0.15),
+      inset 0 0 10px rgba(74,144,226,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px;
+    border: 2px solid transparent;
+    transition: border 0.3s ease;
+  }
+  .profile-card:hover {
+    border-color: #4a90e2;
+  }
+  .profile-avatar {
+    background: #4a90e2;
+    color: #eaf6ff;
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.3rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(74,144,226,0.5);
+  }
+  .profile-details {
+    flex: 1;
+    margin-left: 14px;
+    font-weight: 600;
+    font-size: 1.05em;
+    line-height: 1.3;
+  }
+  .profile-details small {
+    display: block;
+    font-weight: 400;
+    font-size: 0.82em;
+    color: #778294;
+    margin-top: 3px;
+  }
+  .profile-vip {
+    text-align: right;
+    min-width: 70px;
+    font-size: 0.9em;
+    color: #64707d;
+    font-weight: 500;
+    user-select: none;
+  }
+  .profile-vip strong {
+    display: block;
+    font-size: 1.1em;
+    font-weight: 700;
+    margin-top: 2px;
+    color: #50e3c2;
+  }
+  /* Soldes et gains */
+  .balances,
+  .gains-row {
+    display: flex;
+    gap: 14px;
+    margin: 18px 0 14px 0;
+  }
+  .balances div,
+  .gains-row div {
+    flex: 1;
+    background: #fff;
+    border-radius: 16px;
+    border: 1.8px solid #cbd7e0;
+    box-shadow: 2px 4px 10px rgba(74,144,226,0.12);
+    text-align: center;
+    padding: 12px 0;
+    user-select: none;
+    transition: border-color 0.3s ease;
+  }
+  .balances div:hover,
+  .gains-row div:hover {
+    border-color: #4a90e2;
+  }
+  .balance-title,
+  .gain-title {
+    font-weight: 600;
+    font-size: 0.95em;
+    color: #5d6e7a;
+    margin-bottom: 7px;
+  }
+  .balance-value,
+  .gain-value {
+    font-weight: 700;
+    font-size: 1.24em;
+    color: #2c3e50;
+  }
+  /* Zone retrait */
+  section[aria-label="Effectuer un retrait"] {
+    margin-top: 20px;
+    text-align: center;
+  }
+  section[aria-label="Effectuer un retrait"] input,
+  section[aria-label="Effectuer un retrait"] button {
+    font-size: 1.05em;
+  }
+  section[aria-label="Effectuer un retrait"] input {
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 2px solid #cbd7e0;
+    width: 220px;
+  }
+  section[aria-label="Effectuer un retrait"] button {
+    background:#50e3c2;
+    border:none;
+    border-radius:14px;
+    padding:10px 18px;
+    font-weight:700;
+    color:white;
+    cursor:pointer;
+    box-shadow: 0 4px 10px rgba(80,227,194,0.65);
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+  }
+  section[aria-label="Effectuer un retrait"] button:hover:not(.loading) {
+    background-color: #3ac9b9;
+  }
+  /* Actions rapides */
+  .actions {
+    background: #fff;
+    border-radius: 22px;
+    box-shadow:
+      0 6px 15px rgba(80, 227, 194, 0.21),
+      inset 0 0 20px rgba(80, 227, 194, 0.17);
+    padding: 18px 0 14px;
+    margin-top: 26px;
+    user-select: none;
+  }
+  .actions-title {
+    font-size: 1.22em;
+    font-weight: 700;
+    color: #3a3a3a;
+    margin-left: 20px;
+    margin-bottom: 12px;
+  }
+  .quick-actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 8px;
+  }
+  .quick-action {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.25s ease, color 0.3s ease;
+    user-select: none;
+  }
+  .quick-action:hover:not(.loading) {
+    transform: scale(1.1);
+  }
+  .quick-action .material-icons.icon {
+    font-size: 2.2rem;
+    margin-bottom: 6px;
+    display: block;
+    transition: color 0.3s ease;
+  }
+  /* Extras */
+  .extra-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 24px;
+    user-select: none;
+  }
+  .btn-action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border-radius: 16px;
+    border: 2px solid #cbd7e0;
+    box-shadow: 1px 2px 8px rgba(74, 144, 226, 0.12);
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 1.05em;
+    color: #3a3a3a;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, color 0.25s ease;
+  }
+  .btn-action:hover:not(.loading) {
+    border-color: #4a90e2;
+    box-shadow: 0 0 14px #4a90e2aa;
+    color: #4a90e2;
+  }
+  .btn-action:hover:not(.loading) .material-icons.icon {
+    color: #50e3c2;
+  }
+  .btn-action .material-icons.icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    transition: color 0.3s ease;
+  }
+
+  /* Cadeau */
+  .cadeau-section {
+    background: #fff;
+    border-radius: 20px;
+    padding: 24px 20px 28px 20px;
+    margin: 30px auto 40px;
+    max-width: 390px;
+    box-shadow: 0 4px 15px rgba(80, 227, 194, 0.21);
+    user-select: none;
+    box-sizing: border-box;
+  }
+  .cadeau-title {
+    font-weight: 700;
+    font-size: 1.3em;
+    margin-bottom: 14px;
+    color: #3a3a3a;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .cadeau-title .material-icons.icon {
+    color: #50e3c2;
+    font-size: 2.2rem;
+    user-select: none;
+  }
+  .cadeau-instruction {
+    font-size: 1em;
+    color: #5a5a5a;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .cadeau-form {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .cadeau-input {
+    flex: 1;
+    font-size: 1.05em;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 2px solid #cbd7e0;
+    box-shadow: inset 0 2px 6px rgba(74,144,226,0.12);
+    color: #3a3a3a;
+    transition: border-color 0.3s ease;
+    user-select: text;
+  }
+  .cadeau-input:focus {
+    border-color: #50e3c2;
+    outline: none;
+    box-shadow: 0 0 8px #50e3c2aa;
+  }
+  .cadeau-btn {
+    background: #50e3c2;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 18px;
+    font-size: 1.05em;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(80,227,194,0.65);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+    user-select: none;
+  }
+  .cadeau-btn:hover:not(.loading),
+  .cadeau-btn:focus:not(.loading) {
+    background-color: #3ac9b9;
+    box-shadow: 0 6px 18px rgba(58,201,185,0.85);
+    outline: none;
+  }
+  .cadeau-btn:active:not(.loading) {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(58,201,185,0.7);
+  }
+ 
+  .gift-success {color: #50e3c2;}
+  .gift-error {color: #d64545;}
+  /* Bottom navigation */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; width: 100vw;
+    background: #fff;
+    border-top: 2.5px solid #50e3c2;
+    box-shadow:
+      0 -3px 8px rgba(80, 227, 194, 0.37),
+      inset 0 0 8px rgba(80, 227, 194, 0.24);
+    display: flex;
+    justify-content: space-around;
+    padding: 9px 0 8px;
+    user-select: none;
+    z-index: 1000;
+  }
+  .nav-icon {
+    flex: 1;
+    color: #86929e;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.25s ease;
+    outline: none;
+  }
+  .nav-icon:hover:not(.active),
+  .nav-icon:focus:not(.active) {
+    color: #4a90e2;
+    transform: scale(1.1);
+  }
+  .nav-icon.active {
+    color: #50e3c2;
+    font-weight: 700;
+    transform: scale(1.15);
+  }
+  .nav-icon .material-icons.icon {
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    display: block;
+    user-select: none;
+  }
+  .profile-avatar .material-icons.icon,
+  .profile-card .material-icons.icon {
+    color: #3a9ad9;
+  }
+  .quick-action.wallet .material-icons.icon {color: #d64545;}
+  .quick-action.depot .material-icons.icon {color: #f5a623;}
+  .quick-action.retrait .material-icons.icon {color: #4a90e2;}
+  .quick-action.app .material-icons.icon {color: #50e3c2;}
+  .btn-historique-retrait .material-icons.icon {color: #e63946;}
+  .btn-historique-recharge .material-icons.icon {color: #f4a261;}
+  .btn-service-client .material-icons.icon {color: #2a9d8f;}
+  .cadeau-title .material-icons.icon {color: #ffbe0b;}
+  .nav-icon .material-icons.icon {color: #6c757d;}
+  .nav-icon.active .material-icons.icon {color: #50e3c2;}
+  .quick-action:hover .material-icons.icon,
+  .btn-action:hover .material-icons.icon,
+  .nav-icon:hover:not(.active) .material-icons.icon {
+    color: #ff6f91;
+  }
+  .profile-card:hover .material-icons.icon {color: #2196f3;}
+  
+  .extra-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Couleurs personnalisées pour les icônes Material Icons */
+.icon-carte-bancaire { color: #6a1b9a; }        /* Violet */
+.icon-regles-nescafe { color: #ff9800; }       /* Orange vif */
+.icon-a-propos { color: #1976d2; }             /* Bleu */
+.icon-connecter-compte { color: #009688; }     /* Vert turquoise */
+
+/* Exemples de boutons existants (si besoin) */
+.btn-historique-retrait .material-icons.icon { color: #e63946; }    /* Rouge vif */
+.btn-historique-recharge .material-icons.icon { color: #f4a261; }   /* Orange */
+.btn-service-client .material-icons.icon { color: #2a9d8f; }        /* Bleu vert */
+
+</style>
+
+</head>
+<body>
+<header></header>
+<div class="container">
+
+  <div id="error-message" style="color:#d64545; display:none; text-align:center; margin:10px 0;"></div>
+  <div id="success-message" style="color:#50e3c2; display:none; text-align:center; margin:10px 0;"></div>
+
+  <section class="profile-card" tabindex="0" aria-label="Profil utilisateur" data-link="Profil.html" role="link">
+    <div class="profile-avatar" aria-hidden="true">
+      <span class="material-icons icon">account_circle</span>
+    </div>
+    <div class="profile-details">
+      <span id="user-id">Chargement</span>
+      <small id="user-additional-id">Chargement</small>
+    </div>
+    <div class="profile-vip">
+      <span><strong></strong></span>
+      <span><strong></strong></span>
+    </div>
+  </section>
+
+  <section class="balances" aria-label="Soldes">
+    <div tabindex="0" aria-label="Solde principal" data-link="solde.html" role="link" style="cursor:pointer;">
+      <div class="balance-title">Solde Principal</div>
+      <div class="balance-value" id="main-balance">0.00FCFA</div>
+    </div>
+  </section>
+
+  <section class="gains-row" aria-label="Gains">
+    <div tabindex="0" aria-label="Gain appareil" data-link="gains.html" role="link" style="cursor:pointer;">
+      <div class="gain-title">Gain Appareil</div>
+      <div class="gain-value" id="total-revenue">0.00FCFA</div>
+    </div>
+  </section>
+
+  <section class="gains-row" aria-label="Historique retrait et dépôt">
+    <div tabindex="0" aria-label="Retrait total" data-link="historique-retrait.html" role="link" style="cursor:pointer;">
+      <div class="gain-title">Retrait Total</div>
+      <div class="gain-value" id="total-withdrawals">0.00FCFA</div>
+      <div id="withdrawal-count" style="font-size: 0.8em; color: #555;">0 retraits</div>
+    </div>
+    <div tabindex="0" aria-label="Dépôt total" data-link="historique-recharge.html" role="link" style="cursor:pointer;">
+      <div class="gain-title">Dépôt Total</div>
+      <div class="gain-value" id="total-recharge">0.00 FCFA</div>
+      <div id="recharge-count" style="font-size: 0.8em; color: #555;">0 recharges</div>
+    </div>
+  </section>
+
+  <section class="actions" aria-label="Actions rapides">
+    <div class="actions-title">Actions Rapides</div>
+    <nav class="quick-actions" role="menu" aria-orientation="horizontal">
+      <div class="quick-action wallet" role="menuitem" tabindex="0" title="PorteFeuille" data-link="portefeuille.html">
+        <span class="material-icons icon" aria-hidden="true">account_balance_wallet</span>
+        PorteFeuille
+      </div>
+      <div class="quick-action depot" role="menuitem" tabindex="0" title="Dépôt" data-link="recharge.html">
+        <span class="material-icons icon" aria-hidden="true">attach_money</span>
+        recharge 
+      </div>
+      <div class="quick-action retrait" role="menuitem" tabindex="0" title="Retrait" data-link="retrait.html">
+        <span class="material-icons icon" aria-hidden="true">swap_horiz</span>
+        Retrait
+      </div>
+      <div class="quick-action app" role="menuitem" tabindex="0" title="App" data-link="team.html">
+        <span class="material-icons icon" aria-hidden="true">cloud_queue</span>
+        Parrainage
+      </div>
+    </nav>
+  </section>
+
+  <section class="extra-actions" aria-label="Actions supplémentaires">
+    <button class="btn-action btn-historique-retrait" type="button" aria-label="Historiques de retrait" data-link="historique retrait.html" tabindex="0">
+      <span class="material-icons icon btn-historique-retrait">history_toggle_off</span>
+      Historiques de retrait
+    </button>
+    <button class="btn-action btn-historique-recharge" type="button" aria-label="Historiques de recharge" data-link="historique.html" tabindex="0">
+      <span class="material-icons icon btn-historique-recharge">history</span>
+      Historiques de recharge
+    </button>
+    <button class="btn-action btn-service-client" type="button" aria-label="Service client" data-link="service.html" tabindex="0">
+      <span class="material-icons icon btn-service-client">headset_mic</span>
+      Service client
+    </button>
+
+    <!-- Boutons ajoutés avec icônes colorées -->
+    <button class="btn-action btn-carte-bancaire" type="button" aria-label="Carte bancaires liée" data-link="carte.html" tabindex="0">
+      <span class="material-icons icon icon-carte-bancaire">credit_card</span>
+      Carte bancaires liée
+    </button>
+    <button class="btn-action btn-regles-nescafe" type="button" aria-label="Règles de l’entreprise Nescafé" data-link="regle.html" tabindex="0">
+      <span class="material-icons icon icon-regles-nescafe">gavel</span>
+      Règles de l’entreprise Nescafé
+    </button>
+    <button class="btn-action btn-a-propos" type="button" aria-label="À propos de l’entreprise Nescafé" data-link="info.html" tabindex="0">
+      <span class="material-icons icon icon-a-propos">info</span>
+      À propos de l’entreprise Nescafé
+    </button>
+    <button class="btn-action btn-connecter-compte" type="button" aria-label="Connecter un autre compte" data-link="index.html" tabindex="0">
+      <span class="material-icons icon icon-connecter-compte">login</span>
+      Connecter un autre compte
+    </button>
+  </section>
+
+  <section class="cadeau-section" aria-label="Entrer un code cadeau">
+    <div class="cadeau-title" aria-hidden="true">
+      <span class="material-icons icon" aria-hidden="true">card_giftcard</span>
+      Cadeau
+    </div>
+    <div class="cadeau-instruction">Entrez votre code cadeau :</div>
+    <form class="cadeau-form" aria-label="Formulaire code cadeau">
+      <input type="text" class="cadeau-input" aria-label="Champ pour saisir le code cadeau" placeholder="Ex: CADEAU10" maxlength="20" required />
+      <button type="submit" class="cadeau-btn" aria-label="Valider le code cadeau">Valider</button>
+    </form>
+    <div id="giftLoading"><span class="spinner"></span> Vérification du code cadeau...</div>
+    <div id="giftResult"></div>
+  </section>
+</div>
+
+<nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+  <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
+    <span class="material-icons icon" aria-hidden="true">home</span>
+    Accueil
+  </div>
+  <div class="nav-icon" data-link="appareils.html" tabindex="0" role="link" aria-label="Appareils">
+    <span class="material-icons icon" aria-hidden="true">smartphone</span>
+    Nescafé
+  </div>
+  <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
+    <span class="material-icons icon" aria-hidden="true">list_alt</span>
+    Mes Nescafé
+  </div>
+  <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
+    <span class="material-icons icon" aria-hidden="true">person</span>
+    Profil
+  </div>
+</nav>
+
+<script type="module">
+  // === Import Firebase ===
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    update,
+    push,
+    set,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  // === Variables d'état ===
+  let currentUser = null;
+
+  // === Fonctions utilitaires ===
+
+  function formatCurrency(amount) {
+    return `FCFA ${Number(amount).toLocaleString("fr-FR", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`;
+  }
+
+  function showMessage(id, message) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = message;
+    el.style.display = "block";
+    setTimeout(() => {
+      el.style.display = "none";
+      el.textContent = "";
+    }, 3000);
+  }
+
+  // Fonctions showErrorMessage et showSuccessMessage spécifiquement
+  function showErrorMessage(message) {
+    showMessage("error-message", message);
+  }
+  function showSuccessMessage(message) {
+    const el = document.getElementById("success-message");
+    if (el) {
+      showMessage("success-message", message);
+    } else {
+      alert(message);
+    }
+  }
+
+  function showLoading(button) {
+    if (button.classList.contains("loading")) return false;
+    const icon = button.querySelector(".icon");
+    if (icon) icon.style.display = "none";
+    let spinner = button.querySelector(".spinner");
+    if (!spinner) {
+      spinner = document.createElement("span");
+      spinner.className = "spinner";
+      button.insertBefore(spinner, button.firstChild);
+    }
+    spinner.style.display = "inline-block";
+    button.classList.add("loading");
+    button.disabled = true;
+    return true;
+  }
+  function hideLoading(button) {
+    const icon = button.querySelector(".icon");
+    if (icon) icon.style.display = "inline-block";
+    const spinner = button.querySelector(".spinner");
+    if (spinner) spinner.style.display = "none";
+    button.classList.remove("loading");
+    button.disabled = false;
+  }
+
+  function handleRedirectClick(event) {
+    const el = event.currentTarget;
+    const link = el.getAttribute("data-link");
+    if (!link) return;
+
+    // Appliquer loading only si bouton action
+    if (
+      el.classList.contains("btn-action") ||
+      el.classList.contains("btn-carousel") ||
+      el.id === "withdrawal-button"
+    ) {
+      if (!showLoading(el)) return;
+    }
+
+    setTimeout(() => {
+      window.location.href = link;
+    }, 250);
+  }
+
+  // Fonctions pour mise à jour UI utilisateurs
+
+  function updateUserIdentifier(phoneNumber) {
+    const idEl = document.getElementById("user-id");
+    const addId = document.getElementById("user-additional-id");
+    if (idEl && phoneNumber) {
+      const formatted = phoneNumber.replace(
+        /(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/,
+        "$1 $2 $3 $4 $5"
+      );
+      idEl.textContent = formatted;
+      if (addId) addId.textContent = `05*******${phoneNumber.slice(-2)}`;
+    } else if (idEl) {
+      idEl.textContent = "Non connecté";
+      if (addId) addId.textContent = "";
+    }
+  }
+
+  function updateUserBalance(balance) {
+    [
+      "main-balance",
+      "balance-1",
+      "balance-2",
+      "balance-3",
+      "user-balance",
+    ].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = balance != null ? formatCurrency(balance) : formatCurrency(0);
+    });
+  }
+
+  function updateTotalWithdrawals(amount) {
+    const el = document.getElementById("total-withdrawals");
+    if (el) el.textContent = amount != null ? formatCurrency(amount) : formatCurrency(0);
+  }
+
+  // Exemple calcul total recharges
+  function calculateTotalRecharges(userId) {
+    return new Promise((resolve, reject) => {
+      const refTx = ref(database, "transactions");
+      const q = query(refTx, orderByChild("userId"), equalTo(userId));
+      onValue(
+        q,
+        (snapshot) => {
+          try {
+            const data = snapshot.val();
+            let total = 0;
+            let count = 0;
+            if (data) {
+              const successTx = Object.values(data).filter(
+                (t) => t.status === "success"
+              );
+              total = successTx.reduce(
+                (a, b) => a + parseFloat(b.amount || 0),
+                0
+              );
+              count = successTx.length;
+            }
+            const elTotal = document.getElementById("total-recharge");
+            if (elTotal) elTotal.textContent = formatCurrency(total);
+            const elCount = document.getElementById("recharge-count");
+            if (elCount) elCount.textContent = count.toString();
+            resolve({ totalRecharges: total, rechargeCount: count });
+          } catch (e) {
+            reject(e);
+          }
+        },
+        reject
+      );
+    });
+  }
+
+  // Exemple calcul total retraits
+  function calculateAndDisplayTotalWithdrawals(userId) {
+    const refHist = ref(database, `users/${userId}/withdrawalHistory`);
+    onValue(refHist, (snapshot) => {
+      const data = snapshot.val();
+      let total = 0,
+        count = 0;
+      if (data) {
+        total = Object.values(data).reduce(
+          (a, b) => a + (b.amount || 0),
+          0
+        );
+        count = Object.keys(data).length;
+      }
+      updateTotalWithdrawals(total);
+      const elCount = document.getElementById("withdrawal-count");
+      if (elCount) elCount.textContent = count.toString();
+    });
+  }
+
+  // Calcul et affichage des revenus (exemple)
+  function calculateTotalRevenues(userId) {
+    return new Promise((resolve, reject) => {
+      const investRef = ref(database, `investments/${userId}`);
+      onValue(
+        investRef,
+        (snapshot) => {
+          try {
+            const data = snapshot.val();
+            let total = 0;
+            if (data) {
+              total = Object.values(data)
+                .filter((i) => i.status === "active")
+                .reduce((a, b) => a + (b.totalCollected || 0), 0);
+            }
+            const el = document.getElementById("total-revenue");
+            if (el) el.textContent = formatCurrency(total);
+            resolve(total);
+          } catch (e) {
+            reject(e);
+          }
+        },
+        (err) => {
+          const el = document.getElementById("total-revenue");
+          if (el) el.textContent = formatCurrency(0);
+          reject(err);
+        }
+      );
+    });
+  }
+
+  // Enregistrement du retrait
+  async function recordWithdrawal(userId, amount) {
+    try {
+      const userRef = ref(database, `users/${userId}`);
+      const userSnap = await get(userRef);
+      const userData = userSnap.val();
+      if (!userData) {
+        showErrorMessage("Utilisateur non trouvé");
+        return false;
+      }
+      if (userData.balance < amount) {
+        showErrorMessage("Solde insuffisant pour effectuer le retrait");
+        return false;
+      }
+      const newBalance = userData.balance - amount;
+      const newWithdrawRef = push(ref(database, `users/${userId}/withdrawalHistory`));
+      const withdrawalData = {
+        amount,
+        timestamp: Date.now(),
+        status: "success",
+        date: new Date().toISOString(),
+      };
+      await Promise.all([update(userRef, { balance: newBalance }), set(newWithdrawRef, withdrawalData)]);
+      updateUserBalance(newBalance);
+      calculateAndDisplayTotalWithdrawals(userId);
+      return true;
+    } catch (e) {
+      console.error(e);
+      showErrorMessage("Une erreur est survenue lors du retrait");
+      return false;
+    }
+  }
+
+  // Setup événements (exemple)
+  function setupEventListeners(userId) {
+    const withdrawBtn = document.getElementById("withdrawal-button");
+    if (withdrawBtn) {
+      withdrawBtn.replaceWith(withdrawBtn.cloneNode(true));
+      const newBtn = document.getElementById("withdrawal-button");
+      newBtn.addEventListener("click", async () => {
+        const inputAmount = document.getElementById("withdrawal-amount");
+        if (!inputAmount) {
+          showErrorMessage("Champ de montant non trouvé");
+          return;
+        }
+        const amount = parseFloat(inputAmount.value);
+        if (Number.isNaN(amount) || amount <= 0) {
+          showErrorMessage("Veuillez entrer un montant valide");
+          return;
+        }
+        newBtn.disabled = true;
+        newBtn.textContent = "Traitement...";
+        try {
+          const success = await recordWithdrawal(userId, amount);
+          if (success) {
+            inputAmount.value = "";
+            showSuccessMessage(`Retrait de ${formatCurrency(amount)} effectué avec succès`);
+          }
+        } finally {
+          newBtn.disabled = false;
+          newBtn.textContent = "Retirer";
+        }
+      });
+    }
+
+    // Autres setups selon besoin...
+  }
+
+  // Reset interface utilisateur si déconnexion
+  function resetUserInterface() {
+    updateUserIdentifier(null);
+    updateUserBalance(0);
+    updateTotalWithdrawals(0);
+    [
+      { id: "withdrawal-count", value: "0" },
+      { id: "total-recharge", value: formatCurrency(0) },
+      { id: "recharge-count", value: "0" },
+      { id: "total-revenue", value: formatCurrency(0) },
+    ].forEach(({ id, value }) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    });
+  }
+
+  // Auth state change + chargement données
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    if (user) {
+      try {
+        const userRef = ref(database, `users/${user.uid}`);
+        const userSnap = await get(userRef);
+        const userData = userSnap.val();
+
+        if (userData) {
+          if (userData.phoneNumber) updateUserIdentifier(userData.phoneNumber);
+          if (userData.balance !== undefined) updateUserBalance(userData.balance);
+
+          await Promise.all([
+            calculateAndDisplayTotalWithdrawals(user.uid),
+            calculateTotalRecharges(user.uid).catch(() => {}),
+            calculateTotalRevenues(user.uid).catch(() => {}),
+          ]);
+
+          setupEventListeners(user.uid);
+        } else {
+          resetUserInterface();
+        }
+      } catch (e) {
+        console.error("Erreur récupération données utilisateur:", e);
+        showErrorMessage("Erreur lors du chargement des données utilisateur");
+        resetUserInterface();
+      }
+    } else {
+      resetUserInterface();
+    }
+  });
+
+  // Gestion globale erreurs JS/promesses
+  window.addEventListener("error", (e) => {
+    console.error("Erreur JavaScript:", e.error);
+    showErrorMessage("Une erreur inattendue s'est produite");
+  });
+
+  window.addEventListener("unhandledrejection", (e) => {
+    console.error("Promise rejetée:", e.reason);
+    showErrorMessage("Une erreur de traitement s'est produite");
+  });
+
+  // Ajoutez ici d'autres fonctions spécifiques Firebase selon besoin
+  // Exemple : gestion code cadeau, suivi parrainage, etc.
+
+</script>
+
+<script>
+  // Gestion des éléments interactifs non liés à Firebase (clics + clavier + loading, etc.)
+  document.addEventListener("DOMContentLoaded", () => {
+    function handleRedirectClick(event) {
+      const el = event.currentTarget;
+      const link = el.getAttribute("data-link");
+      if (!link) return;
+
+      if (
+        el.classList.contains("btn-action") ||
+        el.classList.contains("btn-carousel") ||
+        el.id === "withdrawal-button"
+      ) {
+        if (el.classList.contains("loading")) return;
+        const icon = el.querySelector(".icon");
+        if (icon) icon.style.display = "none";
+        let spinner = el.querySelector(".spinner");
+        if (!spinner) {
+          spinner = document.createElement("span");
+          spinner.className = "spinner";
+          el.insertBefore(spinner, el.firstChild);
+        }
+        spinner.style.display = "inline-block";
+        el.classList.add("loading");
+        el.disabled = true;
+      }
+
+      setTimeout(() => {
+        window.location.href = link;
+      }, 250);
+    }
+
+    // Ajout des événements clic + clavier aux éléments concernés...
+    document.querySelectorAll("nav.bottom-nav .nav-icon").forEach(el => {
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("role", "link");
+      el.addEventListener("click", handleRedirectClick);
+      el.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          el.click();
+        }
+      });
+    });
+    document.querySelectorAll(".quick-action, .btn-action, .btn-carousel").forEach(el => {
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("role", el.classList.contains("btn-action") ? "button" : "link");
+      el.addEventListener("click", handleRedirectClick);
+      el.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          el.click();
+        }
+      });
+    });
+    const withdrawBtn = document.getElementById("withdrawal-button");
+    if (withdrawBtn) {
+      withdrawBtn.setAttribute("tabindex", "0");
+      withdrawBtn.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          withdrawBtn.click();
+        }
+      });
+    }
+    // Autres éléments cliquables similaires...
+  });
+</script>
+
+</body>
+</html>

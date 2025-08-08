@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forfaits VIP</title>
+
+  <!-- Material Icons CDN pour les icônes -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+  <style>
+    /* Police générale très lisible */
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Nunito', Arial, sans-serif;
+      margin: 20px 0 90px 0; /* marge basse pour footer */
+      background-color: #fffefa;
+      color: #2e2e2e;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-align: center;
+      color: #3a3a3a;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    p.description {
+      color: #606060;
+      margin-bottom: 30px;
+      font-size: 1.15rem;
+      max-width: 580px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      letter-spacing: 0.02em;
+      line-height: 1.5;
+    }
+
+    .plan {
+      background: white;
+      border-radius: 24px 48px 48px 24px;
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.1),
+        inset 0 0 12px #f5f5f5;
+      padding: 28px 34px 36px 34px;
+      margin: 0 auto 30px auto;
+      max-width: 400px;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .plan:hover {
+      transform: translateY(-10px);
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.18),
+        inset 0 0 18px #f9f9f9;
+    }
+
+    .plan img {
+      width: 120px;
+      height: auto;
+      display: block;
+      margin: 0 auto 18px auto;
+      border-radius: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      background-color: #fafafa;
+    }
+
+    .plan:hover img {
+      transform: scale(1.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .price {
+      font-size: 2.2rem;
+      font-weight: 900;
+      margin-bottom: 22px;
+      text-align: right;
+      color: #b1272e;
+      letter-spacing: 0.30em;
+      font-family: 'Courier New', Courier, monospace;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+    }
+
+    .title {
+      font-weight: 800;
+      font-size: 1.5rem;
+      margin-bottom: 28px;
+      text-align: center;
+      color: #383838;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      user-select: none;
+    }
+
+    .plan-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 32px;
+    }
+
+    .detail {
+      background: #f7fafc;
+      border-radius: 18px 0 18px 0;
+      padding: 18px 16px;
+      font-size: 1.05rem;
+      color: #d13b4c;
+      font-weight: 700;
+      text-align: center;
+      box-shadow:
+        inset 3px 3px 10px #fff6f7,
+        inset -3px -3px 12px #d98b8f;
+      transition: background-color 0.35s ease, color 0.35s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    .detail:hover {
+      background-color: #fbe6e8;
+      color: #a6222f;
+      box-shadow:
+        inset 2px 2px 6px #fff0f1,
+        inset -2px -2px 7px #bc5361;
+    }
+
+    .detail label {
+      display: block;
+      font-weight: 600;
+      color: #575757;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+      user-select: text;
+    }
+
+    .buy-btn {
+      background: linear-gradient(135deg, #d82525, #a81616);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 36px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      box-shadow: 0 8px 20px rgba(210, 37, 37, 0.75);
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+      user-select: none;
+      user-drag: none;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .buy-btn[disabled] {
+      background-color: #999 !important;
+      cursor: not-allowed !important;
+      box-shadow: none !important;
+    }
+
+    .buy-btn:hover:not([disabled]),
+    .buy-btn:focus:not([disabled]) {
+      background: linear-gradient(135deg, #a71616, #770f0f);
+      box-shadow: 0 12px 30px rgba(167, 23, 23, 0.9);
+      outline: none;
+    }
+
+    .btn-text {
+      user-select: none;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      color: white;
+      font-weight: 600;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      max-width: 320px;
+      word-wrap: break-word;
+    }
+
+    /* Bottom navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100vw;
+      background: #fff;
+      border-top: 2.5px solid #50e3c2;
+      box-shadow:
+        0 -3px 8px rgba(80, 227, 194, 0.37),
+        inset 0 0 8px rgba(80, 227, 194, 0.24);
+      display: flex;
+      justify-content: space-around;
+      padding: 9px 0 8px;
+      user-select: none;
+      z-index: 1000;
+    }
+
+    .nav-icon {
+      flex: 1;
+      color: #86929e;
+      text-align: center;
+      font-size: 0.9em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s ease, transform 0.25s ease;
+      outline: none;
+    }
+
+    .nav-icon:hover:not(.active),
+    .nav-icon:focus:not(.active) {
+      color: #4a90e2;
+      transform: scale(1.1);
+    }
+
+    .nav-icon.active {
+      color: #50e3c2;
+      font-weight: 700;
+      transform: scale(1.15);
+    }
+
+    .nav-icon .material-icons.icon {
+      font-size: 1.6em;
+      margin-bottom: 4px;
+      display: block;
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Zone notification -->
+  <div class="notification" aria-live="polite" aria-atomic="true"></div>
+
+  <h1>NESCAFÉ</h1>
+  <p class="description">
+ Choisissez le forfait qui correspond à vos envies et commencez à générer des revenus chaque jour avec Nescafé.
+ 
+  </p>
+
+  <!-- Forfait VIP 1 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 1">
+    <img
+      src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      alt="Canon Camera VIP 1" />
+    <div class="price"> 1.500FCFA</div>
+    <div class="title">LV-1</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>300 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>2 100 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours
+      </div>
+      <div class="detail">
+        <label> Gain Total</label>50 700 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="1" data-price="1500" aria-label="Acheter Pack Mini ROX">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+
+  <!-- Forfait VIP 2 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 2">
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
+    <div class="price">3.500FCFA</div>
+    <div class="title">LV-2</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>600 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>4 200 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours 
+      </div>
+      <div class="detail">
+        <label>Gain Total</label>101 400 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="2" data-price="3500" aria-label="Acheter Pack Start ÉNERGIE">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+  
+  
+  <!-- Forfait VIP 3 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 3">
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
+    <div class="price">7.500FCFA</div>
+    <div class="title">LV-3</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>1.300 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>9 100 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours 
+      </div>
+      <div class="detail">
+        <label>Gain Total</label>219 700 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="3" data-price="7500" aria-label="Acheter Pack Start ÉNERGIE">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+  
+  
+   <!-- Forfait VIP 4 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 4">
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
+    <div class="price">19.500FCFA</div>
+    <div class="title">LV-4</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>4.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>28.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours 
+      </div>
+      <div class="detail">
+        <label>Gain Total</label>676.000 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="4" data-price="19500" aria-label="Acheter Pack Start ÉNERGIE">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+  
+   <!-- Forfait VIP 5 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 5">
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
+    <div class="price">40.000FCFA</div>
+    <div class="title">LV-5</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>8.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>56.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours 
+      </div>
+      <div class="detail">
+        <label>Gain Total</label>1.352.000 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="5" data-price="40000" aria-label="Acheter Pack Start ÉNERGIE">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+  
+   
+  
+   <!-- Forfait VIP 6 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 6">
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 6" />
+    <div class="price">70.000FCFA</div>
+    <div class="title">LV-6</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>22.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>154.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours 
+      </div>
+      <div class="detail">
+        <label>Gain Total</label>3.718.000 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="2" data-price="70000" aria-label="Acheter Pack Start ÉNERGIE">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+
+
+
+<!-- Forfait VIP 7 -->
+  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 7">
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
+    <div class="price">130.000FCFA</div>
+    <div class="title">LV-7</div>
+    <div class="plan-details">
+      <div class="detail">
+        <label>Gain Quotidien</label>50.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>350.000 FCFA 
+      </div>
+      <div class="detail">
+        <label>Cycle</label>169 Jours 
+      </div>
+      <div class="detail">
+        <label>Gain Total</label>8.450.000 FCFA 
+      </div>
+    </div>
+    <button class="buy-button buy-btn" data-product-id="7" data-price="130000" aria-label="Acheter Pack Start ÉNERGIE">
+      <span class="btn-text">Investir maintenant</span>
+    </button>
+  </div>
+  
+  
+  
+  <!-- Footer navigation -->
+ <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+  <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
+    <span class="material-icons icon" aria-hidden="true">home</span>
+    Accueil
+  </div>
+  <div class="nav-icon" data-link="appareils.html" tabindex="0" role="link" aria-label="Appareils">
+    <span class="material-icons icon" aria-hidden="true">smartphone</span>
+    Nescafé
+  </div>
+  <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
+    <span class="material-icons icon" aria-hidden="true">list_alt</span>
+    Mes Nescafé
+  </div>
+  <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
+    <span class="material-icons icon" aria-hidden="true">person</span>
+    Profil
+  </div>
+</nav>
+
+  <!-- Script JavaScript (module) -->
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    update,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+
+    // Initialisation Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    // Variables globales
+    let currentUser = null;
+    let userBalance = 0;
+
+    // Configuration des produits
+    const PRODUCT_CONFIG = {
+        1: {
+            nom: "LV1",
+            dailyRevenue: 300,
+            cycleDuration: 169,
+            totalRevenue: 50700,
+            price: 1500,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        2: {
+            nom: "LV2",
+            dailyRevenue: 600,
+            cycleDuration: 169,
+            totalRevenue: 101400,
+            price: 3500,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        3: {
+            nom: "LV3",
+            dailyRevenue: 1300,
+            cycleDuration: 169,
+            totalRevenue: 7500,
+            price: 13000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        4: {
+            nom: "LV4",
+            dailyRevenue: 4000,
+            cycleDuration: 169,
+            totalRevenue: 676000,
+            price: 19500,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        5: {
+            nom: "LV5",
+            dailyRevenue: 8000,
+            cycleDuration: 169,
+            totalRevenue: 1352000,
+            price: 40000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        6: {
+            nom: "LV7",
+            dailyRevenue: 22000,
+            cycleDuration: 169,
+            totalRevenue: 3718000,
+            price: 70000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        },
+        7: {
+            nom: "LV7",
+            dailyRevenue: 50000,
+            cycleDuration: 169,
+            totalRevenue: 8450000,
+            price: 130000,
+            limit: 1,
+            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+        }
+    };    
+
+    /*
+     * Affiche une notification dans la page
+     */
+    function showNotification(message, type) {
+      const notification = document.querySelector('.notification');
+      if (!notification) {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+        return;
+      }
+
+      notification.textContent = message;
+      notification.style.display = 'block';
+      notification.style.backgroundColor = type === 'success' ? '#4CAF50' : '#f44336';
+      notification.style.color = 'white';
+      notification.style.padding = '10px';
+      notification.style.borderRadius = '5px';
+      notification.style.position = 'fixed';
+      notification.style.top = '20px';
+      notification.style.right = '20px';
+      notification.style.zIndex = '1000';
+
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    /*
+     * Vérifie combien d'investissements actifs pour un produit donné
+     */
+    async function checkActiveInvestments(userId, productId) {
+      try {
+        const investmentsRef = ref(db, `investments/${userId}`);
+        const snapshot = await get(investmentsRef);
+
+        if (!snapshot.exists()) return 0;
+
+        let activeCount = 0;
+        Object.values(snapshot.val()).forEach(investment => {
+          if (
+            investment.productId == productId &&
+            investment.status === 'active' &&
+            (investment.remainingDays > 0 || !investment.hasOwnProperty('remainingDays'))
+          ) {
+            activeCount++;
+          }
+        });
+
+        return activeCount;
+      } catch (error) {
+        console.error('Erreur lors de la vérification des investissements:', error);
+        return 0;
+      }
+    }
+
+    /*
+     * Met à jour les boutons en fonction des limites restantes
+     */
+    async function updateInvestmentLimits(userId) {
+      if (!userId) return;
+
+      try {
+        for (const productId in PRODUCT_CONFIG) {
+          const activeInvestments = await checkActiveInvestments(userId, Number(productId));
+          const remainingPurchases = PRODUCT_CONFIG[productId].limit - activeInvestments;
+
+          const investBtns = document.querySelectorAll(`.buy-button[data-product-id="${productId}"]`);
+          investBtns.forEach(investBtn => {
+            if (remainingPurchases <= 0) {
+              investBtn.disabled = true;
+              const textSpan = investBtn.querySelector('.btn-text');
+              if (textSpan) {
+                textSpan.textContent = 'Limite atteinte';
+              }
+              investBtn.style.backgroundColor = '#999';
+              investBtn.style.cursor = 'not-allowed';
+            } else {
+              investBtn.disabled = false;
+              investBtn.style.backgroundColor = '';
+              investBtn.style.cursor = 'pointer';
+              const textSpan = investBtn.querySelector('.btn-text');
+              if (textSpan) {
+                textSpan.textContent = 'Investir maintenant';
+              }
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour des limites:', error);
+      }
+    }
+
+    /*
+     * Fonction d’investissement d’un produit
+     */
+    async function investProduct(productId, amount) {
+      if (!currentUser) {
+        showNotification("Veuillez vous connecter pour investir", "error");
+        return;
+      }
+
+      try {
+        const productConfig = PRODUCT_CONFIG[productId];
+        if (!productConfig) {
+          showNotification("Produit non trouvé", "error");
+          return;
+        }
+
+        // Vérifier les limites d'investissement
+        const activeInvestments = await checkActiveInvestments(currentUser.uid, Number(productId));
+        if (activeInvestments >= productConfig.limit) {
+          showNotification("Vous avez atteint la limite d'achat pour ce produit", "error");
+          return;
+        }
+
+        // Vérifier le solde
+        if (userBalance < amount) {
+          showNotification("Solde insuffisant pour cet investissement", "error");
+          return;
+        }
+
+        // Préparer les mises à jour
+        const currentDate = new Date();
+        const endDate = new Date(currentDate.getTime() + productConfig.cycleDuration * 24 * 60 * 60 * 1000);
+        const updates = {};
+
+        // Déduire le montant du solde
+        updates[`users/${currentUser.uid}/balance`] = userBalance - amount;
+        updates[`users/${currentUser.uid}/totalInvestments`] = (await getUserTotalInvestments(currentUser.uid)) + amount;
+
+        // Créer le nouvel investissement
+        const newInvestmentRef = push(ref(db, `investments/${currentUser.uid}`));
+        updates[`investments/${currentUser.uid}/${newInvestmentRef.key}`] = {
+          productId: Number(productId),
+          amount,
+          startDate: currentDate.toISOString(),
+          endDate: endDate.toISOString(),
+          status: 'active',
+          remainingDays: productConfig.cycleDuration,
+          dailyRevenue: productConfig.dailyRevenue,
+          totalRevenue: productConfig.totalRevenue,
+          collectedRevenue: 0,
+          lastCollection: currentDate.toISOString(),
+          timestamp: Date.now()
+        };
+
+        // Mettre à jour la base de données avec l’investissement
+        await update(ref(db), updates);
+
+        // Mise à jour variables locales
+        userBalance -= amount;
+
+        // Mettre à jour les boutons
+        await updateInvestmentLimits(currentUser.uid);
+
+        showNotification("Investissement réussi!", "success");
+
+        // Redirection après délai
+        setTimeout(() => {
+          window.location.href = 'machine.html';
+        }, 2000);
+      } catch (error) {
+        console.error("Erreur lors de l'investissement:", error);
+        showNotification("Une erreur est survenue lors de l'investissement", "error");
+      }
+    }
+
+    /*
+     * Obtenir le total des investissements
+     */
+    async function getUserTotalInvestments(userId) {
+      try {
+        const userRef = ref(db, `users/${userId}`);
+        const snapshot = await get(userRef);
+        return snapshot.exists() ? (snapshot.val().totalInvestments || 0) : 0;
+      } catch (error) {
+        console.error('Erreur lors de la récupération du total des investissements:', error);
+        return 0;
+      }
+    }
+
+    /*
+     * Initialiser les écouteurs des boutons d’investissement
+     */
+    function initializeEventListeners() {
+      const buttons = document.querySelectorAll('.buy-button');
+      buttons.forEach(button => {
+        button.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const productId = button.getAttribute('data-product-id');
+          const price = parseInt(button.getAttribute('data-price'));
+          if (productId && price) {
+            await investProduct(productId, price);
+          }
+        });
+      });
+    }
+
+    /*
+     * Gérer l'état de connexion utilisateur
+     */
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        try {
+          const userRef = ref(db, `users/${user.uid}`);
+          const snapshot = await get(userRef);
+
+          if (snapshot.exists()) {
+            userBalance = snapshot.val().balance || 0;
+            await updateInvestmentLimits(user.uid);
+            initializeEventListeners();
+            console.log(`Utilisateur connecté: ${user.email}, Solde: ${userBalance} FCFA`);
+          } else {
+            showNotification("Erreur lors du chargement du profil utilisateur", "error");
+          }
+        } catch (error) {
+          console.error('Erreur lors du chargement des données utilisateur:', error);
+          showNotification("Erreur lors du chargement des données", "error");
+        }
+      } else {
+        currentUser = null;
+        userBalance = 0;
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Exposer la fonction pour utilisation globale si besoin
+    window.investProduct = investProduct;
+
+    // Gestion d'erreur globale
+    window.addEventListener('error', (error) => {
+      console.error('Une erreur est survenue:', error);
+      showNotification('Une erreur inattendue est survenue', 'error');
+    });
+
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Promesse rejetée:', event.reason);
+      showNotification('Une erreur inattendue est survenue', 'error');
+      event.preventDefault();
+    });
+
+    console.log('Système d\'investissement ROX ÉNERGIE initialisé');
+  </script>
+
+  <script>
+    // Gestion des clics et du clavier pour la navigation footer
+    function handleRedirectClick(event) {
+      const el = event.currentTarget;
+      const link = el.getAttribute('data-link');
+      if (!link) return;
+      setTimeout(() => {
+        window.location.href = link;
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Footer navigation
+      document.querySelectorAll('nav.bottom-nav .nav-icon').forEach(el => {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'link');
+        el.addEventListener('click', handleRedirectClick);
+        el.addEventListener('keydown', e => {
+          if (['Enter', ' '].includes(e.key)) {
+            e.preventDefault();
+            el.click();
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Page d'accueil avec statiques, carrousel et bannière image</title>
+
+<!-- Material Icons CDN -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+<style>
+  /* Ton CSS inchangé, gardé tel quel */
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f3f6;
+    color: #3b3b3b;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .carousel {
+    position: relative;
+    width: 100vw;
+    height: 210px;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(80, 227, 194, 0.3);
+    user-select: none;
+    margin: 0;
+    left: 0;
+    top: 0;
+    z-index: 10;
+  }
+  .carousel img {
+    position: absolute;
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1.1s ease-in-out;
+  }
+  .carousel img.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  .container {
+    max-width: 390px;
+    margin: 0 auto 110px auto;
+    padding: 18px;
+    flex: 1 0 auto;
+    box-sizing: border-box;
+  }
+  .carousel-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0 12px 0;
+    gap: 12px;
+  }
+  .btn-carousel {
+    flex: 1;
+    background: white;
+    border: 2px solid white;
+    border-radius: 24px;
+    padding: 10px 6px;
+    font-weight: 700;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      box-shadow 0.3s ease,
+      color 0.3s ease;
+    box-shadow:
+      0 2px 6px rgba(255 255 255 / 0.9),
+      inset 0 0 6px rgba(255 255 255 / 0.7);
+    position: relative;
+    color: #50e3c2;
+  }
+  .btn-carousel:hover,
+  .btn-carousel:focus {
+    background-color: #50e3c2;
+    color: white;
+    border-color: #50e3c2;
+    box-shadow:
+      0 4px 14px rgba(80, 227, 194, 0.65),
+      inset 0 0 15px rgba(80, 227, 194, 0.6);
+    outline: none;
+  }
+  .btn-depot .material-icons.icon {
+    color: #f5a623;
+  }
+  .btn-retrait .material-icons.icon {
+    color: #4a90e2;
+  }
+  .btn-telegram .material-icons.icon {
+    color: #0088cc;
+  }
+  .btn-carousel:hover .material-icons.icon,
+  .btn-carousel:focus .material-icons.icon {
+    color: white;
+  }
+  .btn-carousel.loading {
+    cursor: wait;
+  }
+  .spinner {
+    border: 2.5px solid rgba(80, 227, 194, 0.3);
+    border-top: 2.5px solid #50e3c2;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+  .statistiques-boxes {
+    width: 100%;
+    max-width: 390px;
+    margin: 0 auto 12px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .stat-box {
+    background: #73d6f6;
+    color: white;
+    border-radius: 20px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(80,227,194,0.09);
+    font-size: 1.1em;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .stat-box.solde {
+    background: #64c7e7;
+    font-weight: 700;
+    font-size: 1.15em;
+    margin-bottom: 4px;
+  }
+  .stat-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .stat-box.small {
+    flex: 1;
+    background: #4ec3da;
+    font-size: 0.99em;
+    padding: 13px 12px;
+  }
+  .stat-label {
+    opacity: 0.92;
+    font-size: 0.95em;
+  }
+  .stat-value {
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.25em;
+    margin-top: 3px;
+    letter-spacing: 0.02em;
+  }
+  .parrainage-banner {
+    background: url('https://image.noelshack.com/fichiers/2025/32/4/1754563355-shining-sign-bonus-on-bright-260nw-1854838234.jpg') no-repeat center center / cover;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    padding: 18px 8px 13px 8px;
+    font-size: 1.08em;
+    letter-spacing: 0.01em;
+    line-height: 1.24em;
+    margin-top: 5px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    border-radius: 16px;
+  }
+  nav.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 390px;
+    margin: 0 auto;
+    background: #fff;
+    border-top: 2.5px solid #50e3c2;
+    box-shadow:
+      0 -3px 8px rgba(80, 227, 194, 0.37),
+      inset 0 0 8px rgba(80, 227, 194, 0.24);
+    display: flex;
+    justify-content: space-around;
+    padding: 9px 0 8px 0;
+    user-select: none;
+    z-index: 1000;
+  }
+  .nav-icon {
+    flex: 1;
+    color: #86929e;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.25s ease;
+    padding: 2px 0;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .nav-icon:hover:not(.active) {
+    color: #4a90e2;
+    transform: scale(1.1);
+  }
+  .nav-icon.active {
+    color: #50e3c2;
+    font-weight: 700;
+    transform: scale(1.15);
+  }
+  .nav-icon .material-icons.icon {
+    font-size: 1.6em;
+    margin-bottom: 4px;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Carrousel pleine largeur collé en haut -->
+  <div class="carousel" aria-label="Carrousel d'images promotionnelles" role="region">
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565133-mexico-nescafe-factory-feed.jpeg" alt="Image 1" class="active"/>
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565198-2a56506d3c43c179ed42da50b814ccb3-262279842-highres-data.jpg" alt="Image 2"/>
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565251-nescaf-1160x700.jpg" alt="Image 3"/>
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565330-t-l-chargement.jpeg" alt="Image 4"/>
+  </div>
+
+  <div class="container" role="main">
+
+    <!-- Boutons actions -->
+    <div class="carousel-buttons" role="group" aria-label="Actions rapides carrousel">
+      <button class="btn-carousel btn-depot" data-link="recharge.html" aria-label="Dépôt">
+        <span class="material-icons icon" aria-hidden="true">attach_money</span> Recharge 
+      </button>
+      <button class="btn-carousel btn-retrait" data-link="retrait.html" aria-label="Retrait">
+        <span class="material-icons icon" aria-hidden="true">swap_horiz</span> Retrait
+      </button>
+      <button class="btn-carousel btn-telegram" data-link="https://t.me/gruppe_telegram" aria-label="Groupe Télégramme">
+        <span class="material-icons icon" aria-hidden="true">groups</span> Groupe Télégramme
+      </button>
+    </div>
+
+    <!-- Bloc Statistiques -->
+    <div class="statistiques-boxes" style="margin-top:12px;">
+      <div class="stat-box solde">
+        <span class="stat-label">Solde du compte</span>
+        <span class="stat-value">FCFA 0</span>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box small">
+          <span class="stat-label">Total retrait</span>
+          <span class="stat-value">FCFA 0</span>
+        </div>
+        <div class="stat-box small">
+          <span class="stat-label">Gain apareil</span>
+          <span class="stat-value">FCFA 0</span>
+        </div>
+      </div>
+      <!-- Parrainage avec image de fond -->
+      <div class="parrainage-banner">
+        <strong>RÉCOMPENSES DE PARRAINAGE</strong><br>
+        INVITEZ VOS AMIS POUR OBTENIR<br>
+        DES RÉCOMPENSES IMPORTANTES
+      </div>
+    </div>
+
+  </div>
+
+  <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+  <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
+    <span class="material-icons icon" aria-hidden="true">home</span>
+    Accueil
+  </div>
+  <div class="nav-icon" data-link="appareils.html" tabindex="0" role="link" aria-label="Appareils">
+    <span class="material-icons icon" aria-hidden="true">smartphone</span>
+    Nescafé
+  </div>
+  <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
+    <span class="material-icons icon" aria-hidden="true">list_alt</span>
+    Mes Nescafé
+  </div>
+  <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
+    <span class="material-icons icon" aria-hidden="true">person</span>
+    Profil
+  </div>
+</nav>
+
+<script>
+  // Carrousel automatique
+  (function () {
+    const images = document.querySelectorAll('.carousel img');
+    let current = 0;
+    function nextSlide() {
+      images[current].classList.remove('active');
+      current = (current + 1) % images.length;
+      images[current].classList.add('active');
+    }
+    setInterval(nextSlide, 3000);
+  })();
+
+  // Spinner/loading button
+  function showLoading(button) {
+    if (button.classList.contains('loading')) return false;
+    const icon = button.querySelector('.icon');
+    if (icon) icon.style.display = 'none';
+    let spinner = button.querySelector('.spinner');
+    if (!spinner) {
+      spinner = document.createElement('span');
+      spinner.className = 'spinner';
+      button.insertBefore(spinner, button.firstChild);
+    }
+    spinner.style.display = 'inline-block';
+    button.classList.add('loading');
+    button.disabled = true;
+    return true;
+  }
+  function hideLoading(button) {
+    const icon = button.querySelector('.icon');
+    if (icon) icon.style.display = 'inline-block';
+    const spinner = button.querySelector('.spinner');
+    if (spinner) spinner.style.display = 'none';
+    button.classList.remove('loading');
+    button.disabled = false;
+  }
+  function handleButtonClick(event) {
+    event.preventDefault();
+    const btn = event.currentTarget;
+    if (!showLoading(btn)) return;
+    const url = btn.getAttribute('data-link');
+    if (!url) {
+      hideLoading(btn);
+      return;
+    }
+    setTimeout(() => {
+      window.location.href = url;
+    }, 300);
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn-carousel, nav.bottom-nav .nav-icon').forEach(btn => {
+      btn.addEventListener('click', handleButtonClick);
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+  });
+</script>
+
+<!-- SCRIPT POUR AFFICHER LES SOLDES DYNAMIQUEMENT -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import {
+    getDatabase,
+    ref,
+    get,
+    set,
+    update,
+    onValue,
+    query,
+    orderByChild,
+    equalTo,
+    runTransaction
+  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+  // === Configuration et initialization Firebase ===
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+    authDomain: "nescafe-cba7a.firebaseapp.com",
+    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+    projectId: "nescafe-cba7a",
+    storageBucket: "nescafe-cba7a.firebasestorage.app",
+    messagingSenderId: "91209018725",
+    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  // Formate FCFA
+  function formatFCFA(amount) {
+    if (amount == null || isNaN(amount)) amount = 0;
+    return 'FCFA ' + Number(amount).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const uid = user.uid;
+
+      const soldeCompteEl = document.querySelector('.stat-box.solde .stat-value');
+      const totalRetraitEl = document.querySelectorAll('.stat-box.small')[0].querySelector('.stat-value');
+      const gainAppareilEl = document.querySelectorAll('.stat-box.small')[1].querySelector('.stat-value');
+
+      // Référence utilisateur dans la base
+      const userRef = ref(database, `users/${uid}`);
+
+      // Écoute temps réel des données utilisateur
+      onValue(userRef, (snapshot) => {
+        const data = snapshot.val() || {};
+
+        // Balance principale
+        if ('balance' in data) {
+          soldeCompteEl.textContent = formatFCFA(data.balance);
+        } else {
+          soldeCompteEl.textContent = 'FCFA 0';
+        }
+
+        // Total retraits (si stocké directement)
+        if ('totalWithdrawals' in data) {
+          totalRetraitEl.textContent = formatFCFA(data.totalWithdrawals);
+        } else {
+          totalRetraitEl.textContent = 'FCFA 0';
+        }
+
+        // Gain appareil (revenu total estimé)
+        if ('totalRevenue' in data) {
+          gainAppareilEl.textContent = formatFCFA(data.totalRevenue);
+        } else {
+          gainAppareilEl.textContent = 'FCFA 0';
+        }
+      });
+
+      // Si tu stockes retraits ou gains ailleurs,
+      // tu peux compléter par d'autres requêtes Firebase ici.
+    } else {
+      // Pas connecté: affichage par défaut
+      const soldeCompteEl = document.querySelector('.stat-box.solde .stat-value');
+      const totalRetraitEl = document.querySelectorAll('.stat-box.small')[0].querySelector('.stat-value');
+      const gainAppareilEl = document.querySelectorAll('.stat-box.small')[1].querySelector('.stat-value');
+
+      soldeCompteEl.textContent = 'FCFA 0';
+      totalRetraitEl.textContent = 'FCFA 0';
+      gainAppareilEl.textContent = 'FCFA 0';
+    }
+  });
+</script>
+
+</body>
+</html>
