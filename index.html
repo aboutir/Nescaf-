@@ -290,14 +290,49 @@
 
   // Formats de numéro par pays
   const phoneFormats = {
-    'CI': { code: '+225', format: 'XX XXX XXXX', example: '07 123 4567', pattern: /^[0-9]{2} [0-9]{3} [0-9]{4}$/ },
-    'ML': { code: '+223', format: 'XX XX XX XX', example: '76 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
-    'SN': { code: '+221', format: 'XX XXX XX XX', example: '77 123 45 67', pattern: /^[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$/ },
-    'BF': { code: '+226', format: 'XX XX XX XX', example: '70 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
-    'NE': { code: '+227', format: 'XX XX XX XX', example: '90 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
-    'BJ': { code: '+229', format: 'XX XX XX XX', example: '97 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
-    'TG': { code: '+228', format: 'XX XXX XXX', example: '90 123 456', pattern: /^[0-9]{2} [0-9]{3} [0-9]{3}$/ }
-  };
+  'CI': {
+    code: '+225',
+    format: 'XX XX XX XX XX',
+    example: '07 01 23 45 67',
+    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
+  },
+  'ML': {
+    code: '+223',
+    format: 'XX XX XX XX',
+    example: '76 12 34 56',
+    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
+  },
+  'SN': {
+    code: '+221',
+    format: 'XX XXX XX XX',
+    example: '77 123 45 67',
+    pattern: /^[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$/
+  },
+  'BF': {
+    code: '+226',
+    format: 'XX XX XX XX',
+    example: '70 12 34 56',
+    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
+  },
+  'NE': {
+    code: '+227',
+    format: 'XX XX XX XX',
+    example: '90 12 34 56',
+    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
+  },
+  'BJ': {
+    code: '+229',
+    format: 'XX XX XX XX',
+    example: '97 12 34 56',
+    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
+  },
+  'TG': {
+    code: '+228',
+    format: 'XX XXX XXX',
+    example: '90 123 456',
+    pattern: /^[0-9]{2} [0-9]{3} [0-9]{3}$/
+  }
+};
 
   // Mise à jour du placeholder selon pays sélectionné
   function updatePhoneFormat(formType) {
