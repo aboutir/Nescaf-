@@ -13,7 +13,7 @@
     display: flex;
     justify-content: center;
     align-items: stretch;
-    overflow: hidden;
+    overflow: auto; /* Permet de ne pas cacher de contenu */
   }
   #chat-container {
     width: 100vw;
@@ -23,6 +23,7 @@
     box-shadow: 0 0 14px rgba(0,0,0,0.18);
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
   }
   #header-bar {
     height: 36px;
@@ -56,6 +57,7 @@
     gap: 7px;
     overflow-x: hidden;
     font-size: 0.9rem;
+    min-height: 0;
   }
   .message {
     max-width: 80%;
@@ -95,6 +97,7 @@
     font-weight: 600;
     visibility: hidden;
     user-select: none;
+    pointer-events: none; /* Pour ne pas bloquer la saisie */
   }
   #typing-indicator.visible {
     visibility: visible;
@@ -119,6 +122,9 @@
     padding: 8px 12px;
     background: #f0f0f0;
     border-top: 1px solid #ccc;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10; /* Toujours au dessus */
   }
   #input-area input[type="text"] {
     flex-grow: 1;
@@ -151,7 +157,7 @@
 <div id="chat-container" role="main" aria-label="Chat discussion Nescafé automatique fullscreen compact">
   <div id="header-bar">
     <div id="info-message">Vous pouvez écrire votre commentaire</div>
-    <div id="online-count" aria-live="polite" aria-atomic="true" aria-label="Membres en ligne">Membres en ligne : <span id="online-number"></span></div>
+    <div id="online-count" aria-live="polite" aria-atomic="true" aria-label="Membres en ligne">Membres : <span id="online-number"></span></div>
   </div>
 
   <div id="chat-messages" aria-live="polite" aria-relevant="additions"></div>
@@ -219,7 +225,7 @@
   const typingName = document.getElementById('typing-name');
   const onlineCountSpan = document.getElementById('online-number');
   function updateOnline() {
-    onlineCountSpan.textContent = 300 + Math.floor(Math.random() * 150);
+    onlineCountSpan.textContent = 2500 + Math.floor(Math.random() * 2500);
   }
   updateOnline();
   const messageQueue = [];
@@ -300,6 +306,7 @@
     addMessage('Système', 'soyez les bienvenus vous pouvez maintenant laissé votre commentaire de ce vous en pensez de nous.', true);
     updateOnline();
     startBots();
+    inputField.focus(); // Mettre le focus dans la zone de saisie dès l'ouverture
   };
 </script>
 
