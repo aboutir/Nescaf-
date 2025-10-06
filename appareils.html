@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Nunito', Arial, sans-serif;
-      margin: 20px 0 90px 0; /* marge basse pour footer */
+      margin: 20px 0 90px 0;
       background-color: #fffefa;
       color: #2e2e2e;
       -webkit-font-smoothing: antialiased;
@@ -244,6 +244,30 @@
       display: block;
       user-select: none;
     }
+
+    /* Style cadenas + texte disponible bientôt */
+    .lock-notice {
+      text-align: center;
+      font-weight: bold;
+      color: #a6222f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 1.1rem;
+      user-select: none;
+      margin-top: 12px;
+    }
+
+    .lock-notice p {
+      margin: 0;
+      color: #2e7d32;
+      font-weight: 700;
+      font-size: 1rem;
+      user-select: none;
+    }
+
   </style>
 </head>
 
@@ -254,8 +278,7 @@
 
   <h1>NESCAFÉ</h1>
   <p class="description">
- Choisissez le forfait qui correspond à vos envies et commencez à générer des revenus chaque jour avec Nescafé.
- 
+    Choisissez le forfait qui correspond à vos envies et commencez à générer des revenus chaque jour avec Nescafé.
   </p>
 
   <!-- Forfait VIP 1 -->
@@ -263,23 +286,23 @@
     <img
       src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
       alt="Canon Camera VIP 1" />
-    <div class="price"> 1.500FCFA</div>
+    <div class="price">5.500FCFA</div>
     <div class="title">LV-1</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>300 FCFA 
+        <label>Revenus par jour</label>1 000 FCFA
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>2 100 FCFA 
+        <label>Gain obtenu par semaine</label>7 000 FCFA
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours
+        <label>Cycle</label>15 Jours
       </div>
       <div class="detail">
-        <label> Gain Total</label>50 700 FCFA 
+        <label> Gain Total</label>15 000 FCFA
       </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="1" data-price="1500" aria-label="Acheter Pack Mini ROX">
+    <button class="buy-button buy-btn" data-product-id="1" data-price="5500" aria-label="Acheter Pack Mini ROX">
       <span class="btn-text">Investir maintenant</span>
     </button>
   </div>
@@ -287,207 +310,195 @@
   <!-- Forfait VIP 2 -->
   <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 2">
     <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
-    <div class="price">3.500FCFA</div>
+    <div class="price">15.000FCFA</div>
     <div class="title">LV-2</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>600 FCFA 
+        <label>Revenus par jours</label>2 500 FCFA
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>4 200 FCFA 
+        <label>Gain obtenu par semaine</label>17 500 FCFA
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours 
+        <label>Cycle</label>16 Jours
       </div>
       <div class="detail">
-        <label>Gain Total</label>101 400 FCFA 
+        <label>Gain Total</label>40 000 FCFA
       </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="2" data-price="3500" aria-label="Acheter Pack Start ÉNERGIE">
+    <button class="buy-button buy-btn" data-product-id="2" data-price="15000" aria-label="Acheter Pack Start ÉNERGIE">
       <span class="btn-text">Investir maintenant</span>
     </button>
   </div>
-  
-  
+
   <!-- Forfait VIP 3 -->
   <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 3">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
-    <div class="price">7.500FCFA</div>
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 3" />
+    <div class="price">30.000FCFA</div>
     <div class="title">LV-3</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>1.300 FCFA 
+        <label>Revenus par jours</label>4.500 FCFA
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>9 100 FCFA 
+        <label>Gain obtenu par semaine</label>31 500  FCFA
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours 
+        <label>Cycle</label>17 Jours
       </div>
       <div class="detail">
-        <label>Gain Total</label>219 700 FCFA 
+        <label>Gain Total</label>76 500 FCFA
       </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="3" data-price="7500" aria-label="Acheter Pack Start ÉNERGIE">
+    <button class="buy-button buy-btn" data-product-id="3" data-price="30000" aria-label="Acheter Pack Start ÉNERGIE">
       <span class="btn-text">Investir maintenant</span>
     </button>
   </div>
-  
-  
-   <!-- Forfait VIP 4 -->
+
+  <!-- Forfait VIP 4 -->
   <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 4">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
-    <div class="price">19.500FCFA</div>
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 4" />
+    <div class="price">100.000FCFA</div>
     <div class="title">LV-4</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>4.000 FCFA 
+        <label>revenus par jours</label>25 000 FCFA
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>28.000 FCFA 
+        <label>Gain par semaine</label>175 000 FCFA
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours 
+        <label>Cycle</label>10 Jours
       </div>
       <div class="detail">
-        <label>Gain Total</label>676.000 FCFA 
+        <label>Gain Total</label>250 000 FCFA
       </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="4" data-price="19500" aria-label="Acheter Pack Start ÉNERGIE">
+    <button class="buy-button buy-btn" data-product-id="4" data-price="100000" aria-label="Acheter Pack Start ÉNERGIE">
       <span class="btn-text">Investir maintenant</span>
     </button>
   </div>
-  
-   <!-- Forfait VIP 5 -->
+
+  <!-- Forfait VIP 5 -->
   <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 5">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
-    <div class="price">40.000FCFA</div>
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 5" />
+    <div class="price"></div>
     <div class="title">LV-5</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>8.000 FCFA 
+        <label>Gain Quotidien</label>
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>56.000 FCFA 
+        <label>Gain Hebdomadaire</label>
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours 
+        <label>Cycle</label>
       </div>
       <div class="detail">
-        <label>Gain Total</label>1.352.000 FCFA 
+        <label>Gain Total</label>
       </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="5" data-price="40000" aria-label="Acheter Pack Start ÉNERGIE">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
+    <!-- Bouton remplacé par cadenas + message revenus -->
+    <div class="lock-notice">
+      <span class="material-icons">lock</span>Disponible bientôt
+      <p>Revenus INCROYABLES à venir !</p>
+    </div>
   </div>
-  
-   
-  
-   <!-- Forfait VIP 6 -->
+
+  <!-- Forfait VIP 6 -->
   <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 6">
     <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 6" />
-    <div class="price">70.000FCFA</div>
+    <div class="price"></div>
     <div class="title">LV-6</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>22.000 FCFA 
+        <label>Gain Quotidien</label>      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>154.000 FCFA 
+        <label>Cycle</label>
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours 
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>3.718.000 FCFA 
+        <label>Gain Total</label>
       </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="2" data-price="70000" aria-label="Acheter Pack Start ÉNERGIE">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
+    <!-- Bouton remplacé par cadenas + message revenus -->
+    <div class="lock-notice">
+      <span class="material-icons">lock</span>Disponible bientôt
+      <p>Revenus INCROYABLES à venir !</p>
+    </div>
   </div>
 
-
-
-<!-- Forfait VIP 7 -->
+  <!-- Forfait VIP 7 -->
   <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 7">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
-    <div class="price">130.000FCFA</div>
+    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 7" />
+    <div class="price"></div>
     <div class="title">LV-7</div>
     <div class="plan-details">
       <div class="detail">
-        <label>Gain Quotidien</label>50.000 FCFA 
+        <label>Gain Quotidien</label>      </div>
+      <div class="detail">
+        <label>Gain Hebdomadaire</label>
       </div>
       <div class="detail">
-        <label>Gain Hebdomadaire</label>350.000 FCFA 
+        <label>Cycle</label>
       </div>
       <div class="detail">
-        <label>Cycle</label>169 Jours 
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>8.450.000 FCFA 
-      </div>
+        <label>Gain Total</label>     </div>
     </div>
-    <button class="buy-button buy-btn" data-product-id="7" data-price="130000" aria-label="Acheter Pack Start ÉNERGIE">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
+    <!-- Bouton remplacé par cadenas + message revenus -->
+    <div class="lock-notice">
+      <span class="material-icons">lock</span>Disponible bientôt
+      <p>Revenus INCROYABLES à venir !</p>
+    </div>
   </div>
-  
-  
-  
+
   <!-- Footer navigation -->
- <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
-  <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
-    <span class="material-icons icon" aria-hidden="true">home</span>
-    Accueil
-  </div>
-  <div class="nav-icon" data-link="appareils.html" tabindex="0" role="link" aria-label="Appareils">
-    <span class="material-icons icon" aria-hidden="true">smartphone</span>
-    Nescafé
-  </div>
-  <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
-    <span class="material-icons icon" aria-hidden="true">list_alt</span>
-    Mes Nescafé
-  </div>
-  <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
-    <span class="material-icons icon" aria-hidden="true">person</span>
-    Profil
-  </div>
-</nav>
+  <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
+    <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
+      <span class="material-icons icon" aria-hidden="true">home</span>
+      Accueil
+    </div>
+    <div class="nav-icon" data-link="appareils.html" tabindex="0" role="link" aria-label="Appareils">
+      <span class="material-icons icon" aria-hidden="true">smartphone</span>
+      Nescafé
+    </div>
+    <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
+      <span class="material-icons icon" aria-hidden="true">list_alt</span>
+      Mes Nescafé
+    </div>
+    <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
+      <span class="material-icons icon" aria-hidden="true">person</span>
+      Profil
+    </div>
+  </nav>
 
   <!-- Script JavaScript (module) -->
- <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-    set,
-    update,
-    onValue,
-    query,
-    orderByChild,
-    equalTo,
-    runTransaction
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      update,
+      push
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  // === Configuration et initialization Firebase ===
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
-    authDomain: "nescafe-cba7a.firebaseapp.com",
-    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
-    projectId: "nescafe-cba7a",
-    storageBucket: "nescafe-cba7a.firebasestorage.app",
-    messagingSenderId: "91209018725",
-    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
-  };
+    // === Configuration et initialization Firebase ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+      authDomain: "nescafe-cba7a.firebaseapp.com",
+      databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+      projectId: "nescafe-cba7a",
+      storageBucket: "nescafe-cba7a.firebasestorage.app",
+      messagingSenderId: "91209018725",
+      appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+    };
 
     // Initialisation Firebase
     const app = initializeApp(firebaseConfig);
@@ -498,72 +509,72 @@
     let currentUser = null;
     let userBalance = 0;
 
-    // Configuration des produits
+    // Configuration des produits - données corrigées et mises à jour
     const PRODUCT_CONFIG = {
-        1: {
-            nom: "LV1",
-            dailyRevenue: 300,
-            cycleDuration: 169,
-            totalRevenue: 50700,
-            price: 1500,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        },
-        2: {
-            nom: "LV2",
-            dailyRevenue: 600,
-            cycleDuration: 169,
-            totalRevenue: 101400,
-            price: 3500,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        },
-        3: {
-            nom: "LV3",
-            dailyRevenue: 1300,
-            cycleDuration: 169,
-            totalRevenue: 7500,
-            price: 13000,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        },
-        4: {
-            nom: "LV4",
-            dailyRevenue: 4000,
-            cycleDuration: 169,
-            totalRevenue: 676000,
-            price: 19500,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        },
-        5: {
-            nom: "LV5",
-            dailyRevenue: 8000,
-            cycleDuration: 169,
-            totalRevenue: 1352000,
-            price: 40000,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        },
-        6: {
-            nom: "LV7",
-            dailyRevenue: 22000,
-            cycleDuration: 169,
-            totalRevenue: 3718000,
-            price: 70000,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        },
-        7: {
-            nom: "LV7",
-            dailyRevenue: 50000,
-            cycleDuration: 169,
-            totalRevenue: 8450000,
-            price: 130000,
-            limit: 1,
-            image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-        }
-    };    
+      1: {
+        nom: "LV-1",
+        dailyRevenue: 1000,
+        cycleDuration: 15,
+        totalRevenue: 15000,
+        price: 5500,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      },
+      2: {
+        nom: "LV-2",
+        dailyRevenue: 2500,
+        cycleDuration: 16,
+        totalRevenue: 40000,
+        price: 15000,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      },
+      3: {
+        nom: "LV-3",
+        dailyRevenue: 4500,
+        cycleDuration: 17,
+        totalRevenue: 76500,
+        price: 30000,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      },
+      4: {
+        nom: "LV-4",
+        dailyRevenue: 25000,
+        cycleDuration: 10,
+        totalRevenue: 250000,
+        price: 100000,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      },
+      5: {
+        nom: "LV-5",
+        dailyRevenue: 8000,
+        cycleDuration: 169,
+        totalRevenue: 1352000,
+        price: 40000,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      },
+      6: {
+        nom: "LV-6",
+        dailyRevenue: 22000,
+        cycleDuration: 169,
+        totalRevenue: 3718000,
+        price: 70000,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      },
+      7: {
+        nom: "LV-7",
+        dailyRevenue: 50000,
+        cycleDuration: 169,
+        totalRevenue: 8450000,
+        price: 130000,
+        limit: 1,
+        image: "https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
+      }
+    };
 
     /*
      * Affiche une notification dans la page
@@ -632,7 +643,22 @@
 
           const investBtns = document.querySelectorAll(`.buy-button[data-product-id="${productId}"]`);
           investBtns.forEach(investBtn => {
-            if (remainingPurchases <= 0) {
+            if ([5, 6, 7].includes(Number(productId))) {
+              // Désactiver LV5, LV6, LV7
+              investBtn.disabled = true;
+              investBtn.style.display = 'none';
+              const container = investBtn.parentElement;
+              // Vérifie si le lock-notice est déjà ajouté
+              if (!container.querySelector('.lock-notice')) {
+                const lockDiv = document.createElement('div');
+                lockDiv.classList.add('lock-notice');
+                lockDiv.innerHTML = `
+                  <span class="material-icons" style="font-size:1.6rem;">lock</span>Disponible bientôt
+                  <p>Revenus INCROYABLES à venir !</p>
+                `;
+                container.appendChild(lockDiv);
+              }
+            } else if (remainingPurchases <= 0) {
               investBtn.disabled = true;
               const textSpan = investBtn.querySelector('.btn-text');
               if (textSpan) {
@@ -662,6 +688,10 @@
     async function investProduct(productId, amount) {
       if (!currentUser) {
         showNotification("Veuillez vous connecter pour investir", "error");
+        return;
+      }
+      if ([5, 6, 7].includes(Number(productId))) {
+        showNotification("Ce forfait sera disponible bientôt", "error");
         return;
       }
 
