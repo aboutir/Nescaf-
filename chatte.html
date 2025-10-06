@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+<title>Chat Bot Nescafé - Plein écran compact</title>
+<style>
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    background: #ece5dd;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  #chat-container {
+    width: 100vw;
+    height: 100vh;
+    max-width: 480px;
+    background: white;
+    box-shadow: 0 0 14px rgba(0,0,0,0.18);
+    display: flex;
+    flex-direction: column;
+  }
+  #header-bar {
+    height: 36px;
+    background: #075e54;
+    color: white;
+    font-weight: 700;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #info-message {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  #online-count {
+    font-size: 0.85rem;
+    background: #056d61;
+    padding: 2px 8px;
+    border-radius: 16px;
+    white-space: nowrap;
+  }
+  #chat-messages {
+    flex-grow: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    overflow-x: hidden;
+    font-size: 0.9rem;
+  }
+  .message {
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    line-height: 1.25;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+  .message.bot {
+    background: #ebebeb;
+    color: #303030;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .message.user {
+    background: #dcf8c6;
+    color: #202020;
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+  }
+  .message .username {
+    font-weight: 700;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+    color: #555;
+    user-select: text;
+  }
+  #typing-indicator {
+    height: 32px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 600;
+    visibility: hidden;
+    user-select: none;
+  }
+  #typing-indicator.visible {
+    visibility: visible;
+  }
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    background: #555;
+    border-radius: 50%;
+    opacity: 0.4;
+    animation: blink 1.4s infinite;
+  }
+  .typing-dot:nth-child(1) { animation-delay: 0s; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.4; }
+    40% { opacity: 1; }
+  }
+  #input-area {
+    display: flex;
+    padding: 8px 12px;
+    background: #f0f0f0;
+    border-top: 1px solid #ccc;
+  }
+  #input-area input[type="text"] {
+    flex-grow: 1;
+    padding: 10px 14px;
+    border-radius: 20px;
+    border: 1px solid #bbb;
+    font-size: 0.9rem;
+    outline: none;
+    user-select: text;
+  }
+  #input-area button {
+    margin-left: 8px;
+    background-color: #075e54;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  #input-area button:hover {
+    background-color: #0a7d68;
+  }
+</style>
+</head>
+<body>
+
+<div id="chat-container" role="main" aria-label="Chat discussion Nescafé automatique fullscreen compact">
+  <div id="header-bar">
+    <div id="info-message">Vous pouvez écrire votre commentaire</div>
+    <div id="online-count" aria-live="polite" aria-atomic="true" aria-label="Membres en ligne">Membres en ligne : <span id="online-number"></span></div>
+  </div>
+
+  <div id="chat-messages" aria-live="polite" aria-relevant="additions"></div>
+
+  <div id="typing-indicator" aria-live="assertive" aria-label="Bot en train d’écrire">
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <div class="typing-dot"></div>
+    <span id="typing-name">Un membre écrit...</span>
+  </div>
+
+  <div id="input-area">
+    <input type="text" id="userInput" placeholder="Écrire un message..." aria-label="Zone de saisie de message" />
+    <button id="sendBtn" aria-label="Envoyer le message">Envoyer</button>
+  </div>
+</div>
+
+<script>
+  const africanLastNames = [
+    'Kouakou', 'Yao', 'Konan', 'Traoré', 'Diallo', 'Kone', 'Gbané', 'Zadi', 'Assi', 'N’Guessan',
+    'Mensah', 'Boateng', 'Owusu', 'Annan', 'Acheampong',
+    'Ndiaye', 'Diop', 'Fall', 'Sow', 'Gueye',
+    'Nguyen', 'Koffi', 'Mbemba', 'Sawadogo', 'Sanogo',
+    'Chirwa', 'Phiri', 'Zomba', 'Mwale', 'Kumwenda',
+    'Kamara', 'Sesay', 'Conteh', 'Bangura', 'Kallon'
+  ];
+  const africanFirstNames = [
+    'Jean', 'Claude', 'Mohamed', 'Alain', 'Oumar', 'Ismaël', 'Kouadio', 'Serge', 'Emmanuel', 'Yves',
+    'Kwame', 'Kofi', 'Ama', 'Nana', 'Yaa', 'Aminata', 'Fatou', 'Abdoulaye', 'Cheikh', 'Moussa'
+  ];
+  const motivatingMessages = [
+   "Chaque jour avec Nestlé est une nouvelle opportunité de réussite.",
+      "Suivez votre chemin avec assurance grâce à Nestlé, le partenaire de votre croissance.",
+      "Restez positifs, avec Nestlé la réussite est entre vos mains.",
+      "La motivation collective chez Nestlé est la clé de notre prospérité.",
+      "Les plateformes de scam nous ont trop arnaqués, mais avec Nestlé, forcé on va se rattraper.",
+      "PepsiCo nous a déçus, Coca et Sunpower aussi — cette fois avec Nestlé, c’est du sérieux !"
+    
+  ];
+  const autoResponses = [
+    { keywords: ['retrait', 'attente', 'paiement'], response: "Nous sommes confiants, le paiement de demain arrivera comme prévu." },
+    { keywords: ['projet', 'nestlé'], response: "Nestlé est un projet solide, vous pouvez y croire pleinement." },
+    { keywords: ['investir', 'niveau'], response: "Choisissez un plan qui correspond à votre budget et objectifs." },
+    { keywords: ['support', 'aide'], response: "N’hésitez pas à contacter l’équipe support pour toute question." },
+    { keywords: ['bonjour', 'salut', 'hello'], response: "Salut ! Restez motivés et impliqués." }
+  ];
+  function getAutoResponse(msg) {
+    const lower = msg.toLowerCase();
+    for (let {keywords, response} of autoResponses) {
+      if (keywords.some(k => lower.includes(k))) return response;
+    }
+    return motivatingMessages[Math.floor(Math.random() * motivatingMessages.length)];
+  }
+  function generateName() {
+    const last = africanLastNames[Math.floor(Math.random() * africanLastNames.length)];
+    const first = africanFirstNames[Math.floor(Math.random() * africanFirstNames.length)];
+    return `${last} ${first}`;
+  }
+  const bots = [];
+  for (let i = 0; i < 1000; i++) bots.push({ id: i, name: generateName() });
+  const chatDiv = document.getElementById('chat-messages');
+  const inputField = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const typingDiv = document.getElementById('typing-indicator');
+  const typingName = document.getElementById('typing-name');
+  const onlineCountSpan = document.getElementById('online-number');
+  function updateOnline() {
+    onlineCountSpan.textContent = 300 + Math.floor(Math.random() * 150);
+  }
+  updateOnline();
+  const messageQueue = [];
+  let processing = false;
+  function typeMessage(name, message, isBot, callback) {
+    const el = document.createElement('div');
+    el.className = 'message ' + (isBot ? 'bot' : 'user');
+    el.innerHTML = `<span class="username">${name}:</span> <span class="typed-text"></span>`;
+    chatDiv.appendChild(el);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+    const txtSpan = el.querySelector('.typed-text');
+    let idx = 0;
+    function typeNext() {
+      if (idx < message.length) {
+        txtSpan.textContent += message.charAt(idx);
+        idx++;
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        setTimeout(typeNext, 60);
+      } else {
+        if (callback) callback();
+      }
+    }
+    typeNext();
+  }
+  function enqueueBot(bot, message) {
+    messageQueue.push({ bot, message });
+    processQueue();
+  }
+  async function processQueue() {
+    if (processing || messageQueue.length === 0) return;
+    processing = true;
+    const { bot, message } = messageQueue.shift();
+    typingName.textContent = `${bot.name} écrit...`;
+    typingDiv.classList.add('visible');
+    await new Promise(r => setTimeout(r, message.length * 60 + 1000));
+    typingDiv.classList.remove('visible');
+    typeMessage(bot.name, message, true, () => {
+      processing = false;
+      setTimeout(processQueue, 800);
+    });
+  }
+  function startBots() {
+    bots.forEach(bot => {
+      setTimeout(() => {
+        const msg = motivatingMessages[Math.floor(Math.random() * motivatingMessages.length)];
+        enqueueBot(bot, msg);
+        setInterval(() => {
+          const msgX = motivatingMessages[Math.floor(Math.random() * motivatingMessages.length)];
+          enqueueBot(bot, msgX);
+        }, 18000 + Math.random() * 20000);
+      }, Math.random() * 10000);
+    });
+  }
+  sendBtn.addEventListener('click', () => handleUser());
+  inputField.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleUser();
+    }
+  });
+  function handleUser() {
+    const val = inputField.value.trim();
+    if (!val) return;
+    addMessage('Vous', val, false);
+    inputField.value = '';
+    const responderBot = bots[Math.floor(Math.random() * bots.length)];
+    const response = getAutoResponse(val);
+    setTimeout(() => enqueueBot(responderBot, response), 1200 + Math.random() * 1800);
+  }
+  function addMessage(name, text, isBot) {
+    const el = document.createElement('div');
+    el.className = 'message ' + (isBot ? 'bot' : 'user');
+    el.innerHTML = `<span class="username">${name}:</span> ${text}`;
+    chatDiv.appendChild(el);
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  }
+  window.onload = () => {
+    addMessage('Système', 'soyez les bienvenus vous pouvez maintenant laissé votre commentaire de ce vous en pensez de nous.', true);
+    updateOnline();
+    startBots();
+  };
+</script>
+
+</body>
+</html>
