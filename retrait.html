@@ -28,7 +28,7 @@
     }
     form#withdrawalForm {
       background: transparent;
-      padding: 25px 25px 10px 25px; /* padding bottom réduit car instructions en bas */
+      padding: 25px 25px 10px 25px;
       border-radius: 16px;
       box-sizing: border-box;
       width: 100%;
@@ -51,7 +51,6 @@
       margin-bottom: 12px;
       user-select: none;
     }
-    /* Solde actuel */
     #current-balance {
       font-weight: 700;
       font-size: 1.3rem;
@@ -60,7 +59,6 @@
       text-align: center;
       user-select: text;
     }
-    /* Inputs */
     input[type="number"], input[type="text"] {
       width: 100%;
       padding: 14px 18px;
@@ -79,7 +77,6 @@
       border-color: #00529b;
       background-color: #dde8ff;
     }
-    /* Bouton */
     button {
       margin-top: 30px;
       width: 100%;
@@ -109,7 +106,6 @@
       background: #001638;
       box-shadow: none;
     }
-    /* Message d’erreur/succès */
     #message > div {
       margin-top: 12px;
       margin-bottom: 20px;
@@ -130,13 +126,11 @@
       color: #0f5132;
       border: 1.5px solid #badbcc;
     }
-
-    /* Résumé retrait dynamique - placé en haut */
     #withdrawal-summary {
       background: #dde8ff;
       border-radius: 14px;
       padding: 16px 20px;
-      margin-bottom: 20px; /* espace vers form inputs */
+      margin-bottom: 20px;
       color: #003366;
       font-weight: 700;
       user-select: text;
@@ -152,12 +146,9 @@
     #withdrawal-summary.visible {
       display: block;
     }
-    /* Cache par défaut */
     #withdrawal-summary:not(.visible) {
       display: none;
     }
-
-    /* Info retrait textuelle */
     #withdrawal-info {
       margin-top: 40px;
       padding-left: 15px;
@@ -167,7 +158,6 @@
       font-size: 0.94rem;
       line-height: 1.5;
       user-select: text;
-      /* Suppression du fond blanc et ombre */
       background: transparent;
       box-shadow: none;
     }
@@ -187,7 +177,6 @@
     #withdrawal-info ol li {
       margin-bottom: 10px;
     }
-    /* Loading overlay */
     .loading {
       display: none;
       position: fixed;
@@ -221,16 +210,15 @@
     <h2>Retrait d'argent</h2>
     <div id="current-balance" aria-live="polite">Chargement du solde...</div>
 
-    <!-- Résumé calcul des frais en haut -->
     <div id="withdrawal-summary" aria-live="polite" role="region" aria-label="Résumé du retrait">
       <span>Montant demandé : <strong id="requested-amount">0 FCFA</strong></span>
-      <span>Frais (17%) : <strong id="fees-amount">0 FCFA</strong></span>
+      <span>Frais (10%) : <strong id="fees-amount">0 FCFA</strong></span>
       <span>Montant crédité : <strong id="total-amount">0 FCFA</strong></span>
     </div>
 
     <form id="withdrawalForm" novalidate>
       <label for="amount">Montant à retirer (FCFA)</label>
-      <input type="number" id="amount" name="amount" min="900" placeholder="Entrez un montant (min 900)" autocomplete="off" required aria-required="true" />
+      <input type="number" id="amount" name="amount" min="1000" placeholder="Entrez un montant (min 1000)" autocomplete="off" required aria-required="true" />
 
       <label for="withdrawalCode">Code de retrait</label>
       <input type="text" id="withdrawalCode" name="withdrawalCode" placeholder="Entrez votre code de retrait" autocomplete="off" required aria-required="true" />
@@ -240,14 +228,13 @@
       <button type="button" id="withdrawal-button" disabled>Effectuer le retrait</button>
     </form>
 
-    <!-- Instructions info retrait en bas -->
     <section id="withdrawal-info" aria-label="Informations sur le retrait">
       <h3>Informations importantes sur le retrait</h3>
       <ol>
-        <li>Le montant minimum de retrait est de <strong>900 FCFA</strong>.</li>
+        <li>Le montant minimum de retrait est de <strong>1000 FCFA</strong>.</li>
         <li>Il n'y a pas de limite de temps pour les retraits ; vous pouvez retirer à tout moment.</li>
         <li>Les retraits sont limités à un par utilisateur et par jour.</li>
-        <li><strong>17 %</strong> des frais de retrait seront utilisés pour financer le fonctionnement de la plateforme.</li>
+        <li><strong>10 %</strong> des frais de retrait seront utilisés pour financer le fonctionnement de la plateforme.</li>
         <li>Les retraits seront crédités sur votre compte dans les <strong>30 minutes</strong>, ou dans les <strong>24 heures</strong> dans des circonstances exceptionnelles.</li>
         <li>Veuillez saisir soigneusement vos informations de compte de retrait, toute erreur entraînera l'échec du retrait.</li>
         <li>Pour protéger les intérêts de la plateforme et de ses membres, vous devez être membre LV pour effectuer un retrait.</li>
@@ -258,27 +245,10 @@
   <div class="loading" aria-hidden="true"><div class="spinner" aria-label="Chargement en cours"></div></div>
 
 <script type="module">
-  // === Import Firebase ===
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-    update,
-    push,
-    set,
-    onValue,
-    query,
-    orderByChild,
-    equalTo,
-    runTransaction
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import { getDatabase, ref, get, update, push, query, orderByChild, equalTo, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  // === Configuration et initialization Firebase ===
   const firebaseConfig = {
     apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
     authDomain: "nescafe-cba7a.firebaseapp.com",
@@ -288,169 +258,193 @@
     messagingSenderId: "91209018725",
     appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
   };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
 
-    const MIN_WITHDRAWAL = 900;
-    const FEE_RATE = 0.17;
-    const MAX_WITHDRAWAL = 50000;
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
 
-    let currentBalance = 0;
-    let currentUser = null;
-    let userWithdrawalConfig = null;
+  const MIN_WITHDRAWAL = 1000;
+  const FEE_RATE = 0.10;
+  const MAX_WITHDRAWAL = 50000;
 
-    function formatAmount(amount) {
-      return amount.toLocaleString('fr-FR') + ' FCFA';
-    }
+  let currentBalance = 0;
+  let currentUser = null;
+  let userWithdrawalConfig = null;
 
-    function showMessage(msg, isError = true) {
-      const el = document.getElementById('message');
-      el.innerHTML = `<div class="${isError ? 'error' : 'success'}">${msg}</div>`;
-    }
+  function formatAmount(amount) {
+    return amount.toLocaleString('fr-FR') + ' FCFA';
+  }
 
-    function isValidWithdrawalTime() {
-      return true; // Retraits possibles à tout moment comme demandé
-    }
+  function showMessage(msg, isError = true) {
+    const el = document.getElementById('message');
+    el.innerHTML = msg ? `<div class="${isError ? 'error' : 'success'}">${msg}</div>` : '';
+  }
 
-    async function loadUserData(uid) {
-      try {
-        const userRef = ref(database, `users/${uid}`);
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          currentBalance = userData.balance || 0;
-          userWithdrawalConfig = userData.withdrawalConfig || null;
-          document.getElementById("current-balance").textContent = formatAmount(currentBalance);
-        } else {
-          document.getElementById("current-balance").textContent = "Utilisateur inconnu";
-        }
-      } catch (error) {
-        console.error("Erreur chargement données:", error);
-        showMessage("Erreur chargement données");
-      }
-    }
+  function isValidWithdrawalTime() {
+    return true; // les retraits sont autorisés à tout moment
+  }
 
-    function validateWithdrawalCode(inputCode) {
-      return userWithdrawalConfig && userWithdrawalConfig.code === inputCode;
-    }
-
-    function updateWithdrawalSummary() {
-      const amountInput = document.getElementById("amount");
-      const codeInput = document.getElementById("withdrawalCode");
-      const summary = document.getElementById("withdrawal-summary");
-      const button = document.getElementById("withdrawal-button");
-      const amount = parseFloat(amountInput.value) || 0;
-      const withdrawalCode = codeInput.value.trim();
-
-      const validTime = isValidWithdrawalTime();
-      const validAmount = amount >= MIN_WITHDRAWAL && amount <= MAX_WITHDRAWAL;
-      const sufficientBalance = amount <= currentBalance;
-      const hasCode = withdrawalCode.length > 0;
-
-      button.disabled = !(validTime && validAmount && sufficientBalance && hasCode);
-
-      if (!validTime) {
-        showMessage("Les retraits sont autorisés à tout moment", false);
-      } else if (!validAmount) {
-        showMessage(`Le montant doit être compris entre ${MIN_WITHDRAWAL} et ${MAX_WITHDRAWAL} FCFA`);
-      } else if (!sufficientBalance) {
-        showMessage("Solde insuffisant");
-      } else if (!hasCode) {
-        showMessage("Veuillez saisir votre code de retrait");
+  async function loadUserData(uid) {
+    try {
+      const userRef = ref(database, `users/${uid}`);
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        currentBalance = userData.balance || 0;
+        userWithdrawalConfig = userData.withdrawalConfig || null;
+        document.getElementById("current-balance").textContent = formatAmount(currentBalance);
       } else {
-        showMessage("", false);
+        document.getElementById("current-balance").textContent = "Utilisateur inconnu";
       }
+    } catch (error) {
+      console.error("Erreur chargement données:", error);
+      showMessage("Erreur chargement données");
+    }
+  }
 
-      if (amount > 0) {
-        const fees = Math.round(amount * FEE_RATE);
-        const total = amount - fees;
+  function validateWithdrawalCode(inputCode) {
+    return userWithdrawalConfig && userWithdrawalConfig.code === inputCode;
+  }
 
-        document.getElementById("requested-amount").textContent = formatAmount(amount);
-        document.getElementById("fees-amount").textContent = formatAmount(fees);
-        document.getElementById("total-amount").textContent = formatAmount(total);
+  function updateWithdrawalSummary() {
+    const amountInput = document.getElementById("amount");
+    const codeInput = document.getElementById("withdrawalCode");
+    const summary = document.getElementById("withdrawal-summary");
+    const button = document.getElementById("withdrawal-button");
+    const amount = parseFloat(amountInput.value) || 0;
+    const withdrawalCode = codeInput.value.trim();
 
-        summary.classList.add("visible");
-      } else {
-        summary.classList.remove("visible");
-      }
+    const validTime = isValidWithdrawalTime();
+    const validAmount = amount >= MIN_WITHDRAWAL && amount <= MAX_WITHDRAWAL;
+    const sufficientBalance = amount <= currentBalance;
+    const hasCode = withdrawalCode.length > 0;
+
+    button.disabled = !(validTime && validAmount && sufficientBalance && hasCode);
+
+    if (!validTime) {
+      showMessage("Les retraits sont autorisés à tout moment", false);
+    } else if (!validAmount) {
+      showMessage(`Le montant doit être compris entre ${MIN_WITHDRAWAL} et ${MAX_WITHDRAWAL} FCFA`);
+    } else if (!sufficientBalance) {
+      showMessage("Solde insuffisant");
+    } else if (!hasCode) {
+      showMessage("Veuillez saisir votre code de retrait");
+    } else {
+      showMessage("", false);
     }
 
-    async function processWithdrawal() {
-      if (!currentUser) {
-        showMessage("Veuillez vous connecter");
-        return;
-      }
-
-      if (!isValidWithdrawalTime()) {
-        showMessage("Les retraits sont autorisés à tout moment");
-        return;
-      }
-
-      const amount = parseFloat(document.getElementById("amount").value);
-      const withdrawalCode = document.getElementById("withdrawalCode").value.trim();
-
-      if (!validateWithdrawalCode(withdrawalCode)) {
-        showMessage("Code de retrait incorrect");
-        return;
-      }
-
-      if (isNaN(amount) || amount < MIN_WITHDRAWAL || amount > MAX_WITHDRAWAL) {
-        showMessage("Montant invalide");
-        return;
-      }
-
-      if (amount > currentBalance) {
-        showMessage("Solde insuffisant");
-        return;
-      }
-
+    if (amount > 0) {
       const fees = Math.round(amount * FEE_RATE);
-      const totalAmount = amount - fees;
-      const newBalance = currentBalance - amount;
+      const total = amount - fees;
 
-      try {
-        const updates = {};
-        updates[`users/${currentUser.uid}/balance`] = newBalance;
+      document.getElementById("requested-amount").textContent = formatAmount(amount);
+      document.getElementById("fees-amount").textContent = formatAmount(fees);
+      document.getElementById("total-amount").textContent = formatAmount(total);
 
-        const historyRef = ref(database, `users/${currentUser.uid}/withdrawalHistory`);
-        const newKey = push(historyRef).key;
+      summary.classList.add("visible");
+    } else {
+      summary.classList.remove("visible");
+    }
+  }
 
-        updates[`users/${currentUser.uid}/withdrawalHistory/${newKey}`] = {
-          amount,
-          fees,
-          totalAmount,
-          timestamp: serverTimestamp(),
-          status: "Traitement Bancaire"
-        };
-
-        await update(ref(database), updates);
-
-        // Redirection après succès
-        window.location.href = "historique retrait.html";
-      } catch (error) {
-        console.error("Erreur retrait:", error);
-        showMessage("Erreur lors du retrait. Réessayez.");
+  async function isPendingWithdrawal(uid) {
+    try {
+      // On vérifie l'existence d'un retrait en cours (statut différent de "Validé")
+      const historyRef = query(ref(database, `users/${uid}/withdrawalHistory`), orderByChild('status'));
+      const snapshot = await get(historyRef);
+      if (snapshot.exists()) {
+        const withdrawals = snapshot.val();
+        for (const key in withdrawals) {
+          if (withdrawals[key].status !== "Validé") {
+            return true;
+          }
+        }
       }
+      return false;
+    } catch (error) {
+      console.error("Erreur vérification retrait en cours :", error);
+      return false; // en cas d'erreur, on autorise pas de nouveaux retraits par sécurité
+    }
+  }
+
+  async function processWithdrawal() {
+    if (!currentUser) {
+      showMessage("Veuillez vous connecter");
+      return;
     }
 
-    onAuthStateChanged(auth, (user) => {
-      currentUser = user;
-      if (user) {
-        loadUserData(user.uid);
-      } else {
-        document.getElementById("current-balance").textContent = "Non connecté";
-        showMessage("Connectez-vous pour effectuer un retrait");
-        document.getElementById("withdrawal-button").disabled = true;
-      }
-    });
+    if (!isValidWithdrawalTime()) {
+      showMessage("Les retraits sont autorisés à tout moment");
+      return;
+    }
 
-    document.getElementById("amount").addEventListener("input", updateWithdrawalSummary);
-    document.getElementById("withdrawalCode").addEventListener("input", updateWithdrawalSummary);
-    document.getElementById("withdrawal-button").addEventListener("click", processWithdrawal);
+    if (await isPendingWithdrawal(currentUser.uid)) {
+      showMessage("Un retrait est déjà en cours, veuillez attendre sa validation avant d'en effectuer un nouveau");
+      return;
+    }
 
-    // Clear messages initially
-    showMessage("", false);
-  </script>
+    const amount = parseFloat(document.getElementById("amount").value);
+    const withdrawalCode = document.getElementById("withdrawalCode").value.trim();
+
+    if (!validateWithdrawalCode(withdrawalCode)) {
+      showMessage("Code de retrait incorrect");
+      return;
+    }
+
+    if (isNaN(amount) || amount < MIN_WITHDRAWAL || amount > MAX_WITHDRAWAL) {
+      showMessage("Montant invalide");
+      return;
+    }
+
+    if (amount > currentBalance) {
+      showMessage("Solde insuffisant");
+      return;
+    }
+
+    const fees = Math.round(amount * FEE_RATE);
+    const totalAmount = amount - fees;
+    const newBalance = currentBalance - amount;
+
+    try {
+      const updates = {};
+      updates[`users/${currentUser.uid}/balance`] = newBalance;
+
+      const historyRef = ref(database, `users/${currentUser.uid}/withdrawalHistory`);
+      const newKey = push(historyRef).key;
+
+      updates[`users/${currentUser.uid}/withdrawalHistory/${newKey}`] = {
+        amount,
+        fees,
+        totalAmount,
+        timestamp: serverTimestamp(),
+        status: "Traitement Bancaire"
+      };
+
+      await update(ref(database), updates);
+
+      window.location.href = "historique retrait.html";
+    } catch (error) {
+      console.error("Erreur retrait:", error);
+      showMessage("Erreur lors du retrait. Réessayez.");
+    }
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    if (user) {
+      loadUserData(user.uid);
+    } else {
+      document.getElementById("current-balance").textContent = "Non connecté";
+      showMessage("Connectez-vous pour effectuer un retrait");
+      document.getElementById("withdrawal-button").disabled = true;
+    }
+  });
+
+  document.getElementById("amount").addEventListener("input", updateWithdrawalSummary);
+  document.getElementById("withdrawalCode").addEventListener("input", updateWithdrawalSummary);
+  document.getElementById("withdrawal-button").addEventListener("click", processWithdrawal);
+
+  showMessage("", false);
+</script>
 </body>
 </html>
