@@ -4,530 +4,510 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Configuration Retrait</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  
   <style>
-    /* Style global */
-    body {
-      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #e9f1f7;
-      color: #2c3e50;
-      font-size: 1.15rem;
-      margin: 0;
-      padding: 20px 20px;
+    /* Reset léger */
+    * {
       box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 1rem;
+      color: #333;
       min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: center;
     }
-    .container {
-      max-width: 420px;
+    h1 {
+      margin-bottom: 1rem;
+      color: #0077cc;
+    }
+    form {
+      background: white;
+      padding: 1.5rem 2rem;
+      border-radius: 10px;
+      max-width: 400px;
       width: 100%;
-      padding: 0 15px;
-      box-sizing: border-box;
-    }
-    h2 {
-      font-weight: 800;
-      color: #003366;
-      font-size: 2.1rem;
-      margin-bottom: 15px;
-      text-align: center;
-      letter-spacing: 0.04em;
-      user-select: text;
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
     }
     label {
       display: block;
-      font-weight: 700;
-      color: #003366;
-      font-size: 1.15rem;
-      margin-bottom: 10px;
-      user-select: none;
+      margin-top: 1rem;
+      font-weight: 600;
     }
-    input[type="text"], input[type="tel"] {
+    input[type="text"],
+    input[type="tel"],
+    input[type="password"] {
       width: 100%;
-      padding: 14px 18px;
-      border-radius: 16px;
-      border: 2px solid #a3c1f7;
-      font-size: 1.1rem;
-      background: #e8f0ff;
-      color: #003366;
+      margin-top: 0.4rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    input[type="text"]:focus,
+    input[type="tel"]:focus,
+    input[type="password"]:focus {
+      border-color: #0077cc;
       outline: none;
-      box-sizing: border-box;
-      transition: border-color 0.3s ease, background-color 0.3s ease;
-      user-select: text;
-      margin-bottom: 20px;
     }
-    input[type="text"]:focus, input[type="tel"]:focus {
-      border-color: #00529b;
-      background-color: #d0e3ff;
-      color: #00264d;
-    }
-    /* Sélection opérateur */
     #operatorSelector {
-      width: 100%;
-      padding: 14px 18px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #003366;
-      background: #e7f0ff;
-      border: 2px solid #a3c1f7;
-      border-radius: 16px;
+      margin-top: 1rem;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       cursor: pointer;
       user-select: none;
-      box-sizing: border-box;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 25px;
-      transition: border-color 0.3s ease;
+      align-items: center;
+      font-weight: 500;
+      color: #0077cc;
+      background: #e6f0ff;
     }
-    #operatorSelector:hover {
-      border-color: #00529b;
+    #operatorSelector:focus {
+      outline: 2px solid #005fa3;
     }
     #selectedType {
-      user-select: none;
+      font-weight: 700;
     }
-    /* Icône flèche */
-    #operatorSelector::after {
-      content: "▾";
-      font-size: 1.2rem;
-      color: #00529b;
-      user-select: none;
-      margin-left: 8px;
+    button {
+      margin-top: 1.5rem;
+      width: 100%;
+      padding: 0.75rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #0077cc;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
-    /* Bottom Sheet & Overlay */
+    button:disabled {
+      background-color: #99c2e6;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background-color: #005fa3;
+    }
+
+    /* Message styles */
+    #message > div {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+      opacity: 0.95;
+    }
+    .message-error {
+      background: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+    }
+    .message-success {
+      background: #d1e7dd;
+      color: #0f5132;
+      border: 1px solid #badbcc;
+    }
+
+    /* Bottom sheet overlay */
     #overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0,0,0,0.4);
       opacity: 0;
-      pointer-events: none;
+      visibility: hidden;
       transition: opacity 0.3s ease;
-      z-index: 900;
+      z-index: 999;
     }
     #overlay.active {
-      pointer-events: auto;
       opacity: 1;
+      visibility: visible;
     }
+
+    /* Bottom sheet container */
     #bottomSheet {
       position: fixed;
       bottom: -300px;
       left: 0;
       right: 0;
-      background: #fff;
-      max-width: 420px;
-      margin: 0 auto;
+      background: white;
       border-radius: 16px 16px 0 0;
-      box-shadow: 0 -6px 20px rgba(0,0,0,0.15);
-      padding: 20px 20px 30px 20px;
-      box-sizing: border-box;
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+      max-height: 300px;
+      overflow-y: auto;
       transition: bottom 0.3s ease;
       z-index: 1000;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
     }
     #bottomSheet.active {
       bottom: 0;
     }
-    #bottomSheet h3 {
-      margin: 0 0 15px 0;
-      font-weight: 700;
-      font-size: 1.3rem;
-      color: #004080;
-      user-select: none;
-      text-align: center;
-    }
-    .operator-list {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
+
+    /* Operator options */
     .operator {
-      flex: 1 1 40%;
-      background: #e7f0ff;
-      padding: 12px 10px;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #004080;
-      text-align: center;
+      padding: 0.7rem 1rem;
+      margin-bottom: 0.6rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       cursor: pointer;
       user-select: none;
-      border: 2.5px solid transparent;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
+      font-weight: 600;
+      color: #0077cc;
     }
     .operator.selected {
-      background: #00529b;
-      color: #fff;
-      border-color: #003366;
-      box-shadow: 0 0 10px rgba(0, 82, 155, 0.5);
-      transform: scale(1.05);
+      background-color: #0077cc;
+      color: white;
+      border-color: #005fa3;
     }
-    /* Bottom Sheet buttons container */
-    .bottomSheet-buttons {
+    .operator:focus {
+      outline: 2px solid #005fa3;
+    }
+
+    /* Bottom Sheet buttons */
+    #bottomSheetButtons {
       display: flex;
       justify-content: space-between;
-      margin-top: 25px;
+      margin-top: auto;
     }
-    button#cancelBtn, button#confirmBtn {
-      flex: 1 1 48%;
-      padding: 14px 0;
-      font-size: 1.1rem;
+    #cancelBtn, #confirmBtn {
       font-weight: 700;
-      border-radius: 16px;
+      font-size: 1rem;
       border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
       cursor: pointer;
       user-select: none;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s;
     }
-    button#cancelBtn {
-      background: #f0f0f0;
-      color: #555;
+    #cancelBtn {
+      background-color: #ccc;
+      color: #444;
     }
-    button#cancelBtn:hover {
-      background: #d1d1d1;
+    #cancelBtn:hover {
+      background-color: #999;
     }
-    button#confirmBtn {
-      background: #00529b;
+    #confirmBtn {
+      background-color: #0077cc;
       color: white;
-      box-shadow: 0 5px 12px rgba(0, 82, 155, 0.5);
     }
-    button#confirmBtn:hover {
-      background: #003366;
+    #confirmBtn:hover {
+      background-color: #005fa3;
     }
-    /* Bouton principal placé en haut */
-    #submitBtn {
-      margin: 0 0 20px 0; /* marge en bas uniquement */
-      width: 100%;
-      padding: 16px 0;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: white;
-      background: linear-gradient(135deg, #00529b, #0073e6);
-      border: none;
-      border-radius: 16px;
-      cursor: pointer;
-      box-shadow: 0 6px 12px rgba(0, 115, 230, 0.5);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-    }
-    #submitBtn:disabled {
-      background: #a3bfdf;
-      cursor: not-allowed;
-      box-shadow: none;
-      color: #e0e6f0;
-    }
-    #submitBtn:hover:not(:disabled) {
-      background: linear-gradient(135deg, #003366, #00529b);
-      box-shadow: 0 8px 16px rgba(0, 82, 155, 0.7);
-    }
-    #submitBtn:active:not(:disabled) {
-      background: #00264d;
-      box-shadow: none;
-    }
-    /* Message affichage */
-    #message {
-      margin-top: 15px;
-      min-height: 28px;
-      user-select: none;
-    }
-    .message-error {
-      color: #b00020;
-      font-weight: 700;
-      animation: fadeIn 0.5s ease;
-    }
-    .message-success {
-      color: #188038;
-      font-weight: 700;
-      animation: fadeIn 0.5s ease;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      form {
+        padding: 1rem 1rem;
+        max-width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      #bottomSheet {
+        border-radius: 12px 12px 0 0;
+        max-height: 250px;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="container" role="main" aria-label="Formulaire de configuration de retrait">
-    <h2>Configurer votre retrait</h2>
 
-    <button id="submitBtn" type="button">Enregistrer</button>
+  <h1>Configuration Retrait</h1>
 
-    <div id="operatorSelector" role="button" aria-haspopup="dialog" aria-expanded="false" tabindex="0" aria-label="Sélectionner l'opérateur de retrait">
+  <form id="withdrawalForm" novalidate>
+    <label for="ownerName">Nom du propriétaire</label>
+    <input type="text" id="ownerName" class="field-input" placeholder="Entrez le nom complet" required />
+
+    <label for="phone">Numéro de compte</label>
+    <input type="tel" id="phone" class="field-input" placeholder="Ex: 0123456789" pattern="[0-9]{8,15}" inputmode="tel" required />
+
+    <label for="operatorSelector">Opérateur</label>
+    <div id="operatorSelector" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="operatorLabel">
       <span id="selectedType">MTN</span>
+      <span aria-hidden="true">&#9662;</span>
     </div>
     <input type="hidden" id="operator" name="operator" value="MTN" />
 
-    <label for="ownerName">Nom du propriétaire</label>
-    <input type="text" id="ownerName" name="ownerName" autocomplete="name" placeholder="Entrez le nom du propriétaire" class="field-input" />
-
-    <label for="phone">Numéro de compte</label>
-    <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Entrez le numéro de compte" class="field-input" />
-
     <label for="code">Code de retrait</label>
-    <input type="text" id="code" name="code" autocomplete="off" placeholder="Entrez votre code de retrait" minlength="4" class="field-input" />
+    <input type="password" id="code" class="field-input" placeholder="Au moins 4 caractères" minlength="4" required />
 
-    <div id="message" aria-live="assertive"></div>
+    <button type="button" id="submitBtn">Enregistrer</button>
 
-    <!-- Bottom sheet pour sélectionner opérateur -->
-    <div id="overlay" tabindex="-1" aria-hidden="true"></div>
-    <aside id="bottomSheet" role="dialog" aria-modal="true" aria-labelledby="bottomSheetTitle" aria-hidden="true" tabindex="-1">
-      <h3 id="bottomSheetTitle">Choisissez votre opérateur</h3>
-      <div class="operator-list" role="list">
-        <div class="operator selected" role="listitem" data-operator="MTN" tabindex="0">MTN</div>
-        <div class="operator" role="listitem" data-operator="Wave" tabindex="0">Wave</div>
-        <div class="operator" role="listitem" data-operator="Orange" tabindex="0">Orange</div>
-        <div class="operator" role="listitem" data-operator="Moov" tabindex="0">Moov</div>
-      </div>
-      <div class="bottomSheet-buttons">
-        <button id="cancelBtn" type="button">Annuler</button>
-        <button id="confirmBtn" type="button">Confirmer</button>
-      </div>
-    </aside>
-  </main>
+    <div id="message" aria-live="polite" aria-atomic="true"></div>
+  </form>
 
-<script type="module">
-  // === Import Firebase ===
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-    update,
-    push,
-    set,
-    onValue,
-    query,
-    orderByChild,
-    equalTo,
-    runTransaction
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+  <!-- Bottom Sheet -->
+  <div id="overlay" aria-hidden="true"></div>
+  <section id="bottomSheet" aria-hidden="true" aria-label="Sélecteur d'opérateur">
+    <div class="operator" tabindex="0" data-operator="MTN" role="option" aria-selected="true">MTN</div>
+    <div class="operator" tabindex="0" data-operator="Orange" role="option" aria-selected="false">Orange</div>
+    <div class="operator" tabindex="0" data-operator="Moov" role="option" aria-selected="false">Moov</div>
+    <div class="operator" tabindex="0" data-operator="Airtel" role="option" aria-selected="false">Airtel</div>
+    <div class="operator" tabindex="0" data-operator="Wave" role="option" aria-selected="false">Wave</div>
+  
+    <div id="bottomSheetButtons">
+      <button type="button" id="cancelBtn">Annuler</button>
+      <button type="button" id="confirmBtn">Confirmer</button>
+    </div>
+  </section>
 
-  // === Configuration et initialization Firebase ===
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
-    authDomain: "nescafe-cba7a.firebaseapp.com",
-    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
-    projectId: "nescafe-cba7a",
-    storageBucket: "nescafe-cba7a.firebasestorage.app",
-    messagingSenderId: "91209018725",
-    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const auth = getAuth(app);
+  <script type="module">
+    // === Import Firebase ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      get,
+      update,
+      push,
+      set,
+      onValue,
+      query,
+      orderByChild,
+      equalTo,
+      runTransaction
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const operatorSelector = document.getElementById('operatorSelector');
-    const bottomSheet = document.getElementById('bottomSheet');
-    const overlay = document.getElementById('overlay');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const confirmBtn = document.getElementById('confirmBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const options = document.querySelectorAll('.operator');
-    const selectedTypeDisplay = document.getElementById('selectedType');
-    const operatorInput = document.getElementById('operator');
-    const messageDiv = document.getElementById('message');
+    // === Configuration et initialization Firebase ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+      authDomain: "nescafe-cba7a.firebaseapp.com",
+      databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+      projectId: "nescafe-cba7a",
+      storageBucket: "nescafe-cba7a.firebasestorage.app",
+      messagingSenderId: "91209018725",
+      appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    if (!operatorSelector || !bottomSheet || !overlay || !cancelBtn || !confirmBtn || !submitBtn || !selectedTypeDisplay || !operatorInput) {
-      console.error('Certains éléments du DOM sont manquants');
-      return;
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const operatorSelector = document.getElementById('operatorSelector');
+      const bottomSheet = document.getElementById('bottomSheet');
+      const overlay = document.getElementById('overlay');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const submitBtn = document.getElementById('submitBtn');
+      const options = document.querySelectorAll('.operator');
+      const selectedTypeDisplay = document.getElementById('selectedType');
+      const operatorInput = document.getElementById('operator');
+      const messageDiv = document.getElementById('message');
 
-    let currentSelection = 'MTN';
-    let tempSelection = 'MTN';
-
-    function openBottomSheet() {
-      bottomSheet.classList.add('active');
-      overlay.classList.add('active');
-      bottomSheet.setAttribute('aria-hidden', 'false');
-      overlay.setAttribute('aria-hidden', 'false');
-      operatorSelector.setAttribute('aria-expanded', 'true');
-      tempSelection = currentSelection;
-      
-      options.forEach(option => {
-        option.classList.toggle('selected', option.dataset.operator === tempSelection);
-      });
-      // Focus first selected option for accessibility
-      const selected = bottomSheet.querySelector('.operator.selected');
-      if (selected) selected.focus();
-    }
-
-    function closeBottomSheet() {
-      bottomSheet.classList.remove('active');
-      overlay.classList.remove('active');
-      bottomSheet.setAttribute('aria-hidden', 'true');
-      overlay.setAttribute('aria-hidden', 'true');
-      operatorSelector.setAttribute('aria-expanded', 'false');
-      tempSelection = currentSelection;
-      operatorSelector.focus();
-    }
-
-    function confirmSelection() {
-      currentSelection = tempSelection;
-      selectedTypeDisplay.textContent = currentSelection;
-      operatorInput.value = currentSelection;
-      closeBottomSheet();
-    }
-
-    operatorSelector.addEventListener('click', openBottomSheet);
-    operatorSelector.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openBottomSheet();
+      if (!operatorSelector || !bottomSheet || !overlay || !cancelBtn || !confirmBtn || !submitBtn || !selectedTypeDisplay || !operatorInput) {
+        console.error('Certains éléments du DOM sont manquants');
+        return;
       }
-    });
-    overlay.addEventListener('click', closeBottomSheet);
-    cancelBtn.addEventListener('click', closeBottomSheet);
-    confirmBtn.addEventListener('click', confirmSelection);
 
-    options.forEach(option => {
-      option.addEventListener('click', () => {
-        options.forEach(opt => opt.classList.remove('selected'));
-        option.classList.add('selected');
-        tempSelection = option.dataset.operator;
-      });
-      option.addEventListener('keydown', e => {
+      let currentSelection = 'MTN';
+      let tempSelection = 'MTN';
+
+      function openBottomSheet() {
+        bottomSheet.classList.add('active');
+        overlay.classList.add('active');
+        bottomSheet.setAttribute('aria-hidden', 'false');
+        overlay.setAttribute('aria-hidden', 'false');
+        operatorSelector.setAttribute('aria-expanded', 'true');
+        tempSelection = currentSelection;
+        
+        options.forEach(option => {
+          const isSelected = option.dataset.operator === tempSelection;
+          option.classList.toggle('selected', isSelected);
+          option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        });
+        const selected = bottomSheet.querySelector('.operator.selected');
+        if (selected) selected.focus();
+      }
+
+      function closeBottomSheet() {
+        bottomSheet.classList.remove('active');
+        overlay.classList.remove('active');
+        bottomSheet.setAttribute('aria-hidden', 'true');
+        overlay.setAttribute('aria-hidden', 'true');
+        operatorSelector.setAttribute('aria-expanded', 'false');
+        tempSelection = currentSelection;
+        operatorSelector.focus();
+      }
+
+      function confirmSelection() {
+        currentSelection = tempSelection;
+        selectedTypeDisplay.textContent = currentSelection;
+        operatorInput.value = currentSelection;
+        closeBottomSheet();
+      }
+
+      operatorSelector.addEventListener('click', openBottomSheet);
+      operatorSelector.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
+          openBottomSheet();
+        }
+      });
+      overlay.addEventListener('click', closeBottomSheet);
+      cancelBtn.addEventListener('click', closeBottomSheet);
+      confirmBtn.addEventListener('click', confirmSelection);
+
+      options.forEach(option => {
+        option.addEventListener('click', () => {
           options.forEach(opt => opt.classList.remove('selected'));
           option.classList.add('selected');
           tempSelection = option.dataset.operator;
-        }
+          options.forEach(opt => opt.setAttribute('aria-selected', 'false'));
+          option.setAttribute('aria-selected', 'true');
+        });
+        option.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            tempSelection = option.dataset.operator;
+            options.forEach(opt => opt.setAttribute('aria-selected', 'false'));
+            option.setAttribute('aria-selected', 'true');
+          }
+        });
       });
-    });
 
-    function showMessage(text, type) {
-      if (!messageDiv) return;
-      messageDiv.innerHTML = `<div class="message-${type} animate__animated animate__fadeIn">${text}</div>`;
-      setTimeout(() => { messageDiv.innerHTML = ''; }, 5000);
-    }
-
-    function validateForm() {
-      const ownerName = document.getElementById('ownerName')?.value.trim();
-      const phone = document.getElementById('phone')?.value.trim();
-      const code = document.getElementById('code')?.value.trim();
-
-      if (!ownerName) {
-        showMessage('Le nom du propriétaire est requis', 'error');
-        return false;
+      function showMessage(text, type) {
+        if (!messageDiv) return;
+        messageDiv.innerHTML = `<div class="message-${type} animate__animated animate__fadeIn">${text}</div>`;
+        setTimeout(() => { messageDiv.innerHTML = ''; }, 5000);
       }
 
-      if (!phone) {
-        showMessage('Le numéro de compte est requis', 'error');
-        return false;
+      function validateForm() {
+        const ownerName = document.getElementById('ownerName')?.value.trim();
+        const phone = document.getElementById('phone')?.value.trim();
+        const code = document.getElementById('code')?.value.trim();
+
+        if (!ownerName) {
+          showMessage('Le nom du propriétaire est requis', 'error');
+          return false;
+        }
+
+        if (!phone) {
+          showMessage('Le numéro de compte est requis', 'error');
+          return false;
+        }
+
+        if (!code) {
+          showMessage('Le code de retrait est requis', 'error');
+          return false;
+        }
+
+        if (code.length < 4) {
+          showMessage('Le code de retrait doit contenir au moins 4 caractères', 'error');
+          return false;
+        }
+        return true;
       }
 
-      if (!code) {
-        showMessage('Le code de retrait est requis', 'error');
-        return false;
-      }
-
-      if (code.length < 4) {
-        showMessage('Le code de retrait doit contenir au moins 4 caractères', 'error');
-        return false;
-      }
-      return true;
-    }
-
-    async function setupWithdrawal() {
-      if (!validateForm()) {
-        return;
-      }
-
-      const ownerName = document.getElementById('ownerName').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const code = document.getElementById('code').value.trim();
-      const operator = operatorInput.value;
-
-      try {
-        const user = auth.currentUser;
-        if (!user) {
-          showMessage('Vous devez être connecté pour effectuer cette opération', 'error');
-          setTimeout(() => {
-            window.location.href = 'login.html';
-          }, 2000);
+      async function setupWithdrawal() {
+        if (!validateForm()) {
           return;
         }
 
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enregistrement en cours...';
+        const ownerName = document.getElementById('ownerName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const code = document.getElementById('code').value.trim();
+        const operator = operatorInput.value;
 
-        await set(ref(db, `users/${user.uid}/withdrawalConfig`), {
-          ownerName,
-          phone,
-          operator,
-          code,
-          configuredAt: Date.now(),
-          lastUpdated: new Date().toISOString()
-        });
+        try {
+          const user = auth.currentUser;
+          if (!user) {
+            showMessage('Vous devez être connecté pour effectuer cette opération', 'error');
+            setTimeout(() => {
+              window.location.href = 'login.html';
+            }, 2000);
+            return;
+          }
 
-        showMessage('Configuration enregistrée avec succès !', 'success');
-        
-        setTimeout(() => {
-          window.location.href = 'carte.html';
-        }, 2000);
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Enregistrement en cours...';
 
-      } catch (error) {
-        console.error('Erreur lors de l\'enregistrement:', error);
-        showMessage(`Erreur: ${error.message}`, 'error');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enregistrer';
-      }
-    }
-
-    function loadExistingData() {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const configRef = ref(db, `users/${user.uid}/withdrawalConfig`);
-      onValue(configRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const ownerNameField = document.getElementById('ownerName');
-          const phoneField = document.getElementById('phone');
-          const codeField = document.getElementById('code');
-          
-          if (ownerNameField) ownerNameField.value = data.ownerName || '';
-          if (phoneField) phoneField.value = data.phone || '';
-          if (codeField) codeField.value = data.code || '';
-          
-          currentSelection = data.operator || 'MTN';
-          selectedTypeDisplay.textContent = currentSelection;
-          operatorInput.value = currentSelection;
-
-          // Mark selected in bottom sheet accordingly
-          options.forEach(opt => {
-            opt.classList.toggle('selected', opt.dataset.operator === currentSelection);
+          await set(ref(db, `users/${user.uid}/withdrawalConfig`), {
+            ownerName,
+            phone,
+            operator,
+            code,
+            configuredAt: Date.now(),
+            lastUpdated: new Date().toISOString()
           });
-        }
-      });
-    }
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = 'login.html';
-        return;
+          showMessage('Configuration enregistrée avec succès !', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'carte.html';
+          }, 2000);
+
+        } catch (error) {
+          console.error('Erreur lors de l\'enregistrement:', error);
+          showMessage(`Erreur: ${error.message}`, 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Enregistrer';
+        }
       }
-      loadExistingData();
-    });
 
-    submitBtn.addEventListener('click', setupWithdrawal);
+      function loadExistingData() {
+        const user = auth.currentUser;
+        if (!user) return;
 
-    // Submit form on Enter key press inside inputs
-    document.querySelectorAll('.field-input').forEach(input => {
-      input.addEventListener('keypress', e => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          setupWithdrawal();
+        const configRef = ref(db, `users/${user.uid}/withdrawalConfig`);
+        onValue(configRef, (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const ownerNameField = document.getElementById('ownerName');
+            const phoneField = document.getElementById('phone');
+            const codeField = document.getElementById('code');
+            
+            if (ownerNameField) ownerNameField.value = data.ownerName || '';
+            if (phoneField) phoneField.value = data.phone || '';
+            if (codeField) codeField.value = data.code || '';
+            
+            currentSelection = data.operator || 'MTN';
+            selectedTypeDisplay.textContent = currentSelection;
+            operatorInput.value = currentSelection;
+
+            options.forEach(opt => {
+              const isSelected = opt.dataset.operator === currentSelection;
+              opt.classList.toggle('selected', isSelected);
+              opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+            });
+          }
+        });
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.href = 'login.html';
+          return;
         }
+        loadExistingData();
       });
-    });
 
-  });
-</script>
+      submitBtn.addEventListener('click', setupWithdrawal);
+
+      document.querySelectorAll('.field-input').forEach(input => {
+        input.addEventListener('keypress', e => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            setupWithdrawal();
+          }
+        });
+      });
+
+    });
+  </script>
+
 </body>
 </html>
