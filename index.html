@@ -332,7 +332,7 @@
 </div>
 
 <script>
-  // Fonction toggle formulaires
+  // Fonction pour basculer entre connexion et inscription
   function toggleForm() {
     const loginForm = document.getElementById('loginFormData');
     const signupForm = document.getElementById('signupFormData');
@@ -348,7 +348,7 @@
     }
   }
 
-  // Définition des formats téléphone et drapeaux
+  // Formats téléphone et drapeaux
   const phoneFormats = {
     'CI': { code: '+225', format: 'XX XXX XXXX', example: '07 123 4567', pattern: /^[0-9]{2} [0-9]{3} [0-9]{4}$/ },
     'ML': { code: '+223', format: 'XX XX XX XX', example: '76 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
@@ -413,8 +413,33 @@
     }
   }
 
-  // Initialisation événements et updates
-  document.addEventListener('DOMContentLoaded', () => {
+  // *** Ajouté : récupération du code de parrainage depuis l'URL ***
+  function getReferralCodeFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('ref') || '';
+  }
+
+  function displayReferralCodeFromURL() {
+    const code = getReferralCodeFromURL();
+    if (code) {
+      const referralInput = document.getElementById('referralCode');
+      const referralStatus = document.getElementById('referralStatus');
+      if (referralInput && referralStatus) {
+        const codeUpper = code.toUpperCase();
+        referralInput.value = codeUpper;
+        if (/^[A-Z0-9]{6,8}$/.test(codeUpper)) {
+          referralStatus.textContent = `Code valide reçu : ${codeUpper}`;
+          referralStatus.className = 'referral-status valid';
+        } else {
+          referralStatus.textContent = 'Code de parrainage invalide';
+          referralStatus.className = 'referral-status invalid';
+        }
+        referralStatus.style.display = "block";
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
     ['login', 'signup'].forEach(formType => {
       updatePhoneFormat(formType);
       updateSelectedFlag(formType);
@@ -445,11 +470,14 @@
         status.style.display = 'none';
       }
     });
+
+    // Appel de la fonction ajoutée au chargement pour afficher le code parrainage venant de l’URL
+    displayReferralCodeFromURL();
   });
+
 </script>
 
-<!-- Intégrer ici votre script Firebase pour gestion inscription/connexion -->
-<script type="module">
+<!-- Firebase scripts etc. à insérer ici comme avant --><script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import {
     getAuth,
@@ -682,5 +710,6 @@
     }
   });
 </script>
+
 </body>
 </html>
