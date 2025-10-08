@@ -3,492 +3,452 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Nescafé - Connexion / Inscription</title>
+<title>Inscription / Connexion - Nescafé Investissement 💯%</title>
 <style>
-  /* Reset et typographie */
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; padding: 0;
-    background: #f0f2f8;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex; justify-content: center; align-items: flex-start;
-    min-height: 100vh;
-    padding-top: 180px; /* Ajouté espace en haut pour images */
-    position: relative;
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-  /* Section images carrées en haut */
-  .top-images {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 140px;
-    background: transparent;
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
     display: flex;
-    gap: 10px;
-    padding: 15px 10px;
-    box-sizing: border-box;
-    justify-content: space-between;
-    z-index: 1000;
-  }
-  .top-images img {
-    width: calc(33.33vw - 20px);
-    height: 110px;
-    object-fit: cover;
-    border: 4px solid #0a8f5d; /* couleur verte douce, style corde */
-    border-radius: 12px;
-    box-shadow:
-      inset 0 0 10px #a3d9a5,
-      0 4px 10px rgba(10,143,93,0.6);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  .top-images img:hover {
-    transform: scale(1.05);
-    border-color: #063d25;
-    box-shadow:
-      inset 0 0 14px #064420,
-      0 6px 16px rgba(6,61,37,0.8);
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #242424;
   }
 
   .container {
     background: #fff;
-    width: 360px;
-    padding: 38px 28px 35px;
     border-radius: 16px;
-    box-shadow:
-      0 10px 30px rgba(0, 0, 0, 0.07),
-      inset 0 0 20px rgba(255, 255, 255, 0.8);
-    position: relative;
-    z-index: 10;
+    width: 420px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+    border: 3px solid #6a11cb;
+    transition: border-color 0.4s ease;
   }
-  .header {
-    margin-bottom: 38px;
-    font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
-    font-weight: 700; font-size: 2rem;
-    color: #2d3748;
-    text-align: center;
-    user-select: none;
-    letter-spacing: 0.045em;
+  .container:hover {
+    border-color: #2575fc;
   }
-  label {
-    display: block; margin-bottom: 9px;
-    font-weight: 600; font-size: 1rem;
-    color: #4a5568;
-  }
-  :root {
-    --border-snake: url('data:image/svg+xml;utf8,<svg fill="none" stroke="%232d3748" stroke-width="2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 12 Q6 2 12 12 T24 12"/></svg>');
-    --border-snake-focus: url('data:image/svg+xml;utf8,<svg fill="none" stroke="%230a8f5d" stroke-width="2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 12 Q6 2 12 12 T24 12"/></svg>');
-  }
-  input[type="text"],
-  input[type="tel"],
-  input[type="password"],
-  select {
-    width: 100%;
-    padding: 14px 20px;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    color: #2d3748;
-    background-color: #fff;
-    border: 5.5px solid transparent;
-    border-radius: 14px;
-    border-image-source: var(--border-snake);
-    border-image-slice: 24;
-    border-image-repeat: round;
-    transition: border-image-source 0.35s ease, box-shadow 0.35s ease;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-    font-family: inherit;
-    appearance: none;
-    cursor: pointer;
-  }
-  input[type="text"],
-  input[type="tel"],
-  input[type="password"] {
-    cursor: text;
-  }
-  select {
-    padding-right: 35px;
-    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='24' height='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%234a5568' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-  }
-  input::placeholder {
-    color: #7a8499;
-    font-weight: 400;
-    letter-spacing: 0.02em;
-  }
-  input:focus,
-  select:focus {
-    border-image-source: var(--border-snake-focus);
-    box-shadow: 0 0 8px rgba(10, 143, 93, 0.5);
-    outline: none;
-    color: #0a8f5d;
-  }
-  input[type="tel"] {
-    padding-left: 20px;
-    cursor: text;
-  }
-  button {
-    margin-top: 15px;
-    background-color: #2d3748;
-    background-image: linear-gradient(145deg, #2d3748, #1a202c);
-    color: #e2e8f0;
-    width: 100%;
-    padding: 16px 0;
-    font-size: 1.15rem;
+
+  header {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: white;
+    padding: 30px 35px 15px;
     font-weight: 700;
-    border: 5.5px solid transparent;
-    border-radius: 16px;
-    border-image-source: var(--border-snake);
-    border-image-slice: 24;
-    border-image-repeat: round;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(45, 55, 72, 0.4);
-    letter-spacing: 0.045em;
-    transition: background-color 0.35s ease, border-image-source 0.3s ease, box-shadow 0.3s ease;
-    font-family: inherit;
+    font-size: 1.8rem;
+    text-align: center;
+    letter-spacing: 1.2px;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  button:hover, button:focus {
-    background-color: #0a8f5d;
-    background-image: linear-gradient(145deg, #0a8f5d, #063d25);
-    border-image-source: var(--border-snake-focus);
-    box-shadow: 0 6px 20px rgba(10, 143, 93, 0.7);
+
+  /* Icône Nescafé Investissement */
+  .logo {
+    font-size: 2.4rem;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .logo span {
+    font-weight: 900;
+    font-style: italic;
+    color: #fff3cd;
+    text-shadow:
+      1px 1px 2px rgba(0,0,0,0.4),
+      0 0 10px #ffd700aa;
+    user-select: none;
+  }
+  .logo .percent {
+    font-size: 1.2rem;
+    margin-left: 6px;
+    color: #ffcc00;
+  }
+
+  /* Titre formulaire */
+  #formTitle {
+    margin: 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #ffdd57;
+    text-shadow: 0 0 10px #ffdd57cc;
+  }
+
+  form {
+    padding: 30px 35px;
+  }
+
+  form.hidden {
+    display: none;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #551a8b;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+  }
+
+  .inline-group {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .inline-group > div {
+    flex: 1;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #d1d1d1;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  input::placeholder {
+    color: #aaa;
+    font-style: italic;
+  }
+
+  input:focus, select:focus {
+    border-color: #ffdd57;
+    box-shadow: 0 0 10px #ffdd57bb;
     outline: none;
   }
-  .links {
-    margin-top: 22px;
-    display: flex;
-    justify-content: space-between;
+
+  /* Style pour wrapper select + drapeau */
+  .country-select-wrapper {
+    position: relative;
+  }
+
+  .selected-flag {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-size: 1.6rem;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  select {
+    padding-left: 45px !important; /* espace pour le drapeau */
+  }
+
+  /* Sélecteurs avec drapeaux (emoji) */
+  select option {
+    padding-left: 25px;
+  }
+
+  /* Boutons */
+  button {
+    width: 100%;
+    padding: 14px 0;
+    background: linear-gradient(90deg, #ffb700, #ffdd57);
+    border: none;
+    border-radius: 12px;
+    color: #551a8b;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.4s ease, transform 0.2s ease;
+    box-shadow: 0 5px 15px #ffcc0099;
+  }
+
+  button:hover {
+    background: linear-gradient(90deg, #ffdd57, #ffb700);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px #ffcc00ee;
+  }
+
+  .toggle {
+    text-align: center;
+    margin: 20px 0 10px;
     font-size: 1rem;
-    color: #4a5568;
+    color: #551a8b;
+    letter-spacing: 0.4px;
+  }
+
+  .toggle button {
+    background: none;
+    border: none;
+    color: #ffb700;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0;
+    user-select: none;
+  }
+  .toggle button:hover {
+    color: #ffdd57;
+  }
+
+  .error-message, .success-message, .referral-status {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: none;
     font-weight: 600;
   }
-  .links a {
-    color: #718096;
-    text-decoration: none;
-    transition: color 0.25s ease;
-    cursor: pointer;
+
+  .error-message {
+    background-color: #ffdbdb;
+    color: #d93025;
   }
-  .links a:hover, .links a:focus {
-    color: #0a8f5d;
-    text-decoration: underline;
-    outline: none;
+
+  .success-message {
+    background-color: #defbe6;
+    color: #137333;
   }
-  section {
-    display: none;
-  }
-  section.active {
-    display: block;
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0, 0, 0, 0);
-    border: 0;
-  }
-  .referral-status {
-    font-size: 0.9rem;
-    margin-top: 4px;
-    display: none;
-  }
+
   .referral-status.valid {
-    color: #0a8f5d;
+    background-color: #defbe6;
+    color: #137333;
     display: block;
   }
   .referral-status.invalid {
-    color: #d53f3f;
+    background-color: #ffdede;
+    color: #d93025;
     display: block;
   }
-  .error-message {
-    font-size: 0.9rem;
-    color: #d53f3f;
-    margin-top: 6px;
-    display: none;
-  }
-  .success-message {
-    font-size: 0.9rem;
-    color: #0a8f5d;
-    margin-top: 6px;
-    display: none;
-  }
-  /* Style pour affichage code de parrainage reçu */
-  #referralCodeDisplay {
-    font-weight: 600;
-    color: #0a8f5d;
-    margin-bottom: 12px;
-  }
 
+  @media (max-width: 440px) {
+    .container {
+      width: 95%;
+      border-width: 2px;
+    }
+    .inline-group {
+      flex-direction: column;
+    }
+  }
 </style>
 </head>
 <body>
 
-<!-- Section images carrées en haut -->
-<div class="top-images" aria-hidden="true" tabindex="-1">
-  <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Image investissement 1" />
-  <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Image investissement 2" />
-  <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Image investissement 3" />
-</div>
+<div class="container" role="main" aria-label="Formulaire d'inscription et de connexion">
 
-<div class="container" role="main" aria-label="Formulaires de connexion et inscription Nescafé">
-
-  <!-- Connexion -->
-  <section id="login-section" class="active" aria-labelledby="login-header">
-    <div class="header" id="login-header">Nestle - Connexion</div>
-    <form id="loginFormData" aria-describedby="loginDesc" novalidate>
-      <div id="loginDesc" class="sr-only">Entrez votre numéro de téléphone et mot de passe pour vous connecter</div>
-
-      <label for="loginCountry">Pays</label>
-      <select id="loginCountry" name="loginCountry" aria-label="Sélectionner le pays">
-        <option value="CI" selected>Côte d'Ivoire +225</option>
-        <option value="ML">Mali +223</option>
-        <option value="SN">Sénégal +221</option>
-        <option value="BF">Burkina Faso +226</option>
-        <option value="NE">Niger +227</option>
-        <option value="BJ">Bénin +229</option>
-        <option value="TG">Togo +228</option>
-      </select>
-
-      <label for="loginTelephone">Téléphone</label>
-      <input type="tel" id="loginTelephone" name="loginTelephone" placeholder="" required aria-required="true" autocomplete="tel" />
-
-      <div id="loginError" class="error-message" role="alert" aria-live="assertive"></div>
-
-      <label for="loginPassword">Mot de passe</label>
-      <input type="password" id="loginPassword" name="loginPassword" placeholder="Mot de passe" required aria-required="true" minlength="6" />
-
-      <button type="submit">Se connecter</button>
-    </form>
-
-    <div class="links">
-      <a id="switch-to-signup" role="link" tabindex="0">S'inscrire</a>
-      <a href="#" role="link">Service client</a>
+  <header>
+    <div class="logo" aria-label="Logo Nescafé Investissement">
+      <span>Nescafé</span> <span class="percent">Investissement 💯%</span>
     </div>
-  </section>
+    <h1 id="formTitle">Connexion</h1>
+  </header>
 
-  <!-- Inscription -->
-  <section id="signup-section" aria-labelledby="signup-header">
-    <div class="header" id="signup-header">Nestle - Inscription</div>
+  <!-- Formulaire Connexion -->
+  <form id="loginFormData">
+    <label for="loginCountry">Pays</label>
+    <div class="country-select-wrapper">
+      <span id="loginSelectedFlag" class="selected-flag" aria-hidden="true">🇨🇮</span>
+      <select id="loginCountry" name="loginCountry" aria-required="true" aria-describedby="loginCountryDesc">
+        <option value="CI" data-flag="🇨🇮" selected>Côte d'Ivoire (+225)</option>
+        <option value="ML" data-flag="🇲🇱">Mali (+223)</option>
+        <option value="SN" data-flag="🇸🇳">Sénégal (+221)</option>
+        <option value="BF" data-flag="🇧🇫">Burkina Faso (+226)</option>
+        <option value="NE" data-flag="🇳🇪">Niger (+227)</option>
+        <option value="BJ" data-flag="🇧🇯">Bénin (+229)</option>
+        <option value="TG" data-flag="🇹🇬">Togo (+228)</option>
+      </select>
+    </div>
+    <span id="loginCountryDesc" class="sr-only">Sélectionnez votre pays pour le format du numéro</span>
 
-    <!-- Zone pour afficher le code de parrainage reçu via URL -->
-    <div id="referralCodeDisplay" aria-live="polite" aria-atomic="true"></div>
+    <label for="loginTelephone">Numéro de téléphone</label>
+    <input type="text" id="loginTelephone" name="loginTelephone" placeholder="07 123 4567" autocomplete="tel" aria-required="true" aria-describedby="loginError" />
 
-    <form id="signupFormData" aria-describedby="signupDesc" novalidate>
-      <div id="signupDesc" class="sr-only">
-        Formulaire d'inscription avec nom complet, téléphone, mot de passe, confirmation et code de parrainage facultatif
+    <label for="loginPassword">Mot de passe</label>
+    <input type="password" id="loginPassword" name="loginPassword" autocomplete="current-password" aria-required="true" />
+    
+    <div id="loginError" class="error-message" role="alert" aria-live="assertive"></div>
+
+    <button type="submit" aria-label="Se connecter">Se connecter</button>
+
+    <div class="toggle" aria-live="polite">
+      Pas encore inscrit ? <button type="button" id="switch-to-signup" aria-label="Basculer vers inscription">Créer un compte</button>
+    </div>
+  </form>
+
+  <!-- Formulaire Inscription -->
+  <form id="signupFormData" class="hidden" novalidate>
+    <label for="signupUsername">Nom d'utilisateur</label>
+    <input type="text" id="signupUsername" name="signupUsername" placeholder="Votre nom" autocomplete="username" aria-required="true"/>
+
+    <div class="inline-group">
+      <div class="country-select-wrapper">
+        <label for="signupCountry">Pays</label>
+        <span id="signupSelectedFlag" class="selected-flag" aria-hidden="true">🇨🇮</span>
+        <select id="signupCountry" name="signupCountry" aria-required="true" aria-describedby="signupCountryDesc">
+          <option value="CI" data-flag="🇨🇮" selected>Côte d'Ivoire (+225)</option>
+          <option value="ML" data-flag="🇲🇱">Mali (+223)</option>
+          <option value="SN" data-flag="🇸🇳">Sénégal (+221)</option>
+          <option value="BF" data-flag="🇧🇫">Burkina Faso (+226)</option>
+          <option value="NE" data-flag="🇳🇪">Niger (+227)</option>
+          <option value="BJ" data-flag="🇧🇯">Bénin (+229)</option>
+          <option value="TG" data-flag="🇹🇬">Togo (+228)</option>
+        </select>
+        <span id="signupCountryDesc" class="sr-only">Sélectionnez votre pays pour le format du numéro</span>
       </div>
-
-      <label for="signupUsername">Nom complet</label>
-      <input type="text" id="signupUsername" name="signupUsername" placeholder="Votre nom complet" required aria-required="true" minlength="3" />
-
-      <label for="signupCountry">Pays</label>
-      <select id="signupCountry" name="signupCountry" aria-label="Sélectionner le pays">
-        <option value="CI" selected>Côte d'Ivoire +225</option>
-        <option value="ML">Mali +223</option>
-        <option value="SN">Sénégal +221</option>
-        <option value="BF">Burkina Faso +226</option>
-        <option value="NE">Niger +227</option>
-        <option value="BJ">Bénin +229</option>
-        <option value="TG">Togo +228</option>
-      </select>
-
-      <label for="signupTelephone">Téléphone</label>
-      <input type="tel" id="signupTelephone" name="signupTelephone" placeholder="" required aria-required="true" autocomplete="tel" />
-
-      <div id="signupError" class="error-message" role="alert" aria-live="assertive"></div>
-      <div id="signupSuccess" class="success-message" role="alert" aria-live="assertive"></div>
-
-      <label for="signupPassword">Mot de passe</label>
-      <input type="password" id="signupPassword" name="signupPassword" placeholder="Mot de passe" required aria-required="true" minlength="6" />
-
-      <label for="confirmPassword">Confirmer le mot de passe</label>
-      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmer mot de passe" required aria-required="true" minlength="6" />
-
-      <label for="referralCode">Code de parrainage (facultatif)</label>
-      <input type="text" id="referralCode" name="referralCode" placeholder="Saisissez un code de parrainage" autocomplete="off" />
-      <div id="referralStatus" class="referral-status" aria-live="polite"></div>
-
-      <button type="submit">S'inscrire</button>
-    </form>
-
-    <div class="links">
-      <a id="switch-to-login" role="link" tabindex="0">Connexion</a>
-      <a href="#" role="link">Service client</a>
+      <div>
+        <label for="signupTelephone">Numéro de téléphone</label>
+        <input type="text" id="signupTelephone" name="signupTelephone" placeholder="07 123 4567" autocomplete="tel" aria-required="true" aria-describedby="signupError" />
+      </div>
     </div>
-  </section>
+
+    <div class="inline-group">
+      <div>
+        <label for="signupPassword">Mot de passe</label>
+        <input type="password" id="signupPassword" name="signupPassword" autocomplete="new-password" aria-required="true" />
+      </div>
+      <div>
+        <label for="confirmPassword">Confirmez le mot de passe</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" aria-required="true" />
+      </div>
+    </div>
+
+    <label for="referralCode">Code de parrainage (optionnel)</label>
+    <input type="text" id="referralCode" name="referralCode" placeholder="Entrez le code parrain" aria-describedby="referralStatus" />
+
+    <div id="referralStatus" class="referral-status" role="alert" aria-live="polite"></div>
+    <div id="signupError" class="error-message" role="alert" aria-live="assertive"></div>
+    <div id="signupSuccess" class="success-message" role="alert" aria-live="assertive"></div>
+
+    <button type="submit" aria-label="S'inscrire">S'inscrire</button>
+
+    <div class="toggle" aria-live="polite">
+      Déjà un compte ? <button type="button" id="switch-to-login" aria-label="Basculer vers connexion">Se connecter</button>
+    </div>
+  </form>
+
 </div>
 
 <script>
-  // Fonction pour basculer entre connexion et inscription
+  // Fonction toggle formulaires
   function toggleForm() {
-    const loginSection = document.getElementById('login-section');
-    const signupSection = document.getElementById('signup-section');
-    if (loginSection.style.display === 'none' || loginSection.classList.contains('hidden')) {
-      loginSection.style.display = 'block';
-      signupSection.style.display = 'none';
+    const loginForm = document.getElementById('loginFormData');
+    const signupForm = document.getElementById('signupFormData');
+    const formTitle = document.getElementById('formTitle');
+    if (loginForm.classList.contains('hidden')) {
+      loginForm.classList.remove('hidden');
+      signupForm.classList.add('hidden');
+      formTitle.textContent = 'Connexion';
     } else {
-      loginSection.style.display = 'none';
-      signupSection.style.display = 'block';
+      loginForm.classList.add('hidden');
+      signupForm.classList.remove('hidden');
+      formTitle.textContent = 'Inscription';
     }
   }
 
-  // Formats de numéro par pays
+  // Définition des formats téléphone et drapeaux
   const phoneFormats = {
-  'CI': {
-    code: '+225',
-    format: 'XX XX XX XX XX',
-    example: '07 01 23 45 67',
-    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
-  },
-  'ML': {
-    code: '+223',
-    format: 'XX XX XX XX',
-    example: '76 12 34 56',
-    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
-  },
-  'SN': {
-    code: '+221',
-    format: 'XX XXX XX XX',
-    example: '77 123 45 67',
-    pattern: /^[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$/
-  },
-  'BF': {
-    code: '+226',
-    format: 'XX XX XX XX',
-    example: '70 12 34 56',
-    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
-  },
-  'NE': {
-    code: '+227',
-    format: 'XX XX XX XX',
-    example: '90 12 34 56',
-    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
-  },
-  'BJ': {
-    code: '+229',
-    format: 'XX XX XX XX',
-    example: '97 12 34 56',
-    pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/
-  },
-  'TG': {
-    code: '+228',
-    format: 'XX XXX XXX',
-    example: '90 123 456',
-    pattern: /^[0-9]{2} [0-9]{3} [0-9]{3}$/
-  }
-};
+    'CI': { code: '+225', format: 'XX XXX XXXX', example: '07 123 4567', pattern: /^[0-9]{2} [0-9]{3} [0-9]{4}$/ },
+    'ML': { code: '+223', format: 'XX XX XX XX', example: '76 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'SN': { code: '+221', format: 'XX XXX XX XX', example: '77 123 45 67', pattern: /^[0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$/ },
+    'BF': { code: '+226', format: 'XX XX XX XX', example: '70 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'NE': { code: '+227', format: 'XX XX XX XX', example: '90 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'BJ': { code: '+229', format: 'XX XX XX XX', example: '97 12 34 56', pattern: /^[0-9]{2} [0-9]{2} [0-9]{2} [0-9]{2}$/ },
+    'TG': { code: '+228', format: 'XX XXX XXX', example: '90 123 456', pattern: /^[0-9]{2} [0-9]{3} [0-9]{3}$/ }
+  };
 
-  // Mise à jour du placeholder selon pays sélectionné
+  // Met à jour le placeholder téléphone selon pays
   function updatePhoneFormat(formType) {
-    const country = document.getElementById(`${formType}Country`).value;
+    const country = document.getElementById(formType + 'Country').value;
     const phoneFormat = phoneFormats[country];
     if (phoneFormat) {
-      document.getElementById(`${formType}Telephone`).placeholder = phoneFormat.example;
+      document.getElementById(formType + 'Telephone').placeholder = phoneFormat.example;
     }
   }
 
-  // Écouteurs sur changements pays pour mettre à jour les placeholders de téléphone
-  document.getElementById('loginCountry').addEventListener('change', () => updatePhoneFormat('login'));
-  document.getElementById('signupCountry').addEventListener('change', () => updatePhoneFormat('signup'));
+  // Met à jour le drapeau affiché à gauche du select
+  function updateSelectedFlag(formType) {
+    const select = document.getElementById(formType + 'Country');
+    const flagSpan = document.getElementById(formType + 'SelectedFlag');
+    const selectedOption = select.options[select.selectedIndex];
+    const flag = selectedOption.getAttribute('data-flag');
+    if (flag) {
+      flagSpan.textContent = flag;
+    } else {
+      flagSpan.textContent = '';
+    }
+  }
 
-  // Validation format téléphone au submit
+  // Validation format téléphone
   function validatePhoneFormat(formType, event) {
-    const country = document.getElementById(`${formType}Country`).value;
-    const phone = document.getElementById(`${formType}Telephone`).value.trim();
+    const country = document.getElementById(formType + 'Country').value;
+    const phone = document.getElementById(formType + 'Telephone').value.trim();
     const phoneFormat = phoneFormats[country];
     if (!phoneFormat.pattern.test(phone)) {
       event.preventDefault();
-      document.getElementById(`${formType}Error`).textContent = `Format invalide. Utilisez le format: ${phoneFormat.format}`;
-      document.getElementById(`${formType}Error`).style.display = 'block';
+      document.getElementById(formType + 'Error').textContent = `Format invalide. Utilisez le format: ${phoneFormat.format}`;
+      document.getElementById(formType + 'Error').style.display = 'block';
       return false;
     }
-    document.getElementById(`${formType}Error`).style.display = 'none';
+    document.getElementById(formType + 'Error').style.display = 'none';
     return true;
   }
 
-  // Validation code de parrainage au submit
+  // Validation code parrainage
   function validateReferralCode(event) {
-    const referralCode = document.getElementById('referralCode').value.trim();
-    const referralStatus = document.getElementById('referralStatus');
-    if (referralCode.length > 0) {
-      const isValid = /^[A-Z0-9]{6,8}$/.test(referralCode.toUpperCase());
-      if (!isValid) {
+    const code = document.getElementById('referralCode').value.trim();
+    const status = document.getElementById('referralStatus');
+    if (code.length > 0) {
+      const valid = /^[A-Z0-9]{6,8}$/.test(code.toUpperCase());
+      if (!valid) {
         event.preventDefault();
-        referralStatus.textContent = 'Code de parrainage invalide';
-        referralStatus.className = 'referral-status invalid';
-        referralStatus.style.display = 'block';
+        status.textContent = 'Code de parrainage invalide';
+        status.className = 'referral-status invalid';
+        status.style.display = 'block';
       } else {
-        referralStatus.style.display = 'none';
+        status.style.display = 'none';
       }
     }
   }
 
-  // Récupérer paramètre URL 'ref'
-  function getReferralCodeFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('ref') || '';
-  }
-
-  // Afficher le code parrainage reçu et préremplir le champ inscription
-  function displayReferralCodeFromURL() {
-    const code = getReferralCodeFromURL();
-    const displayElement = document.getElementById('referralCodeDisplay');
-    if (code && displayElement) {
-      displayElement.textContent = `Code de parrainage reçu : ${code}`;
-
-      // Pré-remplissage du champ et déclenchement validation
-      const referralInput = document.getElementById('referralCode');
-      if (referralInput) {
-        referralInput.value = code;
-        referralInput.dispatchEvent(new Event('input'));
-      }
-    }
-  }
-
-  // Validation des soumis des formulaires
-  document.getElementById('loginFormData').addEventListener('submit', (e) => {
-    validatePhoneFormat('login', e);
-  });
-  document.getElementById('signupFormData').addEventListener('submit', (e) => {
-    if (!validatePhoneFormat('signup', e)) return;
-    validateReferralCode(e);
-  });
-
-  // Basculer entre formulaire connexion et inscription
-  document.getElementById('switch-to-signup').addEventListener('click', toggleForm);
-  document.getElementById('switch-to-login').addEventListener('click', toggleForm);
-
-  // Vérification en temps réel du code de parrainage (pour message de validité)
-  document.getElementById('referralCode').addEventListener('input', () => {
-    const referralCodeInput = document.getElementById('referralCode').value.trim().toUpperCase();
-    const referralStatus = document.getElementById('referralStatus');
-    if (referralCodeInput.length > 0) {
-      const isValid = /^[A-Z0-9]{6,8}$/.test(referralCodeInput);
-      if (isValid) {
-        referralStatus.textContent = 'Code valide';
-        referralStatus.className = 'referral-status valid';
-      } else {
-        referralStatus.textContent = 'Code invalide';
-        referralStatus.className = 'referral-status invalid';
-      }
-      referralStatus.style.display = 'block';
-    } else {
-      referralStatus.style.display = 'none';
-    }
-  });
-
-  // Initialisations au chargement
+  // Initialisation événements et updates
   document.addEventListener('DOMContentLoaded', () => {
-    updatePhoneFormat('login');
-    updatePhoneFormat('signup');
-    displayReferralCodeFromURL();
+    ['login', 'signup'].forEach(formType => {
+      updatePhoneFormat(formType);
+      updateSelectedFlag(formType);
+      document.getElementById(formType + 'Country').addEventListener('change', () => {
+        updatePhoneFormat(formType);
+        updateSelectedFlag(formType);
+      });
+    });
+
+    document.getElementById('loginFormData').addEventListener('submit', e => validatePhoneFormat('login', e));
+    document.getElementById('signupFormData').addEventListener('submit', e => {
+      if (!validatePhoneFormat('signup', e)) return;
+      validateReferralCode(e);
+    });
+
+    document.getElementById('switch-to-signup').addEventListener('click', toggleForm);
+    document.getElementById('switch-to-login').addEventListener('click', toggleForm);
+
+    document.getElementById('referralCode').addEventListener('input', () => {
+      const code = document.getElementById('referralCode').value.trim().toUpperCase();
+      const status = document.getElementById('referralStatus');
+      if (code.length > 0) {
+        const valid = /^[A-Z0-9]{6,8}$/.test(code);
+        status.textContent = valid ? 'Code valide' : 'Code invalide';
+        status.className = 'referral-status ' + (valid ? 'valid' : 'invalid');
+        status.style.display = 'block';
+      } else {
+        status.style.display = 'none';
+      }
+    });
   });
 </script>
 
-<!-- Firebase et gestion formulaires -->
+<!-- Intégrer ici votre script Firebase pour gestion inscription/connexion -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import {
@@ -722,6 +682,5 @@
     }
   });
 </script>
-
 </body>
 </html>
