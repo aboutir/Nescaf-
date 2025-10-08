@@ -6,11 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Forfaits VIP</title>
 
-  <!-- Material Icons CDN pour les icônes -->
+  <!-- Material Icons CDN -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
   <style>
-    /* Police générale très lisible */
     @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
 
     body {
@@ -22,10 +21,17 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
+    /* Conteneur principal centré et max-width */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
     h1 {
       font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.8rem;
+      margin-bottom: 12px;
       text-align: center;
       color: #3a3a3a;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -33,88 +39,110 @@
 
     p.description {
       color: #606060;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       font-size: 1.15rem;
       max-width: 580px;
       margin-left: auto;
       margin-right: auto;
       text-align: center;
       letter-spacing: 0.02em;
-      line-height: 1.5;
+      line-height: 1.6;
+    }
+
+    /* Grille responsive pour les plans */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 32px;
+      margin-bottom: 60px;
     }
 
     .plan {
       background: white;
       border-radius: 24px 48px 48px 24px;
+      border: 2px solid #d13b4c;
       box-shadow:
         0 8px 20px rgba(0, 0, 0, 0.1),
         inset 0 0 12px #f5f5f5;
-      padding: 28px 34px 36px 34px;
-      margin: 0 auto 30px auto;
-      max-width: 400px;
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      padding: 32px 36px 40px 36px;
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .plan:hover {
       transform: translateY(-10px);
       box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.18),
+        0 22px 48px rgba(209, 59, 76, 0.45),
         inset 0 0 18px #f9f9f9;
+      border-color: #a6222f;
     }
 
     .plan img {
-      width: 120px;
+      width: 140px;
       height: auto;
       display: block;
-      margin: 0 auto 18px auto;
+      margin-bottom: 22px;
       border-radius: 30px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
       transition: transform 0.4s ease, box-shadow 0.4s ease;
       background-color: #fafafa;
     }
 
     .plan:hover img {
-      transform: scale(1.08);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      transform: scale(1.1);
+      box-shadow: 0 14px 36px rgba(209, 59, 76, 0.6);
     }
 
-    .price {
-      font-size: 2.2rem;
-      font-weight: 900;
-      margin-bottom: 22px;
-      text-align: right;
-      color: #b1272e;
-      letter-spacing: 0.30em;
-      font-family: 'Courier New', Courier, monospace;
-      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+    /* Container titre + prix alignés */
+    .header-plan {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 28px;
+      gap: 12px;
     }
 
     .title {
       font-weight: 800;
-      font-size: 1.5rem;
-      margin-bottom: 28px;
-      text-align: center;
+      font-size: 1.6rem;
       color: #383838;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
+      user-select: none;
+      flex: 1;
+    }
+
+    .price {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #b1272e;
+      letter-spacing: 0.3em;
+      font-family: 'Courier New', Courier, monospace;
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
+      white-space: nowrap;
       user-select: none;
     }
 
+    /* Grille détails des gains */
     .plan-details {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-bottom: 32px;
+      gap: 22px 18px;
+      margin-bottom: 36px;
+      width: 100%;
     }
 
     .detail {
       background: #f7fafc;
       border-radius: 18px 0 18px 0;
-      padding: 18px 16px;
-      font-size: 1.05rem;
+      padding: 20px 18px;
+      font-size: 1.1rem;
       color: #d13b4c;
       font-weight: 700;
       text-align: center;
@@ -124,6 +152,7 @@
       transition: background-color 0.35s ease, color 0.35s ease;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       user-select: none;
+      border-left: 4px solid #d13b4c;
     }
 
     .detail:hover {
@@ -132,6 +161,7 @@
       box-shadow:
         inset 2px 2px 6px #fff0f1,
         inset -2px -2px 7px #bc5361;
+      border-color: #a6222f;
     }
 
     .detail label {
@@ -139,46 +169,73 @@
       font-weight: 600;
       color: #575757;
       font-size: 0.9rem;
-      margin-bottom: 6px;
-      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
       user-select: text;
     }
 
+    /* Bouton Investir */
     .buy-btn {
       background: linear-gradient(135deg, #d82525, #a81616);
       color: white;
       border: none;
-      padding: 12px 20px;
-      font-size: 1rem;
+      padding: 14px 22px;
+      font-size: 1.1rem;
       border-radius: 36px;
       cursor: pointer;
       width: 100%;
       font-weight: 700;
       letter-spacing: 0.06em;
-      box-shadow: 0 8px 20px rgba(210, 37, 37, 0.75);
+      box-shadow: 0 10px 24px rgba(210, 37, 37, 0.85);
       transition: background 0.4s ease, box-shadow 0.4s ease;
       user-select: none;
-      user-drag: none;
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      text-transform: uppercase;
     }
 
     .buy-btn[disabled] {
       background-color: #999 !important;
       cursor: not-allowed !important;
       box-shadow: none !important;
+      opacity: 0.7;
     }
 
     .buy-btn:hover:not([disabled]),
     .buy-btn:focus:not([disabled]) {
       background: linear-gradient(135deg, #a71616, #770f0f);
-      box-shadow: 0 12px 30px rgba(167, 23, 23, 0.9);
+      box-shadow: 0 14px 34px rgba(167, 23, 23, 1);
       outline: none;
+      transform: translateY(-2px);
     }
 
+    /* Texte bouton */
     .btn-text {
       user-select: none;
+    }
+
+    /* Message cadenas (lock-notice) */
+    .lock-notice {
+      text-align: center;
+      font-weight: bold;
+      color: #a6222f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 1.1rem;
+      user-select: none;
+      margin-top: 12px;
+      font-family: 'Nunito', Arial, sans-serif;
+    }
+
+    .lock-notice p {
+      margin: 0;
+      color: #2e7d32;
+      font-weight: 700;
+      font-size: 1rem;
     }
 
     /* Notification */
@@ -186,18 +243,18 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      padding: 10px;
-      border-radius: 5px;
+      padding: 12px 20px;
+      border-radius: 8px;
       color: white;
-      font-weight: 600;
+      font-weight: 700;
       z-index: 1000;
       display: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       max-width: 320px;
       word-wrap: break-word;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
     }
 
-    /* Bottom navigation */
+    /* Navigation basse */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -245,212 +302,199 @@
       user-select: none;
     }
 
-    /* Style cadenas + texte disponible bientôt */
-    .lock-notice {
-      text-align: center;
-      font-weight: bold;
-      color: #a6222f;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      font-size: 1.1rem;
-      user-select: none;
-      margin-top: 12px;
-    }
 
-    .lock-notice p {
-      margin: 0;
-      color: #2e7d32;
-      font-weight: 700;
-      font-size: 1rem;
-      user-select: none;
-    }
+    /* Responsive pour petits écrans */
+    @media (max-width: 480px) {
+      .plan {
+        padding: 24px 20px 30px 20px;
+      }
 
+      .header-plan {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .price {
+        font-size: 2rem;
+        letter-spacing: 0.18em;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <div class="container">
+    <!-- Notification -->
+    <div class="notification" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Zone notification -->
-  <div class="notification" aria-live="polite" aria-atomic="true"></div>
+    <h1>NESCAFÉ</h1>
+    <p class="description">
+      Choisissez le forfait qui correspond à vos envies et commencez à générer des revenus chaque jour avec Nescafé.
+    </p>
 
-  <h1>NESCAFÉ</h1>
-  <p class="description">
-    Choisissez le forfait qui correspond à vos envies et commencez à générer des revenus chaque jour avec Nescafé.
-  </p>
+    <!-- Grille forfaits VIP -->
+    <div class="plans-grid">
+      <!-- Forfait VIP 1 -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 1">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 1" />
+        <div class="header-plan">
+          <div class="title">LV-1</div>
+          <div class="price">5.500FCFA</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail">
+            <label>Revenus par jour</label>1 500 FCFA
+          </div>
+          <div class="detail">
+            <label>Gain obtenu par semaine</label>10 500 FCFA
+          </div>
+          <div class="detail">
+            <label>Cycle</label>15 Jours
+          </div>
+          <div class="detail">
+            <label>Gain Total</label>22 500 FCFA
+          </div>
+        </div>
+        <button class="buy-button buy-btn" data-product-id="1" data-price="5500" aria-label="Acheter Pack Mini ROX">
+          <span class="btn-text">Investir maintenant</span>
+        </button>
+      </div>
 
-  <!-- Forfait VIP 1 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 1">
-    <img
-      src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg"
-      alt="Canon Camera VIP 1" />
-    <div class="price">5.500FCFA</div>
-    <div class="title">LV-1</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>Revenus par jour</label>1 500 FCFA
+      <!-- Forfait VIP 2 -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 2">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
+        <div class="header-plan">
+          <div class="title">LV-2</div>
+          <div class="price">15.000FCFA</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail">
+            <label>Revenus par jours</label>2 500 FCFA
+          </div>
+          <div class="detail">
+            <label>Gain obtenu par semaine</label>17 500 FCFA
+          </div>
+          <div class="detail">
+            <label>Cycle</label>16 Jours
+          </div>
+          <div class="detail">
+            <label>Gain Total</label>40 000 FCFA
+          </div>
+        </div>
+        <button class="buy-button buy-btn" data-product-id="2" data-price="15000" aria-label="Acheter Pack Start ÉNERGIE">
+          <span class="btn-text">Investir maintenant</span>
+        </button>
       </div>
-      <div class="detail">
-        <label>Gain obtenu par semaine</label>10 500 FCFA
-      </div>
-      <div class="detail">
-        <label>Cycle</label>15 Jours
-      </div>
-      <div class="detail">
-        <label> Gain Total</label>22 500 FCFA
-      </div>
-    </div>
-    <button class="buy-button buy-btn" data-product-id="1" data-price="5500" aria-label="Acheter Pack Mini ROX">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
-  </div>
 
-  <!-- Forfait VIP 2 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 2">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 2" />
-    <div class="price">15.000FCFA</div>
-    <div class="title">LV-2</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>Revenus par jours</label>2 500 FCFA
+      <!-- Forfait VIP 3 -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 3">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 3" />
+        <div class="header-plan">
+          <div class="title">LV-3</div>
+          <div class="price">25.000FCFA</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail">
+            <label>Revenus par jours</label>4.000 FCFA
+          </div>
+          <div class="detail">
+            <label>Gain obtenu par semaine</label>28 000 FCFA
+          </div>
+          <div class="detail">
+            <label>Cycle</label>17 Jours
+          </div>
+          <div class="detail">
+            <label>Gain Total</label>68 000 FCFA
+          </div>
+        </div>
+        <button class="buy-button buy-btn" data-product-id="3" data-price="25000" aria-label="Acheter Pack Start ÉNERGIE">
+          <span class="btn-text">Investir maintenant</span>
+        </button>
       </div>
-      <div class="detail">
-        <label>Gain obtenu par semaine</label>17 500 FCFA
-      </div>
-      <div class="detail">
-        <label>Cycle</label>16 Jours
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>40 000 FCFA
-      </div>
-    </div>
-    <button class="buy-button buy-btn" data-product-id="2" data-price="15000" aria-label="Acheter Pack Start ÉNERGIE">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
-  </div>
 
-  <!-- Forfait VIP 3 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 3">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 3" />
-    <div class="price">25.000FCFA</div>
-    <div class="title">LV-3</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>Revenus par jours</label>4.000 FCFA
+      <!-- Forfait VIP 4 -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 4">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 4" />
+        <div class="header-plan">
+          <div class="title">LV-4</div>
+          <div class="price">100.000FCFA</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail">
+            <label>Revenus par jours</label>25 000 FCFA
+          </div>
+          <div class="detail">
+            <label>Gain par semaine</label>175 000 FCFA
+          </div>
+          <div class="detail">
+            <label>Cycle</label>10 Jours
+          </div>
+          <div class="detail">
+            <label>Gain Total</label>250 000 FCFA
+          </div>
+        </div>
+        <button class="buy-button buy-btn" data-product-id="4" data-price="100000" aria-label="Acheter Pack Start ÉNERGIE">
+          <span class="btn-text">Investir maintenant</span>
+        </button>
       </div>
-      <div class="detail">
-        <label>Gain obtenu par semaine</label>28 000  FCFA
-      </div>
-      <div class="detail">
-        <label>Cycle</label>17 Jours
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>68 000 FCFA
-      </div>
-    </div>
-    <button class="buy-button buy-btn" data-product-id="3" data-price="25000" aria-label="Acheter Pack Start ÉNERGIE">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
-  </div>
 
-  <!-- Forfait VIP 4 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 4">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 4" />
-    <div class="price">100.000FCFA</div>
-    <div class="title">LV-4</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>revenus par jours</label>25 000 FCFA
+      <!-- Forfait VIP 5 - Disponible bientôt -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 5">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 5" />
+        <div class="header-plan">
+          <div class="title">LV-5</div>
+          <div class="price">&nbsp;</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail"><label>Gain Quotidien</label></div>
+          <div class="detail"><label>Gain Hebdomadaire</label></div>
+          <div class="detail"><label>Cycle</label></div>
+          <div class="detail"><label>Gain Total</label></div>
+        </div>
+        <div class="lock-notice">
+          <span class="material-icons" style="font-size:1.8rem;">lock</span>Disponible bientôt
+          <p>Revenus INCROYABLES à venir !</p>
+        </div>
       </div>
-      <div class="detail">
-        <label>Gain par semaine</label>175 000 FCFA
-      </div>
-      <div class="detail">
-        <label>Cycle</label>10 Jours
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>250 000 FCFA
-      </div>
-    </div>
-    <button class="buy-button buy-btn" data-product-id="4" data-price="100000" aria-label="Acheter Pack Start ÉNERGIE">
-      <span class="btn-text">Investir maintenant</span>
-    </button>
-  </div>
 
-  <!-- Forfait VIP 5 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 5">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 5" />
-    <div class="price"></div>
-    <div class="title">LV-5</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>Gain Quotidien</label>
+      <!-- Forfait VIP 6 - Disponible bientôt -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 6">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 6" />
+        <div class="header-plan">
+          <div class="title">LV-6</div>
+          <div class="price">&nbsp;</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail"><label>Gain Quotidien</label></div>
+          <div class="detail"><label>Gain Hebdomadaire</label></div>
+          <div class="detail"><label>Cycle</label></div>
+          <div class="detail"><label>Gain Total</label></div>
+        </div>
+        <div class="lock-notice">
+          <span class="material-icons" style="font-size:1.8rem;">lock</span>Disponible bientôt
+          <p>Revenus INCROYABLES à venir !</p>
+        </div>
       </div>
-      <div class="detail">
-        <label>Gain Hebdomadaire</label>
-      </div>
-      <div class="detail">
-        <label>Cycle</label>
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>
-      </div>
-    </div>
-    <!-- Bouton remplacé par cadenas + message revenus -->
-    <div class="lock-notice">
-      <span class="material-icons">lock</span>Disponible bientôt
-      <p>Revenus INCROYABLES à venir !</p>
-    </div>
-  </div>
 
-  <!-- Forfait VIP 6 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 6">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 6" />
-    <div class="price"></div>
-    <div class="title">LV-6</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>Gain Quotidien</label>      </div>
-      <div class="detail">
-        <label>Gain Hebdomadaire</label>
+      <!-- Forfait VIP 7 - Disponible bientôt -->
+      <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 7">
+        <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 7" />
+        <div class="header-plan">
+          <div class="title">LV-7</div>
+          <div class="price">&nbsp;</div>
+        </div>
+        <div class="plan-details">
+          <div class="detail"><label>Gain Quotidien</label></div>
+          <div class="detail"><label>Gain Hebdomadaire</label></div>
+          <div class="detail"><label>Cycle</label></div>
+          <div class="detail"><label>Gain Total</label></div>
+        </div>
+        <div class="lock-notice">
+          <span class="material-icons" style="font-size:1.8rem;">lock</span>Disponible bientôt
+          <p>Revenus INCROYABLES à venir !</p>
+        </div>
       </div>
-      <div class="detail">
-        <label>Cycle</label>
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>
-      </div>
-    </div>
-    <!-- Bouton remplacé par cadenas + message revenus -->
-    <div class="lock-notice">
-      <span class="material-icons">lock</span>Disponible bientôt
-      <p>Revenus INCROYABLES à venir !</p>
-    </div>
-  </div>
-
-  <!-- Forfait VIP 7 -->
-  <div class="plan" tabindex="0" role="region" aria-label="Forfait VIP 7">
-    <img src="https://image.noelshack.com/fichiers/2025/32/5/1754637738-81-bd6hxtol-sl1500.jpg" alt="Canon Camera VIP 7" />
-    <div class="price"></div>
-    <div class="title">LV-7</div>
-    <div class="plan-details">
-      <div class="detail">
-        <label>Gain Quotidien</label>      </div>
-      <div class="detail">
-        <label>Gain Hebdomadaire</label>
-      </div>
-      <div class="detail">
-        <label>Cycle</label>
-      </div>
-      <div class="detail">
-        <label>Gain Total</label>     </div>
-    </div>
-    <!-- Bouton remplacé par cadenas + message revenus -->
-    <div class="lock-notice">
-      <span class="material-icons">lock</span>Disponible bientôt
-      <p>Revenus INCROYABLES à venir !</p>
     </div>
   </div>
 
@@ -464,7 +508,7 @@
       <span class="material-icons icon" aria-hidden="true">smartphone</span>
       Nescafé
     </div>
-    <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
+    <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="Mes Nescafé">
       <span class="material-icons icon" aria-hidden="true">list_alt</span>
       Mes Nescafé
     </div>
@@ -474,7 +518,7 @@
     </div>
   </nav>
 
-  <!-- Script JavaScript (module) -->
+   <!-- Script JavaScript (module) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import {
