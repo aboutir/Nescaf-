@@ -4,35 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Historique des Retraits</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     /* Reset et style global */
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #e9f1f7;
       color: #2c3e50;
-      font-size: 1.15rem;
+      font-size: 0.9rem;
       min-height: 100vh;
       display: flex;
       justify-content: center;
-      padding: 20px 20px;
+      padding: 15px 15px;
     }
     .container {
-      max-width: 480px;
+      max-width: 420px;
       width: 100%;
-      padding: 0 15px;
+      padding: 0 12px;
       box-sizing: border-box;
     }
     h1 {
-      font-weight: 800;
-      font-size: 2.2rem;
+      font-weight: 600;
+      font-size: 1.7rem;
       color: #003366;
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 22px;
       user-select: none;
     }
 
@@ -40,52 +38,52 @@
     #history-container {
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      min-height: 200px;
+      gap: 12px;
+      min-height: 160px;
       user-select: text;
     }
     /* Carte historique */
     .card {
-      background: #ffffffcc;
-      border-radius: 16px;
-      padding: 20px 25px;
-      box-shadow: 0 6px 15px rgba(0, 82, 155, 0.15);
+      background: #ffffffdd;
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: 0 4px 12px rgba(0, 82, 155, 0.12);
       user-select: none;
       transition: box-shadow 0.3s ease;
+      font-size: 0.85rem;
+      line-height: 1.3;
     }
     .card:hover {
-      box-shadow: 0 10px 25px rgba(0, 82, 155, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 82, 155, 0.25);
     }
     .row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
-    .row:last-child {
-      margin-bottom: 0;
-    }
+    .row:last-child { margin-bottom: 0; }
     .left-section {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       user-select: none;
     }
     .icon {
-      height: 22px;
-      width: 22px;
+      height: 18px;
+      width: 18px;
       opacity: 0.7;
       user-select: none;
       user-drag: none;
     }
     /* Labels et valeurs */
     .label {
-      font-weight: 700;
+      font-weight: 600;
       color: #004080;
       user-select: none;
     }
     .black-text {
-      color: #1e1e1e;
+      color: #1a1a1a;
       font-weight: 600;
       user-select: text;
     }
@@ -95,7 +93,12 @@
       user-select: text;
     }
     .orange-text {
-      color: #d9770f; /* Une couleur orange chaude */
+      color: #d9770f;
+      font-weight: 700;
+      user-select: text;
+    }
+    .green-text {
+      color: #2a9d8f;
       font-weight: 700;
       user-select: text;
     }
@@ -104,11 +107,11 @@
     .no-history {
       background: #f0f4fa;
       border: 2px dashed #a3c1f7;
-      border-radius: 16px;
-      padding: 30px;
+      border-radius: 12px;
+      padding: 24px;
       text-align: center;
-      font-weight: 700;
-      font-size: 1.1rem;
+      font-weight: 600;
+      font-size: 1rem;
       color: #768ba1;
       user-select: none;
       user-drag: none;
@@ -116,65 +119,45 @@
 
     /* Responsive */
     @media (max-width: 520px) {
-      .card {
-        padding: 16px 20px;
-      }
+      .card { padding: 12px 16px; }
       .row {
         flex-direction: column;
         align-items: flex-start;
-        gap: 6px;
+        gap: 4px;
       }
-      .left-section {
-        gap: 8px;
-      }
+      .left-section { gap: 6px; }
+      h1 { font-size: 1.5rem; }
+      body { font-size: 0.85rem; }
     }
   </style>
 </head>
 <body>
   <main class="container" role="main" aria-label="Historique des retraits">
-    <h1>Historique de  retraits</h1>
+    <h1>Historique de vos retraits</h1>
     <div id="history-container" aria-live="polite" aria-relevant="additions removals">
       <div class="no-history">Chargement de l'historique...</div>
     </div>
   </main>
 
- <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get,
-    set,
-    update,
-    onValue,
-    query,
-    orderByChild,
-    equalTo,
-    runTransaction
-  } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
-  // === Configuration et initialization Firebase ===
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
-    authDomain: "nescafe-cba7a.firebaseapp.com",
-    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
-    projectId: "nescafe-cba7a",
-    storageBucket: "nescafe-cba7a.firebasestorage.app",
-    messagingSenderId: "91209018725",
-    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
+      authDomain: "nescafe-cba7a.firebaseapp.com",
+      databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
+      projectId: "nescafe-cba7a",
+      storageBucket: "nescafe-cba7a.firebasestorage.app",
+      messagingSenderId: "91209018725",
+      appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const database = getDatabase(app);
 
-    // Formatage utils
     function formatAmount(amount) {
       if (typeof amount !== 'number') return '-';
       return `${amount.toLocaleString('fr-FR')} FCFA`;
@@ -195,8 +178,11 @@
       }
     }
 
-    // Génération du HTML d'une carte retrait
     function createWithdrawalCard(withdrawal) {
+      // Appliquer couleur verte si statut "payé" (insensible à la casse)
+      const statusText = withdrawal.status ?? '-';
+      const statusClass = statusText.toLowerCase() === "payé" ? "green-text" : "blue-text";
+
       return `
         <div class="card" role="group" aria-label="Retrait du ${formatDate(withdrawal.timestamp)}">
           <div class="row">
@@ -220,7 +206,7 @@
               <img src="https://img.icons8.com/material-rounded/24/0000ff/process.png" alt="Statut" class="icon" />
               <span class="label">Statut</span>
             </div>
-            <span class="value blue-text">${withdrawal.status ?? '-'}</span>
+            <span class="value ${statusClass}">${statusText}</span>
           </div>
 
           <div class="row">
@@ -234,7 +220,6 @@
       `;
     }
 
-    // Affichage de l'historique
     function displayWithdrawalHistory(history) {
       const container = document.getElementById('history-container');
       if (!container) return;
@@ -244,13 +229,11 @@
         return;
       }
 
-      // Trier par date décroissante
       const sortedEntries = Object.entries(history).sort(([, a], [, b]) => b.timestamp - a.timestamp);
 
       container.innerHTML = sortedEntries.map(([, withdrawal]) => createWithdrawalCard(withdrawal)).join('');
     }
 
-    // Écoute et affiche l'historique Firebase en temps réel
     onAuthStateChanged(auth, user => {
       if (user) {
         const historyRef = ref(database, `users/${user.uid}/withdrawalHistory`);
@@ -267,12 +250,6 @@
       } else {
         window.location.href = 'login.html';
       }
-    });
-
-    // Gestion retour arrière (supposé dans UI)
-    document.querySelector('.back-arrow')?.addEventListener('click', e => {
-      e.preventDefault();
-      history.back();
     });
   </script>
 </body>
