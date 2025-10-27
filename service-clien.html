@@ -16,11 +16,13 @@
             min-height: 100vh;
             background-color: #f0f0f0;
         }
+
         .container {
             position: fixed;
             bottom: 20px;
             right: 20px;
         }
+
         #messageBouton {
             background-color: #4a4a4a;
             color: white;
@@ -36,9 +38,12 @@
             transition: all 0.3s ease;
             font-size: 24px;
         }
+
         #messageBouton:hover {
             background-color: #2a2a2a;
+            transform: scale(1.05);
         }
+
         #contactMenu {
             position: absolute;
             bottom: 70px;
@@ -48,6 +53,7 @@
             gap: 10px;
             width: 250px;
         }
+
         .contact-button {
             padding: 12px 20px;
             border: none;
@@ -60,13 +66,16 @@
             gap: 15px;
             font-weight: bold;
         }
+
         .contact-button i {
             font-size: 24px;
         }
+
         #whatsappBtn {
             background-color: #25D366;
             color: white;
         }
+
         .contact-button:hover {
             opacity: 0.9;
             transform: scale(1.05);
@@ -78,8 +87,10 @@
         <button id="messageBouton">
             <i class="fas fa-comment-dots"></i>
         </button>
+
         <div id="contactMenu">
-            <button id="whatsappBtn" class="contact-button" onclick="window.open('wa.me/2250711336710', '_blank')">
+            <button id="whatsappBtn" class="contact-button" 
+                onclick="window.open('https://wa.me/2250711336710', '_blank')">
                 <i class="fab fa-whatsapp"></i>
                 Parler à un agent Nestcafé
             </button>
