@@ -247,16 +247,10 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import { getDatabase, ref, get, update, push, query, orderByChild, equalTo, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+  import { getDatabase, ref, get, update, push, query, orderByChild } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
-    authDomain: "nescafe-cba7a.firebaseapp.com",
-    databaseURL: "https://nescafe-cba7a-default-rtdb.firebaseio.com",
-    projectId: "nescafe-cba7a",
-    storageBucket: "nescafe-cba7a.firebasestorage.app",
-    messagingSenderId: "91209018725",
-    appId: "1:91209018725:web:adb0d2a8b458591c8a058c"
+    // Ta config Firebase ici
   };
 
   const app = initializeApp(firebaseConfig);
@@ -278,10 +272,6 @@
   function showMessage(msg, isError = true) {
     const el = document.getElementById('message');
     el.innerHTML = msg ? `<div class="${isError ? 'error' : 'success'}">${msg}</div>` : '';
-  }
-
-  function isValidWithdrawalTime() {
-    return true; // les retraits sont autorisés à tout moment
   }
 
   async function loadUserData(uid) {
@@ -306,80 +296,42 @@
     return userWithdrawalConfig && userWithdrawalConfig.code === inputCode;
   }
 
-  function updateWithdrawalSummary() {
-    const amountInput = document.getElementById("amount");
-    const codeInput = document.getElementById("withdrawalCode");
-    const summary = document.getElementById("withdrawal-summary");
-    const button = document.getElementById("withdrawal-button");
-    const amount = parseFloat(amountInput.value) || 0;
-    const withdrawalCode = codeInput.value.trim();
-
-    const validTime = isValidWithdrawalTime();
-    const validAmount = amount >= MIN_WITHDRAWAL && amount <= MAX_WITHDRAWAL;
-    const sufficientBalance = amount <= currentBalance;
-    const hasCode = withdrawalCode.length > 0;
-
-    button.disabled = !(validTime && validAmount && sufficientBalance && hasCode);
-
-    if (!validTime) {
-      showMessage("Les retraits sont autorisés à tout moment", false);
-    } else if (!validAmount) {
-      showMessage(`Le montant doit être compris entre ${MIN_WITHDRAWAL} et ${MAX_WITHDRAWAL} FCFA`);
-    } else if (!sufficientBalance) {
-      showMessage("Solde insuffisant");
-    } else if (!hasCode) {
-      showMessage("Veuillez saisir votre code de retrait");
-    } else {
-      showMessage("", false);
-    }
-
-    if (amount > 0) {
-      const fees = Math.round(amount * FEE_RATE);
-      const total = amount - fees;
-
-      document.getElementById("requested-amount").textContent = formatAmount(amount);
-      document.getElementById("fees-amount").textContent = formatAmount(fees);
-      document.getElementById("total-amount").textContent = formatAmount(total);
-
-      summary.classList.add("visible");
-    } else {
-      summary.classList.remove("visible");
-    }
-  }
-
+  // Fonction qui vérifie s'il y a un retrait en cours (statut différent de "Validé")
   async function isPendingWithdrawal(uid) {
     try {
-      // On vérifie l'existence d'un retrait en cours (statut différent de "Validé")
-      const historyRef = query(ref(database, `users/${uid}/withdrawalHistory`), orderByChild('status'));
+      const historyRef = ref(database, `users/${uid}/withdrawalHistory`);
       const snapshot = await get(historyRef);
       if (snapshot.exists()) {
         const withdrawals = snapshot.val();
         for (const key in withdrawals) {
           if (withdrawals[key].status !== "Validé") {
+            // Si au moins un retrait n'est pas validé, on retourne true
             return true;
           }
         }
       }
-      return false;
+      return false; // Pas de retraits en cours
     } catch (error) {
       console.error("Erreur vérification retrait en cours :", error);
-      return false; // en cas d'erreur, on autorise pas de nouveaux retraits par sécurité
+      // En cas d'erreur, bloquer pour éviter doublons
+      return true; 
     }
   }
 
   async function processWithdrawal() {
+    const button = document.getElementById("withdrawal-button");
+    button.disabled = true; // Désactive tout de suite le bouton pour éviter multi clics
+
     if (!currentUser) {
       showMessage("Veuillez vous connecter");
+      button.disabled = false;
       return;
     }
 
-    if (!isValidWithdrawalTime()) {
-      showMessage("Les retraits sont autorisés à tout moment");
-      return;
-    }
-
+    // Vérification d'un retrait en cours
     if (await isPendingWithdrawal(currentUser.uid)) {
-      showMessage("Un retrait est déjà en cours, veuillez attendre sa validation avant d'en effectuer un nouveau");
+      showMessage("Un retrait est déjà en cours. Attendez que le précédent soit validé.");
+      button.disabled = false;
       return;
     }
 
@@ -388,16 +340,19 @@
 
     if (!validateWithdrawalCode(withdrawalCode)) {
       showMessage("Code de retrait incorrect");
+      button.disabled = false;
       return;
     }
 
     if (isNaN(amount) || amount < MIN_WITHDRAWAL || amount > MAX_WITHDRAWAL) {
-      showMessage("Montant invalide");
+      showMessage(`Montant invalide (entre ${MIN_WITHDRAWAL} et ${MAX_WITHDRAWAL} FCFA)`);
+      button.disabled = false;
       return;
     }
 
     if (amount > currentBalance) {
       showMessage("Solde insuffisant");
+      button.disabled = false;
       return;
     }
 
@@ -417,15 +372,17 @@
         fees,
         totalAmount,
         timestamp: serverTimestamp(),
-        status: "Traitement Bancaire"
+        status: "Traitement Bancaire" // Retrait en cours
       };
 
       await update(ref(database), updates);
 
+      // Redirection vers historique des retraits après validation
       window.location.href = "historique retrait.html";
     } catch (error) {
       console.error("Erreur retrait:", error);
       showMessage("Erreur lors du retrait. Réessayez.");
+      button.disabled = false;
     }
   }
 
@@ -440,11 +397,50 @@
     }
   });
 
-  document.getElementById("amount").addEventListener("input", updateWithdrawalSummary);
-  document.getElementById("withdrawalCode").addEventListener("input", updateWithdrawalSummary);
+  document.getElementById("amount").addEventListener("input", () => {
+    updateWithdrawalSummary();
+  });
+  document.getElementById("withdrawalCode").addEventListener("input", () => {
+    updateWithdrawalSummary();
+  });
   document.getElementById("withdrawal-button").addEventListener("click", processWithdrawal);
 
-  showMessage("", false);
+  function updateWithdrawalSummary() {
+    const amountInput = document.getElementById("amount");
+    const codeInput = document.getElementById("withdrawalCode");
+    const summary = document.getElementById("withdrawal-summary");
+    const button = document.getElementById("withdrawal-button");
+    const amount = parseFloat(amountInput.value) || 0;
+    const withdrawalCode = codeInput.value.trim();
+
+    const validAmount = amount >= MIN_WITHDRAWAL && amount <= MAX_WITHDRAWAL;
+    const sufficientBalance = amount <= currentBalance;
+    const hasCode = withdrawalCode.length > 0;
+
+    button.disabled = !(validAmount && sufficientBalance && hasCode);
+
+    if (!validAmount) {
+      showMessage(`Le montant doit être entre ${MIN_WITHDRAWAL} et ${MAX_WITHDRAWAL} FCFA`);
+    } else if (!sufficientBalance) {
+      showMessage("Solde insuffisant");
+    } else if (!hasCode) {
+      showMessage("Veuillez saisir votre code de retrait");
+    } else {
+      showMessage("", false);
+    }
+
+    if (amount > 0) {
+      const fees = Math.round(amount * FEE_RATE);
+      const total = amount - fees;
+      document.getElementById("requested-amount").textContent = formatAmount(amount);
+      document.getElementById("fees-amount").textContent = formatAmount(fees);
+      document.getElementById("total-amount").textContent = formatAmount(total);
+      summary.classList.add("visible");
+    } else {
+      summary.classList.remove("visible");
+    }
+  }
 </script>
+
 </body>
 </html>
