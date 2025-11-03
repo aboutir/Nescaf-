@@ -231,6 +231,7 @@
       return userWithdrawalConfig && userWithdrawalConfig.code === inputCode;
     }
 
+    // Vérifie dans la base s'il y a un retrait en cours (statut != 'Validé')
     async function isPendingWithdrawal(uid) {
       try {
         const historyRef = ref(database, `users/${uid}/withdrawalHistory`);
@@ -239,14 +240,16 @@
           const withdrawals = snapshot.val();
           for (const key in withdrawals) {
             if (withdrawals[key].status !== "Validé") {
-              return true; // Un retrait est encore en cours
+              // Retrait en cours détecté ⇒ bloquer nouveau retrait
+              return true;
             }
           }
         }
-        return false;
+        return false; // Pas de retrait en cours
       } catch (error) {
         console.error("Erreur vérification retrait en cours :", error);
-        return true; // Bloquer par sécurité en cas d'erreur
+        // En cas d'erreur on bloque par sécurité
+        return true;
       }
     }
 
@@ -308,7 +311,6 @@
 
         await update(ref(database), updates);
 
-        // Redirection vers historique après succès
         window.location.href = "historique retrait.html";
       } catch (error) {
         console.error("Erreur retrait:", error);
@@ -367,7 +369,6 @@
     document.getElementById("amount").addEventListener("input", updateWithdrawalSummary);
     document.getElementById("withdrawalCode").addEventListener("input", updateWithdrawalSummary);
     document.getElementById("withdrawal-button").addEventListener("click", processWithdrawal);
-
   </script>
 </body>
 </html>
