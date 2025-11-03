@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Service Client - Nestcafé</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+  />
   <style>
     /* --- Style général --- */
     body {
@@ -92,7 +95,7 @@
     }
 
     #whatsappBtn {
-      background-color: #25D366;
+      background-color: #25d366;
       color: white;
     }
 
@@ -111,8 +114,11 @@
 
     <!-- Menu contact -->
     <div id="contactMenu">
-      <button id="whatsappBtn" class="contact-button"
-        onclick="window.open('wa.me/2250720392189', '_blank')">
+      <button
+        id="whatsappBtn"
+        class="contact-button"
+        onclick="window.open('https://wa.me/2250720392189', '_blank')"
+      >
         <i class="fab fa-whatsapp"></i>
         Parler à un agent Nestcafé
       </button>
@@ -120,13 +126,13 @@
   </div>
 
   <script>
-    const messageBouton = document.getElementById('messageBouton');
-    const contactMenu = document.getElementById('contactMenu');
+    const messageBouton = document.getElementById("messageBouton");
+    const contactMenu = document.getElementById("contactMenu");
     let menuOuvert = false;
 
-    messageBouton.addEventListener('click', () => {
+    messageBouton.addEventListener("click", () => {
       menuOuvert = !menuOuvert;
-      contactMenu.style.display = menuOuvert ? 'flex' : 'none';
+      contactMenu.style.display = menuOuvert ? "flex" : "none";
     });
   </script>
 </body>
