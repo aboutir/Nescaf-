@@ -231,7 +231,6 @@
       return userWithdrawalConfig && userWithdrawalConfig.code === inputCode;
     }
 
-    // Vérifie dans la base s'il y a un retrait en cours (statut != 'Validé')
     async function isPendingWithdrawal(uid) {
       try {
         const historyRef = ref(database, `users/${uid}/withdrawalHistory`);
@@ -240,16 +239,16 @@
           const withdrawals = snapshot.val();
           for (const key in withdrawals) {
             if (withdrawals[key].status !== "Validé") {
-              // Retrait en cours détecté ⇒ bloquer nouveau retrait
+              console.log("Retrait en cours trouvé:", withdrawals[key]);
               return true;
             }
           }
         }
-        return false; // Pas de retrait en cours
+        console.log("Aucun retrait en cours.");
+        return false;
       } catch (error) {
-        console.error("Erreur vérification retrait en cours :", error);
-        // En cas d'erreur on bloque par sécurité
-        return true;
+        console.error("Erreur vérification retrait :", error);
+        throw new Error("Impossible de vérifier les retraits. Réessayez plus tard.");
       }
     }
 
@@ -263,8 +262,14 @@
         return;
       }
 
-      if (await isPendingWithdrawal(currentUser.uid)) {
-        showMessage("Un retrait est déjà en cours. Attendez sa validation avant d'en lancer un autre.");
+      try {
+        if (await isPendingWithdrawal(currentUser.uid)) {
+          showMessage("Un retrait est déjà en cours. Patientez sa validation avant d'en lancer un autre.");
+          button.disabled = false;
+          return;
+        }
+      } catch (e) {
+        showMessage(e.message);
         button.disabled = false;
         return;
       }
