@@ -6,6 +6,7 @@
   <title>Retrait d'argent</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
+    /* Styles identiques à votre version précédente */
     body {
       font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #e9f1f7;
@@ -247,7 +248,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-  import { getDatabase, ref, get, update, push, query, orderByChild, equalTo, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+  import { getDatabase, ref, get, update, push } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBbnOxwcCXHAHJWxPw90YGvSuPCOyp6-lA",
@@ -281,7 +282,7 @@
   }
 
   function isValidWithdrawalTime() {
-    return true; // les retraits sont autorisés à tout moment
+    return true; // Les retraits sont autorisés à tout moment
   }
 
   async function loadUserData(uid) {
@@ -347,23 +348,25 @@
     }
   }
 
+  // Mise à jour de la fonction pour bloquer uniquement si retrait non payé
   async function isPendingWithdrawal(uid) {
     try {
-      // On vérifie l'existence d'un retrait en cours (statut différent de "Validé")
-      const historyRef = query(ref(database, `users/${uid}/withdrawalHistory`), orderByChild('status'));
+      const historyRef = ref(database, `users/${uid}/withdrawalHistory`);
       const snapshot = await get(historyRef);
       if (snapshot.exists()) {
         const withdrawals = snapshot.val();
         for (const key in withdrawals) {
-          if (withdrawals[key].status !== "Validé") {
+          const status = (withdrawals[key].status || "").toLowerCase();
+          // Bloquer si statut est un des états non payés
+          if (["traitement bancaire", "en attente", "en cours"].includes(status)) {
             return true;
           }
         }
       }
-      return false;
+      return false; // Aucun retrait bloquant trouvé
     } catch (error) {
       console.error("Erreur vérification retrait en cours :", error);
-      return false; // en cas d'erreur, on autorise pas de nouveaux retraits par sécurité
+      return true; // Bloquer faute de mieux en cas d'erreur
     }
   }
 
@@ -416,7 +419,7 @@
         amount,
         fees,
         totalAmount,
-        timestamp: serverTimestamp(),
+        timestamp: Date.now(),
         status: "Traitement Bancaire"
       };
 
