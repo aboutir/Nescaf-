@@ -160,10 +160,10 @@
     .revenus-section {
       background: linear-gradient(135deg, #50e3c2 0%, #4a90e2 100%);
       border-radius: 24px;
-      padding: 30px 25px;
+      padding: 24px 20px;
       box-shadow: 0 16px 30px rgba(80, 227, 194, 0.35);
       margin: 36px auto 40px auto;
-      max-width: 100%;
+      max-width: 390px;
       color: white;
       font-family: 'Nunito', Arial, sans-serif;
       user-select: none;
@@ -171,7 +171,7 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
-      min-height: 300px;
+      min-height: 260px;
       justify-content: center;
     }
 
@@ -197,15 +197,6 @@
       user-select: text;
       padding: 16px;
       line-height: 1.4;
-      overflow: auto;
-    }
-
-    .revenus-content img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      width: 100%;
     }
 
     /* Information lancement entreprise */
@@ -224,6 +215,7 @@
       font-family: 'Nunito', Arial, sans-serif;
       letter-spacing: 0.04em;
     }
+
   </style>
 </head>
 <body>
@@ -282,6 +274,7 @@
         <img 
           src="https://image.noelshack.com/fichiers/2025/46/5/1763121408-img-1559.png" 
           alt="Tableau des revenus Nescafé" 
+          style="max-width: 100%; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.2);" 
         />
       </div>
     </section>
@@ -407,4 +400,21 @@
         const userRef = ref(database, `users/${uid}`);
 
         // Écoute temps réel des données utilisateur
-        onValue(userRef
+        onValue(userRef, (snapshot) => {
+          const data = snapshot.val() || {};
+
+          soldeCompteEl.textContent = formatFCFA(data.balance ?? 0);
+          if (totalRetraitEl) totalRetraitEl.textContent = formatFCFA(data.totalWithdrawals ?? 0);
+          if (gainAppareilEl) gainAppareilEl.textContent = formatFCFA(data.totalRevenue ?? 0);
+        });
+      } else {
+        // Pas connecté: affichage par défaut
+        soldeCompteEl.textContent = 'FCFA 0';
+        if (totalRetraitEl) totalRetraitEl.textContent = 'FCFA 0';
+        if (gainAppareilEl) gainAppareilEl.textContent = 'FCFA 0';
+      }
+    });
+  </script>
+
+</body>
+</html>
