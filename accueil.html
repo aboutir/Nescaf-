@@ -163,7 +163,7 @@
       padding: 30px 25px;
       box-shadow: 0 16px 30px rgba(80, 227, 194, 0.35);
       margin: 36px auto 40px auto;
-      max-width: 480px;
+      max-width: 100%;
       color: white;
       font-family: 'Nunito', Arial, sans-serif;
       user-select: none;
@@ -197,14 +197,15 @@
       user-select: text;
       padding: 16px;
       line-height: 1.4;
+      overflow: auto;
     }
 
     .revenus-content img {
       max-width: 100%;
+      height: auto;
       border-radius: 12px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      height: auto;
-      width: 460px;
+      width: 100%;
     }
 
     /* Information lancement entreprise */
@@ -406,4 +407,4 @@
         const userRef = ref(database, `users/${uid}`);
 
         // Écoute temps réel des données utilisateur
-        onValue(userRef, (snapshot) => {
+        onValue(userRef
