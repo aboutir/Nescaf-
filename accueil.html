@@ -3,119 +3,401 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Page d'accueil Nescafé</title>
+  <title>Nescafé - Investissement Intelligent</title>
 
   <!-- Material Icons CDN -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
-    /* Styles précédents inchangés */
+    /* Reset et styles de base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       overflow-x: hidden;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f3f6;
-      color: #3b3b3b;
+      font-family: 'Montserrat', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: #2d3748;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
+
+    /* Header avec dégradé moderne */
+    .header {
+      background: linear-gradient(135deg, #2c5530 0%, #4a7c59 50%, #6ba368 100%);
+      color: white;
+      padding: 20px 18px 15px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(43, 85, 48, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #f5a623, #e74c3c, #50e3c2);
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .logo-icon {
+      font-size: 2.2rem;
+      color: #ffd166;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .header-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    /* Carrousel amélioré */
     .carousel {
       position: relative;
-      width: 100vw;
-      height: 210px;
-      border-radius: 0;
+      width: 100%;
+      height: 220px;
+      border-radius: 0 0 20px 20px;
       overflow: hidden;
-      box-shadow: 0 6px 15px rgba(80, 227, 194, 0.3);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
       user-select: none;
       margin: 0;
-      left: 0;
-      top: 0;
-      z-index: 10;
     }
+
     .carousel img {
       position: absolute;
       width: 100%;
-      height: 210px;
+      height: 100%;
       object-fit: cover;
       top: 0;
       left: 0;
       opacity: 0;
-      transition: opacity 1.1s ease-in-out;
+      transition: opacity 1.2s ease-in-out;
     }
+
     .carousel img.active {
       opacity: 1;
       z-index: 1;
     }
+
+    .carousel-indicators {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+      background: white;
+      transform: scale(1.2);
+    }
+
+    /* Container principal */
     .container {
       max-width: 390px;
       margin: 0 auto 110px auto;
-      padding: 18px;
+      padding: 20px 18px;
       flex: 1 0 auto;
-      box-sizing: border-box;
     }
-    .carousel-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin: 12px 0;
+
+    /* Boutons actions améliorés */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
+      margin: 20px 0;
     }
-    .btn-carousel {
-      flex: 1;
+
+    .action-btn {
       background: white;
-      border: 2px solid white;
-      border-radius: 24px;
-      padding: 10px 6px;
-      font-weight: 700;
-      font-size: 0.95em;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
       cursor: pointer;
       user-select: none;
-      transition:
-        background-color 0.3s ease,
-        border-color 0.3s ease,
-        box-shadow 0.3s ease,
-        color 0.3s ease;
-      box-shadow:
-        0 2px 6px rgba(255 255 255 / 0.9),
-        inset 0 0 6px rgba(255 255 255 / 0.7);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      color: #2d3748;
       position: relative;
-      color: #50e3c2;
+      overflow: hidden;
     }
-    .btn-carousel:hover,
-    .btn-carousel:focus {
-      background-color: #50e3c2;
-      color: white;
-      border-color: #50e3c2;
-      box-shadow:
-        0 4px 14px rgba(80, 227, 194, 0.65),
-        inset 0 0 15px rgba(80, 227, 194, 0.6);
+
+    .action-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #4a90e2, #50e3c2);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .action-btn:hover::before,
+    .action-btn:focus::before {
+      transform: scaleX(1);
+    }
+
+    .action-btn:hover,
+    .action-btn:focus {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
       outline: none;
     }
-    .btn-depot .material-icons.icon {
-      color: #f5a623;
+
+    .action-btn .material-icons {
+      font-size: 1.8rem;
+      transition: all 0.3s ease;
     }
-    .btn-retrait .material-icons.icon {
+
+    .btn-recharge {
       color: #4a90e2;
     }
-    .btn-telegram .material-icons.icon {
-      color: #0088cc;
+
+    .btn-retrait {
+      color: #e74c3c;
     }
-    .btn-carousel:hover .material-icons.icon,
-    .btn-carousel:focus .material-icons.icon {
+
+    .btn-service {
+      color: #50e3c2;
+    }
+
+    .action-btn:hover .material-icons,
+    .action-btn:focus .material-icons {
+      transform: scale(1.1);
+    }
+
+    /* Section parrainage améliorée */
+    .parrainage-banner {
+      background: linear-gradient(135deg, #f5a623 0%, #e74c3c 100%);
+      border-radius: 18px;
+      padding: 22px 20px;
       color: white;
+      text-align: center;
+      font-weight: 700;
+      margin: 25px 0;
+      box-shadow: 0 8px 25px rgba(245, 166, 35, 0.3);
+      position: relative;
+      overflow: hidden;
     }
-    nav.bottom-nav {
+
+    .parrainage-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      transform: rotate(30deg);
+    }
+
+    .parrainage-banner h3 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .parrainage-banner p {
+      font-size: 0.95rem;
+      opacity: 0.95;
+      line-height: 1.4;
+    }
+
+    /* Information lancement */
+    .info-card {
+      background: linear-gradient(135deg, #4a90e2 0%, #50e3c2 100%);
+      border-radius: 18px;
+      padding: 18px 20px;
+      color: white;
+      text-align: center;
+      margin: 20px 0 30px;
+      box-shadow: 0 8px 25px rgba(74, 144, 226, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .info-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+      transform: translateX(-100%);
+    }
+
+    .info-card:hover::after {
+      animation: shimmer 1.5s ease;
+    }
+
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .info-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .info-card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Section plans d'investissement */
+    .invest-section {
+      background: white;
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      margin: 25px 0;
+      overflow: hidden;
+    }
+
+    .section-header {
+      background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .section-header h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    /* Tableau amélioré */
+    .table-container {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .invest-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .invest-table thead {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+
+    .invest-table thead tr {
+      height: 50px;
+    }
+
+    .invest-table th {
+      padding: 12px 6px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: #4a5568;
+      border-bottom: 2px solid #e2e8f0;
+      position: relative;
+    }
+
+    .invest-table th:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background-color: #e2e8f0;
+    }
+
+    .invest-table tbody tr {
+      transition: all 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .invest-table tbody tr:hover {
+      background-color: #f7fafc;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .invest-table td {
+      padding: 14px 6px;
+      text-align: center;
+      font-weight: 500;
+      color: #4a5568;
+    }
+
+    .invest-table .investment {
+      color: #e53e3e;
+      font-weight: 600;
+    }
+
+    .invest-table .profit {
+      color: #38a169;
+      font-weight: 600;
+    }
+
+    .invest-table .highlight {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      font-weight: 700;
+    }
+
+     /* === BOUTONS DE NAVIGATION ORIGINAUX (INCHANGÉS) === */
+    .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      max-width: 390px;
+      max-width: 500px;
       margin: 0 auto;
       background: #fff;
       border-top: 2.5px solid #50e3c2;
@@ -128,6 +410,7 @@
       user-select: none;
       z-index: 1000;
     }
+
     .nav-icon {
       flex: 1;
       color: #86929e;
@@ -142,292 +425,168 @@
       flex-direction: column;
       align-items: center;
     }
+
     .nav-icon:hover:not(.active) {
       color: #4a90e2;
       transform: scale(1.1);
     }
+
     .nav-icon.active {
       color: #50e3c2;
       font-weight: 700;
       transform: scale(1.15);
     }
+
     .nav-icon .material-icons.icon {
       font-size: 1.6em;
       margin-bottom: 4px;
       user-select: none;
     }
 
-    /* Nouvelle section revenus stylée carrée */
-    .revenus-section {
-      background: linear-gradient(135deg, #50e3c2 0%, #4a90e2 100%);
-      border-radius: 24px;
-      padding: 24px 20px;
-      box-shadow: 0 16px 30px rgba(80, 227, 194, 0.35);
-      margin: 20px auto 40px auto;
-      max-width: 390px;
-      color: white;
-      font-family: 'Nunito', Arial, sans-serif;
-      user-select: none;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      min-height: auto;
-      justify-content: center;
-    }
-
-    .section-title {
-      margin: 0;
-      font-weight: 800;
-      font-size: 1.4rem;
-      letter-spacing: 0.06em;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.28);
-      user-select: text;
-    }
-
-    .revenus-content {
-      background: rgba(255, 255, 255, 0.15);
-      flex: 1;
-      border-radius: 16px;
-      box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      user-select: text;
-      padding: 16px;
-      line-height: 1.4;
-      overflow: hidden;
-    }
-
-    /* Information lancement entreprise */
-    .lancement-info {
-      max-width: 390px;
-      margin: 20px auto 30px auto;
-      background: linear-gradient(90deg, #4a90e2, #50e3c2);
-      border-radius: 20px;
-      padding: 14px 20px;
-      color: white;
-      font-weight: 700;
-      font-size: 1rem;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(80, 227, 194, 0.35);
-      user-select: none;
-      font-family: 'Nunito', Arial, sans-serif;
-      letter-spacing: 0.04em;
-    }
-
-    /* Styles pour le tableau d'investissement */
-    .table-container {
-      width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-      background-color: white;
-      overflow: hidden;
-    }
-    
-    .invest-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-      table-layout: fixed;
-    }
-    
-    .invest-table thead {
-      background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
-      color: white;
-    }
-    
-    .invest-table thead tr {
-      height: 45px;
-    }
-    
-    .invest-table th {
-      padding: 8px 4px;
-      text-align: center;
-      font-weight: 600;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.7rem;
-      letter-spacing: 0.3px;
-      position: relative;
-      word-wrap: break-word;
-    }
-    
-    .invest-table th:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 20%;
-      height: 60%;
-      width: 1px;
-      background-color: rgba(255, 255, 255, 0.3);
-    }
-    
-    .invest-table tbody tr {
-      transition: all 0.2s ease;
-      border-bottom: 1px solid #ecf0f1;
-    }
-    
-    .invest-table tbody tr:hover {
-      background-color: #f8fafc;
-    }
-    
-    .invest-table td {
-      padding: 10px 4px;
-      text-align: center;
-      font-weight: 400;
-      color: #2c3e50;
-      word-wrap: break-word;
-    }
-    
-    .invest-table .highlight {
-      background-color: #e8f4fc;
-      font-weight: 600;
-      color: #2980b9;
-    }
-    
-    .invest-table .profit {
-      color: #27ae60;
-      font-weight: 600;
-    }
-    
-    .invest-table .investment {
-      color: #e74c3c;
-      font-weight: 500;
-    }
-
-    /* Styles pour les statistiques */
-    .statistiques-boxes {
-      margin-top: 12px;
-    }
-    
-    .parrainage-banner {
-      background: linear-gradient(135deg, #f5a623 0%, #e74c3c 100%);
-      border-radius: 16px;
-      padding: 20px;
-      color: white;
-      text-align: center;
-      font-weight: 700;
-      margin-bottom: 20px;
-      box-shadow: 0 6px 15px rgba(245, 166, 35, 0.3);
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="2" opacity="0.2"/></svg>');
-      background-size: 80px;
-    }
-
     /* Responsive */
     @media (max-width: 480px) {
+      .container {
+        padding: 16px 15px;
+      }
+      
       .invest-table {
         font-size: 0.7rem;
       }
       
       .invest-table th, .invest-table td {
-        padding: 6px 3px;
+        padding: 10px 4px;
+      }
+      
+      .actions-grid {
+        gap: 10px;
+      }
+      
+      .action-btn {
+        padding: 14px 6px;
+        font-size: 0.85rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Carrousel pleine largeur collé en haut -->
-  <div class="carousel" aria-label="Carrousel d'images promotionnelles" role="region">
-    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565133-mexico-nescafe-factory-feed.jpeg" alt="Image 1" class="active" />
-    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565198-2a56506d3c43c179ed42da50b814ccb3-262279842-highres-data.jpg" alt="Image 2" />
-    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565251-nescaf-1160x700.jpg" alt="Image 3" />
-    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565330-t-l-chargement.jpeg" alt="Image 4" />
+  <!-- Header avec logo -->
+  <header class="header" role="banner">
+    <div class="logo-container">
+      <span class="material-icons logo-icon">local_cafe</span>
+      <h1>Nescafé Invest</h1>
+    </div>
+    <p class="header-subtitle">Investissez intelligemment, récoltez régulièrement</p>
+  </header>
+
+  <!-- Carrousel avec indicateurs -->
+  <div class="carousel" aria-label="Carrousel promotionnel Nescafé">
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565133-mexico-nescafe-factory-feed.jpeg" alt="Usine Nescafé Mexico" class="active" />
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565198-2a56506d3c43c179ed42da50b814ccb3-262279842-highres-data.jpg" alt="Café Nescafé premium" />
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565251-nescaf-1160x700.jpg" alt="Produits Nescafé" />
+    <img src="https://image.noelshack.com/fichiers/2025/32/4/1754565330-t-l-chargement.jpeg" alt="Expérience café Nescafé" />
+    
+    <div class="carousel-indicators">
+      <div class="indicator active"></div>
+      <div class="indicator"></div>
+      <div class="indicator"></div>
+      <div class="indicator"></div>
+    </div>
   </div>
 
   <div class="container" role="main">
 
-    <!-- Boutons actions -->
-    <div class="carousel-buttons" role="group" aria-label="Actions rapides carrousel">
-      <button class="btn-carousel btn-depot" data-link="recharge.html" aria-label="Dépôt">
-        <span class="material-icons icon" aria-hidden="true">attach_money</span> Recharge
+    <!-- Grille d'actions -->
+    <div class="actions-grid" role="group" aria-label="Actions rapides">
+      <button class="action-btn btn-recharge" data-link="recharge.html" aria-label="Recharger mon compte">
+        <span class="material-icons" aria-hidden="true">account_balance_wallet</span>
+        Recharge
       </button>
-      <button class="btn-carousel btn-retrait" data-link="retrait.html" aria-label="Retrait">
-        <span class="material-icons icon" aria-hidden="true">swap_horiz</span> Retrait
+      <button class="action-btn btn-retrait" data-link="retrait.html" aria-label="Retirer mes gains">
+        <span class="material-icons" aria-hidden="true">payments</span>
+        Retrait
       </button>
-      <button class="btn-carousel btn-telegram" data-link="service-clien.html" aria-label="Groupe Télégramme">
-        <span class="material-icons icon" aria-hidden="true">groups</span> Service client 
+      <button class="action-btn btn-service" data-link="service-clien.html" aria-label="Service client">
+        <span class="material-icons" aria-hidden="true">support_agent</span>
+        Support
       </button>
     </div>
 
-    <!-- Bloc Statistiques -->
-    <div class="statistiques-boxes">
-      <!-- Parrainage avec image de fond -->
-      <div class="parrainage-banner" role="region" aria-label="Bannière parrainage">
-        <strong>RÉCOMPENSES DE PARRAINAGE</strong><br />
-        INVITEZ VOS AMIS POUR OBTENIR<br />
-        DES RÉCOMPENSES IMPORTANTES
-      </div>
-
-      <!-- Information lancement entreprise -->
-      <div class="lancement-info" role="note" aria-live="polite">
-        Date de lancement de l'entreprise NESCAFÉ : <strong>15 Avril 2025</strong><br />
-        Durée d'objectif : <strong>25 mai 2026</strong>
-      </div>
+    <!-- Bannière parrainage -->
+    <div class="parrainage-banner" role="region" aria-label Programme de parrainage">
+      <h3>PARRAINAGE RÉCOMPENSÉ</h3>
+      <p>Invitez vos amis et obtenez des récompenses exclusives sur chaque investissement</p>
     </div>
 
-    <!-- Nouvelle section Revenus et Investissements -->
-    <section class="revenus-section" aria-label="Tableau des revenus et investissements">
-      <h2 class="section-title">Plans d'Investissement</h2>
-      <div class="revenus-content">
-        <div class="table-container">
-          <table class="invest-table">
-            <thead>
-              <tr>
-                <th style="width: 25%">Investissement (FCFA)</th>
-                <th style="width: 25%">Revenus par jour (FCFA)</th>
-                <th style="width: 15%">Cycle (Jours)</th>
-                <th style="width: 35%">Gain total (FCFA)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="investment">5,500</td>
-                <td class="profit">1,050</td>
-                <td>21</td>
-                <td class="highlight">22,050</td>
-              </tr>
-              <tr>
-                <td class="investment">10,500</td>
-                <td class="profit">2,570</td>
-                <td>17</td>
-                <td class="highlight">43,690</td>
-              </tr>
-              <tr>
-                <td class="investment">18,000</td>
-                <td class="profit">4,050</td>
-                <td>17</td>
-                <td class="highlight">68,850</td>
-              </tr>
-              <tr>
-                <td class="investment">35,000</td>
-                <td class="profit">7,090</td>
-                <td>17</td>
-                <td class="highlight">120,530</td>
-              </tr>
-              <tr>
-                <td class="investment">100,000</td>
-                <td class="profit">25,580</td>
-                <td>14</td>
-                <td class="highlight">358,120</td>
-              </tr>
-              <tr>
-                <td class="investment">200,000</td>
-                <td class="profit">48,100</td>
-                <td>12</td>
-                <td class="highlight">577,200</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <!-- Information entreprise -->
+    <div class="info-card" role="note" aria-live="polite">
+      <h3>LANCEMENT OFFICIEL</h3>
+      <p>Date de lancement : <strong>15 Avril 2025</strong><br />
+      Objectif stratégique : <strong>25 Mai 2026</strong></p>
+    </div>
+
+    <!-- Section investissement -->
+    <section class="invest-section" aria-label="Plans d'investissement Nescafé">
+      <div class="section-header">
+        <h2>Plans d'Investissement</h2>
+      </div>
+      <div class="table-container">
+        <table class="invest-table">
+          <thead>
+            <tr>
+              <th style="width: 25%">Investissement</th>
+              <th style="width: 25%">Revenu/Jour</th>
+              <th style="width: 15%">Cycle</th>
+              <th style="width: 35%">Gain Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="investment">5,500 FCFA</td>
+              <td class="profit">1,050 FCFA</td>
+              <td>21 Jours</td>
+              <td class="highlight">22,050 FCFA</td>
+            </tr>
+            <tr>
+              <td class="investment">10,500 FCFA</td>
+              <td class="profit">2,570 FCFA</td>
+              <td>17 Jours</td>
+              <td class="highlight">43,690 FCFA</td>
+            </tr>
+            <tr>
+              <td class="investment">18,000 FCFA</td>
+              <td class="profit">4,050 FCFA</td>
+              <td>17 Jours</td>
+              <td class="highlight">68,850 FCFA</td>
+            </tr>
+            <tr>
+              <td class="investment">35,000 FCFA</td>
+              <td class="profit">7,090 FCFA</td>
+              <td>17 Jours</td>
+              <td class="highlight">120,530 FCFA</td>
+            </tr>
+            <tr>
+              <td class="investment">100,000 FCFA</td>
+              <td class="profit">25,580    FCFA</td>
+              <td>14 Jours</td>
+              <td class="highlight">358,120 FCFA</td>
+            </tr>
+            <tr>
+              <td class="investment">200,000 FCFA</td>
+              <td class="profit">48,100 FCFA</td>
+              <td>12 Jours</td>
+              <td class="highlight">577,200 FCFA</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
   </div>
 
+  <!-- Navigation améliorée -->
   <nav class="bottom-nav" role="navigation" aria-label="Navigation principale">
-    <div class="nav-icon active" data-link="Accueil.html" tabindex="0" role="link" aria-current="page" aria-label="Accueil">
+    <div class="nav-icon" data-link="Accueil.html" tabindex="0" role="link" aria-label="Accueil">
       <span class="material-icons icon" aria-hidden="true">home</span>
       Accueil
     </div>
@@ -435,68 +594,66 @@
       <span class="material-icons icon" aria-hidden="true">smartphone</span>
       Nescafé
     </div>
-    <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="Mes Nescafé">
+    <div class="nav-icon" data-link="machine.html" tabindex="0" role="link" aria-label="appareil">
       <span class="material-icons icon" aria-hidden="true">list_alt</span>
       Mes Nescafé
     </div>
-    <div class="nav-icon" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
+    <div class="nav-icon active" data-link="solde.html" tabindex="0" role="link" aria-label="Profil">
       <span class="material-icons icon" aria-hidden="true">person</span>
       Profil
     </div>
   </nav>
 
   <script>
-    // Carrousel automatique
+    // Carrousel automatique avec indicateurs
     (function () {
       const images = document.querySelectorAll('.carousel img');
+      const indicators = document.querySelectorAll('.indicator');
       let current = 0;
+      
+      function updateIndicators() {
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === current);
+        });
+      }
+      
       function nextSlide() {
         images[current].classList.remove('active');
         current = (current + 1) % images.length;
         images[current].classList.add('active');
+        updateIndicators();
       }
-      setInterval(nextSlide, 3000);
+      
+      // Initialiser les indicateurs
+      updateIndicators();
+      
+      // Démarrer le carrousel
+      setInterval(nextSlide, 3500);
     })();
 
-    // Spinner/loading button
-    function showLoading(button) {
-      if (button.classList.contains('loading')) return false;
-      const icon = button.querySelector('.icon');
-      if (icon) icon.style.display = 'none';
-      let spinner = button.querySelector('.spinner');
-      if (!spinner) {
-        spinner = document.createElement('span');
-        spinner.className = 'spinner';
-        button.insertBefore(spinner, button.firstChild);
-      }
-      spinner.style.display = 'inline-block';
-      button.classList.add('loading');
-      button.disabled = true;
-      return true;
-    }
-    function hideLoading(button) {
-      const icon = button.querySelector('.icon');
-      if (icon) icon.style.display = 'inline-block';
-      const spinner = button.querySelector('.spinner');
-      if (spinner) spinner.style.display = 'none';
-      button.classList.remove('loading');
-      button.disabled = false;
-    }
+    // Gestion des clics sur les boutons
     function handleButtonClick(event) {
       event.preventDefault();
       const btn = event.currentTarget;
-      if (!showLoading(btn)) return;
       const url = btn.getAttribute('data-link');
-      if (!url) {
-        hideLoading(btn);
-        return;
-      }
+      
+      // Animation de clic
+      btn.style.transform = 'scale(0.95)';
       setTimeout(() => {
-        window.location.href = url;
-      }, 300);
+        btn.style.transform = '';
+      }, 150);
+      
+      if (url) {
+        setTimeout(() => {
+          window.location.href = url;
+        }, 300);
+      }
     }
+
+    // Initialisation
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.btn-carousel, nav.bottom-nav .nav-icon').forEach(btn => {
+      // Boutons d'action
+      document.querySelectorAll('.action-btn, .nav-item').forEach(btn => {
         btn.addEventListener('click', handleButtonClick);
         btn.addEventListener('keydown', e => {
           if (e.key === 'Enter' || e.key === ' ') {
