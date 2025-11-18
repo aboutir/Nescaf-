@@ -652,8 +652,8 @@
 
     // Initialisation
     document.addEventListener('DOMContentLoaded', () => {
-      // Boutons d'action
-      document.querySelectorAll('.action-btn, .nav-item').forEach(btn => {
+      // Boutons d'action et icônes de navigation
+      document.querySelectorAll('.action-btn, .nav-icon').forEach(btn => {
         btn.addEventListener('click', handleButtonClick);
         btn.addEventListener('keydown', e => {
           if (e.key === 'Enter' || e.key === ' ') {
